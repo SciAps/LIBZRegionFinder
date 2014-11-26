@@ -5,6 +5,8 @@
  */
 package com.sciaps;
 
+import java.awt.Dimension;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
@@ -12,14 +14,15 @@ import javax.swing.SwingUtilities;
  * @author jchen
  */
 public class Main {
-    
-    public static void main () {
-        SwingUtilities.invokeLater(new Runnable() {
 
+    public static void main(String args[]) {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                throw new UnsupportedOperationException("Not supported yet."); 
-//To change body of generated methods, choose Tools | Templates.
+                FrmMain frmMain = new FrmMain();
+                frmMain.setSize(new Dimension(1200, 800));
+                frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frmMain.setVisible(true);
             }
         }
         );
