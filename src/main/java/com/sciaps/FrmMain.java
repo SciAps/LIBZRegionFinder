@@ -6,8 +6,14 @@
 package com.sciaps;
 
 import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import org.jfree.ui.RefineryUtilities;
 
 /**
@@ -26,9 +32,17 @@ public final class FrmMain extends javax.swing.JFrame {
         initComponents();
 
         httpConfigPanel_ = new HTTPConfigPanel();
+        httpConfigPanel_.setParentFrame(this);
 
         spectrometerStackPanel_ = new SpectrometerStackPanel();
         setDisplayPanel(spectrometerStackPanel_);
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                readIPAddress();
+            }
+        });
     }
 
     /**
@@ -44,10 +58,8 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuMainBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
         mnuFileExit = new javax.swing.JMenuItem();
-        mnuFunctionTest = new javax.swing.JMenu();
-        mnuFunctionsTestRasterCollection = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        mnuConfig = new javax.swing.JMenu();
+        mnuConfigSetLibzIP = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Region Finder");
@@ -69,29 +81,17 @@ public final class FrmMain extends javax.swing.JFrame {
 
         mnuMainBar.add(mnuFile);
 
-        mnuFunctionTest.setText("Functions-Test");
+        mnuConfig.setText("Config");
 
-        mnuFunctionsTestRasterCollection.setText("Raster Collection");
-        mnuFunctionsTestRasterCollection.addActionListener(new java.awt.event.ActionListener() {
+        mnuConfigSetLibzIP.setText("Set LIBZ IP");
+        mnuConfigSetLibzIP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFunctionsTestRasterCollectionActionPerformed(evt);
+                mnuConfigSetLibzIPActionPerformed(evt);
             }
         });
-        mnuFunctionTest.add(mnuFunctionsTestRasterCollection);
+        mnuConfig.add(mnuConfigSetLibzIP);
 
-        mnuMainBar.add(mnuFunctionTest);
-
-        jMenu1.setText("Config");
-
-        jMenuItem1.setText("Set LIBZ IP");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem1);
-
-        mnuMainBar.add(jMenu1);
+        mnuMainBar.add(mnuConfig);
 
         setJMenuBar(mnuMainBar);
         mnuMainBar.getAccessibleContext().setAccessibleName("");
@@ -103,15 +103,9 @@ public final class FrmMain extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_mnuFileExitActionPerformed
 
-    private void mnuFunctionsTestRasterCollectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFunctionsTestRasterCollectionActionPerformed
-
-        spectrometerStackPanel_.showSpecialRasterDisplay();
-
-    }//GEN-LAST:event_mnuFunctionsTestRasterCollectionActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void mnuConfigSetLibzIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuConfigSetLibzIPActionPerformed
         httpConfigPanel_.showPopup();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_mnuConfigSetLibzIPActionPerformed
 
     /**
      * @param args the command line arguments
@@ -145,7 +139,7 @@ public final class FrmMain extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                
+
                 FrmMain frmMain = new FrmMain();
                 frmMain.setSize(new Dimension(1200, 800));
                 frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -162,15 +156,53 @@ public final class FrmMain extends javax.swing.JFrame {
         displayPanel_.repaint();
     }
 
+    public void displayLibzIPAddress() {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Region Finder - LIBZ@" + Common.LIBZ_URL);
+            }
+        });
+    }
+    
+    private void readIPAddress() {
+
+        try {
+            File file = new File(Common.LIBZ_URL_FILE_NAME);
+
+            FileReader fr = new FileReader(file.getAbsoluteFile());
+            BufferedReader br = new BufferedReader(fr);
+
+            String line = br.readLine();
+            line = line.trim();
+            br.close();
+
+            // Making sure the ip address is valid
+            if (Utilities.Util.validateIPAddress(line)) {
+                Common.LIBZ_URL = line;
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "ERROR: Invalid LIBZ IP Address read from file.",
+                        "LIBZ IP Address",
+                        JOptionPane.ERROR_MESSAGE);
+                httpConfigPanel_.showPopup();
+            }
+
+            displayLibzIPAddress();
+            
+        } catch (FileNotFoundException ex) {
+            httpConfigPanel_.showPopup();
+        } catch (IOException ex) {
+            httpConfigPanel_.showPopup();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel displayPanel_;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenu mnuConfig;
+    private javax.swing.JMenuItem mnuConfigSetLibzIP;
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuFileExit;
-    private javax.swing.JMenu mnuFunctionTest;
-    private javax.swing.JMenuItem mnuFunctionsTestRasterCollection;
     private javax.swing.JMenuBar mnuMainBar;
     // End of variables declaration//GEN-END:variables
 }

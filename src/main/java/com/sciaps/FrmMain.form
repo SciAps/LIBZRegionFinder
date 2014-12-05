@@ -25,32 +25,17 @@
             </MenuItem>
           </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="mnuFunctionTest">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Functions-Test"/>
-          </Properties>
-          <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="mnuFunctionsTestRasterCollection">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Raster Collection"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFunctionsTestRasterCollectionActionPerformed"/>
-              </Events>
-            </MenuItem>
-          </SubComponents>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="mnuConfig">
           <Properties>
             <Property name="text" type="java.lang.String" value="Config"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="mnuConfigSetLibzIP">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Set LIBZ IP"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuConfigSetLibzIPActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
