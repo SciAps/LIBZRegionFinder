@@ -15,17 +15,19 @@ if (!hasProperty('mainClass')) {
     ext.mainClass = ''
 }
 
-repositories {
-    mavenCentral()
-    // You may define additional repositories, or even remove "mavenCentral()".
-    // Read more about repositories here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
+allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://maven.sciaps.local"
+        }
+        maven {
+            url "http://files.couchbase.com/maven2/"
+        }
+    }
 }
 
 dependencies {
-    // TODO: Add dependencies here ...
-    // You can read more about how to add dependency here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
     compile 'org.slf4j:slf4j-api:1.7.+'
     compile 'org.slf4j:slf4j-simple:1.7.+'
     compile 'org.apache.httpcomponents:httpclient:4.3.6'

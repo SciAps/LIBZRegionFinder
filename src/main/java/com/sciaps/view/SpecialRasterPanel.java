@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sciaps;
+package com.sciaps.view;
 
+import com.sciaps.utils.Util;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -13,7 +14,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,21 +23,23 @@ import org.slf4j.LoggerFactory;
  */
 public class SpecialRasterPanel extends javax.swing.JPanel {
 
-    Logger logger_ = LoggerFactory.getLogger(SpecialRasterPanel.class);
-    
-    JDialog popupDisplay_;
-    int iLocationsVal_ = 0;
-    int iCleaningShotsVal_ = 0;
-    int iDataShotsVal_ = 0;
-    int iArgonPreflushVal_ = 0;
-    int iPulsePeriodVal_ = 0;
-    int iIntegrationDelayVal_ = 0;
-    int iIntegrationPeriodVal_ = 0;
-    int iStartPositionXVal_ = 0;
-    int iStartPositionYVal_ = 0;
-    int iStartPositionZVal_ = 0;
-    boolean chkGatingVal_ = false;
-    boolean chkResetStageVal_ = false;
+    private final Logger logger_ = LoggerFactory.getLogger(SpecialRasterPanel.class);
+
+    private JDialog popupDisplay_;
+    private int iLocationsVal_ = 0;
+    private int iDataShotsVal_ = 0;
+    private int iArgonPreflushVal_ = 0;
+    private int iStepSizeVal_ = 0;
+    private int iPulsePeriodVal_ = 0;
+    private int iIntegrationDelayVal_ = 0;
+    private int iIntegrationPeriodVal_ = 0;
+    private int iStartPositionXVal_ = 0;
+    private int iStartPositionYVal_ = 0;
+    private int iStartPositionZVal_ = 0;
+    private int iStopPositionXVal_ = 0;
+    private int iStopPositionYVal_ = 0;
+    private boolean chkGatingVal_ = false;
+    private boolean chkResetStageVal_ = false;
 
     /**
      * Creates new form SpecialRasterPanel
@@ -58,49 +60,32 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        txtCleaningShots_ = new javax.swing.JTextField();
         txtDataShots_ = new javax.swing.JTextField();
         txtArgonPreflush_ = new javax.swing.JTextField();
         txtIntegrationDelay_ = new javax.swing.JTextField();
         txtLocations_ = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         chkGating_ = new javax.swing.JCheckBox();
         chkResetStage_ = new javax.swing.JCheckBox();
-        txtStartPositionZ_ = new javax.swing.JTextField();
         txtPulsePeriod_ = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        txtStartPositionY_ = new javax.swing.JTextField();
-        txtStartPositionX_ = new javax.swing.JTextField();
+        txtStopPosition_ = new javax.swing.JTextField();
+        txtStartPosition_ = new javax.swing.JTextField();
         txtIntegrationPeriod_ = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtStepSize_ = new javax.swing.JTextField();
 
         setPreferredSize(new java.awt.Dimension(260, 380));
         setRequestFocusEnabled(false);
         setLayout(new java.awt.GridBagLayout());
 
-        txtCleaningShots_.setText("0");
-        txtCleaningShots_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtCleaningShots_.setPreferredSize(new java.awt.Dimension(100, 25));
-        txtCleaningShots_.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtCleaningShots_KeyReleased(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        add(txtCleaningShots_, gridBagConstraints);
-
-        txtDataShots_.setText("0");
+        txtDataShots_.setText("5");
         txtDataShots_.setMinimumSize(new java.awt.Dimension(100, 25));
         txtDataShots_.setPreferredSize(new java.awt.Dimension(100, 25));
         txtDataShots_.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -140,12 +125,12 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtIntegrationDelay_, gridBagConstraints);
 
-        txtLocations_.setText("0");
+        txtLocations_.setText("1");
         txtLocations_.setMinimumSize(new java.awt.Dimension(100, 25));
         txtLocations_.setPreferredSize(new java.awt.Dimension(100, 25));
         txtLocations_.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -167,14 +152,6 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel1, gridBagConstraints);
 
-        jLabel3.setText("Cleaning Shots");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        add(jLabel3, gridBagConstraints);
-
         jLabel4.setText("Data Shots");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -186,7 +163,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel5.setText("Integration Delay");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel5, gridBagConstraints);
@@ -199,10 +176,11 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel6, gridBagConstraints);
 
+        chkGating_.setSelected(true);
         chkGating_.setText("Gating");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(chkGating_, gridBagConstraints);
@@ -210,27 +188,13 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         chkResetStage_.setText("Reset Stage");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 11;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(chkResetStage_, gridBagConstraints);
 
-        txtStartPositionZ_.setText("0");
-        txtStartPositionZ_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtStartPositionZ_.setPreferredSize(new java.awt.Dimension(100, 25));
-        txtStartPositionZ_.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtStartPositionZ_KeyReleased(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        add(txtStartPositionZ_, gridBagConstraints);
-
-        txtPulsePeriod_.setText("0");
+        txtPulsePeriod_.setText("100");
         txtPulsePeriod_.setMinimumSize(new java.awt.Dimension(100, 25));
         txtPulsePeriod_.setPreferredSize(new java.awt.Dimension(100, 25));
         txtPulsePeriod_.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -240,33 +204,40 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtPulsePeriod_, gridBagConstraints);
 
-        jLabel7.setText("Start Position Z");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        add(jLabel7, gridBagConstraints);
-
         jLabel8.setText("Pulse Period");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel8, gridBagConstraints);
 
-        txtStartPositionY_.setText("0");
-        txtStartPositionY_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtStartPositionY_.setPreferredSize(new java.awt.Dimension(100, 25));
-        txtStartPositionY_.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtStopPosition_.setText("80,80");
+        txtStopPosition_.setMinimumSize(new java.awt.Dimension(100, 25));
+        txtStopPosition_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtStopPosition_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtStartPositionY_KeyReleased(evt);
+                txtStopPosition_KeyReleased(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        add(txtStopPosition_, gridBagConstraints);
+
+        txtStartPosition_.setText("60,60,80");
+        txtStartPosition_.setMinimumSize(new java.awt.Dimension(100, 25));
+        txtStartPosition_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtStartPosition_.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtStartPosition_KeyReleased(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -274,22 +245,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        add(txtStartPositionY_, gridBagConstraints);
-
-        txtStartPositionX_.setText("0");
-        txtStartPositionX_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtStartPositionX_.setPreferredSize(new java.awt.Dimension(100, 25));
-        txtStartPositionX_.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtStartPositionX_KeyReleased(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
-        add(txtStartPositionX_, gridBagConstraints);
+        add(txtStartPosition_, gridBagConstraints);
 
         txtIntegrationPeriod_.setText("0");
         txtIntegrationPeriod_.setMinimumSize(new java.awt.Dimension(100, 25));
@@ -301,23 +257,23 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtIntegrationPeriod_, gridBagConstraints);
 
-        jLabel9.setText("Start Position Y");
+        jLabel9.setText("Stop Position X,Y");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel9, gridBagConstraints);
 
-        jLabel10.setText("Start Position X");
+        jLabel10.setText("Start Position X,Y,Z");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel10, gridBagConstraints);
@@ -325,19 +281,38 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel11.setText("Integration Period");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel11, gridBagConstraints);
+
+        jLabel12.setText("Step Size");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        add(jLabel12, gridBagConstraints);
+
+        txtStepSize_.setText("20");
+        txtStepSize_.setMinimumSize(new java.awt.Dimension(100, 25));
+        txtStepSize_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtStepSize_.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtStepSize_KeyReleased(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        add(txtStepSize_, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtLocations_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLocations_KeyReleased
         validateInt(txtLocations_);
     }//GEN-LAST:event_txtLocations_KeyReleased
-
-    private void txtCleaningShots_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCleaningShots_KeyReleased
-        validateInt(txtCleaningShots_);
-    }//GEN-LAST:event_txtCleaningShots_KeyReleased
 
     private void txtDataShots_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDataShots_KeyReleased
         validateInt(txtDataShots_);
@@ -359,58 +334,132 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         validateInt(txtIntegrationPeriod_);
     }//GEN-LAST:event_txtIntegrationPeriod_KeyReleased
 
-    private void txtStartPositionX_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStartPositionX_KeyReleased
-        validateInt(txtStartPositionX_);
-    }//GEN-LAST:event_txtStartPositionX_KeyReleased
+    private void txtStepSize_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStepSize_KeyReleased
+        validateInt(txtStepSize_);
+    }//GEN-LAST:event_txtStepSize_KeyReleased
 
-    private void txtStartPositionY_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStartPositionY_KeyReleased
-        validateInt(txtStartPositionY_);
-    }//GEN-LAST:event_txtStartPositionY_KeyReleased
+    private void txtStartPosition_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStartPosition_KeyReleased
+        if (Util.validePositionXYZ(txtStartPosition_.getText())) {
+            txtStartPosition_.setBackground(Color.white);
+        } else {
+            txtStartPosition_.setBackground(Color.red);
+        }
+    }//GEN-LAST:event_txtStartPosition_KeyReleased
 
-    private void txtStartPositionZ_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStartPositionZ_KeyReleased
-        validateInt(txtStartPositionZ_);
-    }//GEN-LAST:event_txtStartPositionZ_KeyReleased
+    private void txtStopPosition_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtStopPosition_KeyReleased
+        if (Util.validePositionXY(txtStopPosition_.getText())) {
+            txtStopPosition_.setBackground(Color.white);
+        } else {
+            txtStopPosition_.setBackground(Color.red);
+        }
+    }//GEN-LAST:event_txtStopPosition_KeyReleased
 
     private void validateInt(JTextField txtField) {
         try {
             int i = Integer.parseInt(txtField.getText());
-            txtField.setBackground(Color.white);
-        } catch (Exception e) {
+            if (i >=0) {
+                txtField.setBackground(Color.white);
+            }
+        } catch (Exception ex) {
             txtField.setBackground(Color.red);
         }
     }
 
+    private boolean setXYZ(String str) {
+        boolean isGood = true;
+        
+        String[] tmp = str.split(",");
+
+        try {
+            iStartPositionXVal_ = Integer.parseInt(tmp[0].trim());
+            iStartPositionYVal_ = Integer.parseInt(tmp[1].trim());
+            iStartPositionZVal_ = Integer.parseInt(tmp[2].trim());
+        } catch (Exception ex) {
+            isGood = false;
+            JOptionPane.showMessageDialog(null,
+                    "ERROR: Invalid Start Position. " + ex.getMessage(),
+                    "Invalid Data", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return isGood;
+    }
+
+    private boolean setXY(String str) {
+        boolean isGood = true;
+        
+        String[] tmp = str.split(",");
+
+        try {
+            
+            iStopPositionXVal_ = Integer.parseInt(tmp[0].trim());
+            iStopPositionYVal_ = Integer.parseInt(tmp[1].trim());
+            
+        } catch (Exception ex) {
+            isGood = false;
+            JOptionPane.showMessageDialog(null,
+                    "ERROR: Invalid Stop Position." + ex.getMessage(),
+                    "Invalid Data", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return isGood;
+    }
+
     private boolean validateAll() {
         boolean bAllValid = true;
+
+        iStartPositionXVal_ = 0;
+        iStartPositionYVal_ = 0;
+        iStartPositionZVal_ = 0;
+        iStopPositionXVal_ = 0;
+        iStopPositionYVal_ = 0;
+
+
+        if ( setXYZ(txtStartPosition_.getText()) == false) {
+            return false;
+        }
+        
+        if( setXY(txtStopPosition_.getText()) == false) {
+            return false;
+        } else {
+
+            if ((iStopPositionXVal_ <= iStartPositionXVal_) || (iStopPositionYVal_ <= iStartPositionYVal_)) {
+
+                JOptionPane.showMessageDialog(null,
+                        "ERROR: Invalid Stop Position. It must be larger than Start Position",
+                        "Invalid Data", JOptionPane.ERROR_MESSAGE);
+
+                return false;
+            } 
+        }
+
         try {
-                        
+            
             iLocationsVal_ = Integer.parseInt(txtLocations_.getText());
-            iCleaningShotsVal_ = Integer.parseInt(txtCleaningShots_.getText());
             iDataShotsVal_ = Integer.parseInt(txtDataShots_.getText());
             iArgonPreflushVal_ = Integer.parseInt(txtArgonPreflush_.getText());
+            iStepSizeVal_ = Integer.parseInt(txtStepSize_.getText());
             iPulsePeriodVal_ = Integer.parseInt(txtPulsePeriod_.getText());
             iIntegrationDelayVal_ = Integer.parseInt(txtIntegrationDelay_.getText());
             iIntegrationPeriodVal_ = Integer.parseInt(txtIntegrationPeriod_.getText());
-            iStartPositionXVal_ = Integer.parseInt(txtStartPositionX_.getText());
-            iStartPositionYVal_ = Integer.parseInt(txtStartPositionY_.getText());
-            iStartPositionZVal_ = Integer.parseInt(txtStartPositionZ_.getText());
-            
-            if (chkGating_.isSelected()) {
-                chkGatingVal_ = true;
-            } else {
-                chkGatingVal_ = false;
+
+            if (iLocationsVal_ <= 0 && 
+                    iDataShotsVal_ <= 0 && 
+                    iArgonPreflushVal_ <= 0 && 
+                    iStepSizeVal_<= 0 && 
+                    iPulsePeriodVal_ <= 0 && 
+                    iIntegrationDelayVal_ <= 0 && 
+                    iIntegrationPeriodVal_ <= 0) {
+                throw new NumberFormatException("");
             }
             
-            if (chkResetStage_.isSelected()) {
-                chkResetStageVal_ = true;
-            } else {
-                chkResetStageVal_ = false;
-            }
-            
-        } catch (Exception e) {
+            chkGatingVal_ = chkGating_.isSelected();
+
+            chkResetStageVal_ = chkResetStage_.isSelected();
+
+        } catch (Exception ex) {
             bAllValid = false;
-            JOptionPane.showMessageDialog(null, 
-                    "ERROR: Form Contains Invalid Data.\nOnly Integer Is Accepted.", 
+            JOptionPane.showMessageDialog(null,
+                    "ERROR: Form Contains Invalid Data.\nOnly Positive Integer Is Accepted.",
                     "Invalid Data", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -428,7 +477,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
 
                 if (validateAll() == true) {
                     e.getWindow().dispose();
-                } 
+                }
             }
         });
         popupDisplay_.add(this, java.awt.BorderLayout.CENTER);
@@ -440,25 +489,41 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         popupDisplay_.setVisible(true);
     }
 
-    public JSONObject getRasterData() {
-        JSONObject rasterData = null;
-                
+    public static class RasterParams {
+
+        public int[] startLocation;
+        public int[] endLocation;
+        public int numlocations;
+        public int numdatashotperlocation;
+        public int argonpreflush;
+        public boolean resetStage = true;
+        public boolean useGating = true;
+        public int pulsePeriod = 0;
+        public int intergrationDelay = 0;
+        public int intergrationPeriod = 0;
+        public int stepSize = 0;
+    }
+
+    public RasterParams getRasterData() {
+
+        RasterParams retval = new RasterParams();
         if (validateAll() == true) {
-            rasterData = new JSONObject();
-            rasterData.put("numlocations", iLocationsVal_);
-            rasterData.put("numcleanshotperlocation", iCleaningShotsVal_);
-            rasterData.put("numdatashotperlocation", iDataShotsVal_);
-            rasterData.put("argonpreflush", iArgonPreflushVal_);
-            rasterData.put("resetStage", chkResetStageVal_);
-            rasterData.put("useGating", chkGatingVal_);
-            rasterData.put("pulsePeriod", iPulsePeriodVal_);
-            rasterData.put("intergrationDelay", iIntegrationDelayVal_);
-            rasterData.put("intergrationPeriod", iIntegrationPeriodVal_);
-            rasterData.put("startPositionX", iStartPositionXVal_);
-            rasterData.put("startPositionY", iStartPositionYVal_);
-            rasterData.put("startPositionZ", iStartPositionZVal_);
+            retval.startLocation = new int[]{
+                iStartPositionXVal_,
+                iStartPositionYVal_,
+                iStartPositionZVal_};
+            retval.endLocation = new int[]{iStopPositionXVal_, iStopPositionYVal_};
+            retval.argonpreflush = iArgonPreflushVal_;
+            retval.intergrationDelay = iIntegrationDelayVal_;
+            retval.intergrationPeriod = iIntegrationPeriodVal_;
+            retval.numdatashotperlocation = iDataShotsVal_;
+            retval.numlocations = iLocationsVal_;
+            retval.pulsePeriod = iPulsePeriodVal_;
+            retval.resetStage = chkResetStageVal_;
+            retval.stepSize = iStepSizeVal_;
+            retval.useGating = chkGatingVal_;
         }
-        return rasterData;
+        return retval;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -467,22 +532,20 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField txtArgonPreflush_;
-    private javax.swing.JTextField txtCleaningShots_;
     private javax.swing.JTextField txtDataShots_;
     private javax.swing.JTextField txtIntegrationDelay_;
     private javax.swing.JTextField txtIntegrationPeriod_;
     private javax.swing.JTextField txtLocations_;
     private javax.swing.JTextField txtPulsePeriod_;
-    private javax.swing.JTextField txtStartPositionX_;
-    private javax.swing.JTextField txtStartPositionY_;
-    private javax.swing.JTextField txtStartPositionZ_;
+    private javax.swing.JTextField txtStartPosition_;
+    private javax.swing.JTextField txtStepSize_;
+    private javax.swing.JTextField txtStopPosition_;
     // End of variables declaration//GEN-END:variables
 }

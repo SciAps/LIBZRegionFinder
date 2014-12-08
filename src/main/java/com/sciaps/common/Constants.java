@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sciaps;
+package com.sciaps.common;
 
 /**
  *
  * @author jchen
  */
-public class Common {
+public class Constants {
     public static String LIBZ_URL = "127.0.0.1";
+    public static String LIBZ_URL_FILE_NAME = "libzipaddress.txt";
+    public static final int MAX_SPECTROMETER = 4;
+    
 }
