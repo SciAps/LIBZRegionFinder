@@ -15,6 +15,14 @@
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="mnuFileExportCSV_">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Export CSV"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileExportCSV_ActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mnuFileExit">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Exit"/>

@@ -5,6 +5,7 @@
  */
 package com.sciaps;
 
+import com.sciaps.view.FrmMain;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;

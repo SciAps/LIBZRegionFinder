@@ -1,1 +1,4 @@
+include 'libraries/Common'
+include 'libraries/SwingCommon'
+
 rootProject.name = 'RegionFinder'

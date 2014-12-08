@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sciaps;
+package com.sciaps.view;
 
+import com.sciaps.common.Constants;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
@@ -57,6 +58,7 @@ public final class FrmMain extends javax.swing.JFrame {
         displayPanel_ = new javax.swing.JPanel();
         mnuMainBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
+        mnuFileExportCSV_ = new javax.swing.JMenuItem();
         mnuFileExit = new javax.swing.JMenuItem();
         mnuConfig = new javax.swing.JMenu();
         mnuConfigSetLibzIP = new javax.swing.JMenuItem();
@@ -70,6 +72,14 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuMainBar.setToolTipText("");
 
         mnuFile.setText("File");
+
+        mnuFileExportCSV_.setText("Export CSV");
+        mnuFileExportCSV_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileExportCSV_ActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuFileExportCSV_);
 
         mnuFileExit.setText("Exit");
         mnuFileExit.addActionListener(new java.awt.event.ActionListener() {
@@ -106,6 +116,10 @@ public final class FrmMain extends javax.swing.JFrame {
     private void mnuConfigSetLibzIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuConfigSetLibzIPActionPerformed
         httpConfigPanel_.showPopup();
     }//GEN-LAST:event_mnuConfigSetLibzIPActionPerformed
+
+    private void mnuFileExportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExportCSV_ActionPerformed
+       
+    }//GEN-LAST:event_mnuFileExportCSV_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -160,7 +174,7 @@ public final class FrmMain extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                setTitle("Region Finder - LIBZ@" + Common.LIBZ_URL);
+                setTitle("Region Finder - LIBZ@" + Constants.LIBZ_URL);
             }
         });
     }
@@ -168,7 +182,7 @@ public final class FrmMain extends javax.swing.JFrame {
     private void readIPAddress() {
 
         try {
-            File file = new File(Common.LIBZ_URL_FILE_NAME);
+            File file = new File(Constants.LIBZ_URL_FILE_NAME);
 
             FileReader fr = new FileReader(file.getAbsoluteFile());
             BufferedReader br = new BufferedReader(fr);
@@ -178,8 +192,8 @@ public final class FrmMain extends javax.swing.JFrame {
             br.close();
 
             // Making sure the ip address is valid
-            if (Utilities.Util.validateIPAddress(line)) {
-                Common.LIBZ_URL = line;
+            if (com.sciaps.utils.Util.validateIPAddress(line)) {
+                Constants.LIBZ_URL = line;
             } else {
                 JOptionPane.showMessageDialog(null,
                         "ERROR: Invalid LIBZ IP Address read from file.",
@@ -203,6 +217,7 @@ public final class FrmMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem mnuConfigSetLibzIP;
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuFileExit;
+    private javax.swing.JMenuItem mnuFileExportCSV_;
     private javax.swing.JMenuBar mnuMainBar;
     // End of variables declaration//GEN-END:variables
 }

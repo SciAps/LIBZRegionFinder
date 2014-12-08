@@ -3,29 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sciaps;
+package com.sciaps.view;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sciaps.common.CheckListShotItem;
+import com.sciaps.common.Constants;
+import com.sciaps.view.LibzShotCheckListPanel.LibzShotItemClickListenerCallback;
 import com.sciaps.common.ThreadUtils;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.logging.Level;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
+import com.sciaps.common.data.SpectrometerCalibration;
+import com.sciaps.common.math.VectorMean;
+import com.sciaps.common.spectrum.LIBZPixelSpectrum;
+import com.sciaps.common.swing.libzunitapi.LibzHttpClient;
+import com.sciaps.common.swing.listener.LibzChartMouseListener;
+import com.sciaps.common.swing.listener.LibzChartMouseListener.LibzChartMouseListenerCallback;
+import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
+import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
+import javax.swing.JOptionPane;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.jfree.chart.plot.Marker;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,18 +30,23 @@ import org.slf4j.LoggerFactory;
  *
  * @author jchen
  */
-public class SpectrometerStackPanel extends javax.swing.JPanel {
+public class SpectrometerStackPanel extends javax.swing.JPanel
+        implements RegionsPanelCallback, LibzChartMouseListenerCallback, LibzShotItemClickListenerCallback {
 
-    Logger logger_ = LoggerFactory.getLogger(SpectrometerStackPanel.class);
+    private final Logger logger_ = LoggerFactory.getLogger(SpectrometerStackPanel.class);
 
-    SpecialRasterPanel specialRasterPanel_;
+    private final XYSeriesCollection xySeriesCollection_;
+    private JFreeChartWrapperPanel jFreeChartPanel_;
+    private LibzChartMouseListener libzChartMouseListener_;
+    private RegionsPanel regionPanels_;
+    //private RegionsJXCollapsiblePane regionsJXCollapsiblePane_;
+    private LibzShotCheckListPanel shotCheckListPanel_;
+    private final SpecialRasterPanel specialRasterPanel_;
 
-    XYSeries xySeries_;
-    XYDataset dataset_;
-    JFreeChart chart_;
-    ChartPanel chartPanel_;
+    private LaserResponse laserResponse_;
 
-    boolean bTestInProgress_ = false;
+    boolean bTestInProgress_;
+    private int scanCount_ = 0;
 
     /**
      * Creates new form SpecktrometerStackPanel
@@ -52,20 +54,52 @@ public class SpectrometerStackPanel extends javax.swing.JPanel {
     public SpectrometerStackPanel() {
         initComponents();
 
+        //regionsJXCollapsiblePane_ = new RegionsJXCollapsiblePane(Direction.RIGHT, this);
+        //regionContainerPanel_.add(regionsJXCollapsiblePane_);
+        
+        regionPanels_ = new RegionsPanel(this);
+        regionContainerPanel_.add(regionPanels_);
+        
+
         progbarRasterTest_.setVisible(false);
         progbarRasterTest_.setValue(0);
-            
+        bTestInProgress_ = false;
+
         specialRasterPanel_ = new SpecialRasterPanel();
+        rasterSettingPanel_.add(specialRasterPanel_);
 
-        xySeries_ = new XYSeries("Data");
-        XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
-        xySeriesCollection.addSeries(xySeries_);
+        xySeriesCollection_ = new XYSeriesCollection();
+        jFreeChartPanel_ = new JFreeChartWrapperPanel();
+        jFreeChartPanel_.populateSpectrumChartWithAbstractXYDataset(
+                xySeriesCollection_, "Spectro Meter Stack", "Wave Length", "Intensity");
+        displayPanel_.add(jFreeChartPanel_);
 
-        chart_ = createChart((XYDataset) xySeriesCollection);
-        chartPanel_ = new ChartPanel(chart_);
+        libzChartMouseListener_ = new LibzChartMouseListener(
+                jFreeChartPanel_.getChartPanel(),
+                jFreeChartPanel_.getJFreeChart(),
+                this, this);
 
-        displayPanel_.add(chartPanel_);
+        jFreeChartPanel_.getChartPanel().addChartMouseListener(libzChartMouseListener_);
 
+        shotCheckListPanel_ = new LibzShotCheckListPanel(this);
+        shotListContainerPanel_.add(shotCheckListPanel_);
+
+        // diable them by default
+        shotListContainerPanel_.setVisible(false);
+        rasterSettingPanel_.setVisible(false);
+        regionContainerPanel_.setVisible(false);       
+        toggleShotList_.setEnabled(false);
+        toggleRegion_.setEnabled(false);
+        
+        // ==== start of testing code
+        for (int i = 1; i <= 200; i++) {
+            shotCheckListPanel_.addItem(new CheckListShotItem(scanCount_, i));
+        }
+        toggleShotList_.setEnabled(true);
+        toggleRegion_.setEnabled(true);
+        shotCheckListPanel_.doCreateScanAvg(0);
+        // ==== end of testing code
+        
     }
 
     /**
@@ -78,20 +112,148 @@ public class SpectrometerStackPanel extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        controlPanel_ = new javax.swing.JPanel();
-        btnScan_ = new javax.swing.JButton();
-        progbarRasterTest_ = new javax.swing.JProgressBar();
         displayPanel_ = new javax.swing.JPanel();
+        regionContainerPanel_ = new javax.swing.JPanel();
+        controlPanel_ = new javax.swing.JPanel();
+        progbarRasterTest_ = new javax.swing.JProgressBar();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        toggleShotList_ = new javax.swing.JToggleButton();
+        jLabel2 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        toggleRasterSetting_ = new javax.swing.JToggleButton();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        toggleRegion_ = new javax.swing.JToggleButton();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        btnScan_ = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        rasterSettingPanel_ = new javax.swing.JPanel();
+        shotListContainerPanel_ = new javax.swing.JPanel();
 
+        setName(""); // NOI18N
         setLayout(new java.awt.GridBagLayout());
 
-        controlPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        displayPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        displayPanel_.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(displayPanel_, gridBagConstraints);
+
+        regionContainerPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        regionContainerPanel_.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(regionContainerPanel_, gridBagConstraints);
+
+        controlPanel_.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         controlPanel_.setLayout(new java.awt.GridBagLayout());
 
+        progbarRasterTest_.setMaximumSize(new java.awt.Dimension(100, 14));
+        progbarRasterTest_.setMinimumSize(new java.awt.Dimension(100, 14));
+        progbarRasterTest_.setOpaque(true);
+        progbarRasterTest_.setPreferredSize(new java.awt.Dimension(100, 14));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        controlPanel_.add(progbarRasterTest_, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        controlPanel_.add(jLabel1, gridBagConstraints);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        toggleShotList_.setText("Show");
+        toggleShotList_.setMaximumSize(new java.awt.Dimension(120, 30));
+        toggleShotList_.setMinimumSize(new java.awt.Dimension(120, 30));
+        toggleShotList_.setPreferredSize(new java.awt.Dimension(120, 30));
+        toggleShotList_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleShotList_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel1.add(toggleShotList_, gridBagConstraints);
+
+        jLabel2.setText("Shot List");
+        jPanel1.add(jLabel2, new java.awt.GridBagConstraints());
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        controlPanel_.add(jPanel1, gridBagConstraints);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        toggleRasterSetting_.setText("Show");
+        toggleRasterSetting_.setMaximumSize(new java.awt.Dimension(120, 30));
+        toggleRasterSetting_.setMinimumSize(new java.awt.Dimension(120, 30));
+        toggleRasterSetting_.setPreferredSize(new java.awt.Dimension(120, 30));
+        toggleRasterSetting_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleRasterSetting_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel2.add(toggleRasterSetting_, gridBagConstraints);
+
+        jLabel3.setText("Raster Setting");
+        jPanel2.add(jLabel3, new java.awt.GridBagConstraints());
+
+        controlPanel_.add(jPanel2, new java.awt.GridBagConstraints());
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel3.setLayout(new java.awt.GridBagLayout());
+
+        toggleRegion_.setText("Show");
+        toggleRegion_.setMaximumSize(new java.awt.Dimension(120, 30));
+        toggleRegion_.setMinimumSize(new java.awt.Dimension(120, 30));
+        toggleRegion_.setPreferredSize(new java.awt.Dimension(120, 30));
+        toggleRegion_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toggleRegion_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel3.add(toggleRegion_, gridBagConstraints);
+
+        jLabel4.setText("Region List");
+        jPanel3.add(jLabel4, new java.awt.GridBagConstraints());
+
+        controlPanel_.add(jPanel3, new java.awt.GridBagConstraints());
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel4.setLayout(new java.awt.GridBagLayout());
+
+        btnScan_.setBackground(new java.awt.Color(0, 255, 51));
+        btnScan_.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnScan_.setText("SCAN");
-        btnScan_.setMaximumSize(new java.awt.Dimension(100, 30));
-        btnScan_.setMinimumSize(new java.awt.Dimension(100, 30));
-        btnScan_.setPreferredSize(new java.awt.Dimension(100, 30));
+        btnScan_.setMaximumSize(new java.awt.Dimension(120, 30));
+        btnScan_.setMinimumSize(new java.awt.Dimension(120, 30));
+        btnScan_.setPreferredSize(new java.awt.Dimension(120, 30));
         btnScan_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnScan_ActionPerformed(evt);
@@ -101,62 +263,96 @@ public class SpectrometerStackPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        controlPanel_.add(btnScan_, gridBagConstraints);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel4.add(btnScan_, gridBagConstraints);
 
-        progbarRasterTest_.setMaximumSize(new java.awt.Dimension(100, 14));
-        progbarRasterTest_.setMinimumSize(new java.awt.Dimension(100, 14));
-        progbarRasterTest_.setPreferredSize(new java.awt.Dimension(100, 14));
+        jLabel5.setText("Raster Test");
+        jPanel4.add(jLabel5, new java.awt.GridBagConstraints());
+
+        controlPanel_.add(jPanel4, new java.awt.GridBagConstraints());
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
-        controlPanel_.add(progbarRasterTest_, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.weightx = 1.0;
         add(controlPanel_, gridBagConstraints);
 
-        displayPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        displayPanel_.setLayout(new java.awt.BorderLayout());
+        rasterSettingPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        rasterSettingPanel_.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(displayPanel_, gridBagConstraints);
+        add(rasterSettingPanel_, gridBagConstraints);
+
+        shotListContainerPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        shotListContainerPanel_.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(shotListContainerPanel_, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnScan_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScan_ActionPerformed
+        prepareForRasterTest();
+    }//GEN-LAST:event_btnScan_ActionPerformed
 
-        JSONObject rasterData = specialRasterPanel_.getRasterData();
+    private void toggleShotList_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleShotList_ActionPerformed
+        setShotListPanelVisible(toggleShotList_.isSelected());
+    }//GEN-LAST:event_toggleShotList_ActionPerformed
+
+    private void toggleRasterSetting_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleRasterSetting_ActionPerformed
+
+        setRasterSettingPanelVisible(toggleRasterSetting_.isSelected());
+    }//GEN-LAST:event_toggleRasterSetting_ActionPerformed
+
+    private void toggleRegion_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleRegion_ActionPerformed
+        setRegionPanelVisible(toggleRegion_.isSelected());
+    }//GEN-LAST:event_toggleRegion_ActionPerformed
+
+    private void setRegionPanelVisible(boolean val) {
+        regionContainerPanel_.setVisible(val);
+        toggleRegion_.setSelected(val);
+        if (val == true) {
+            toggleRegion_.setText("Hide");
+        } else {
+            toggleRegion_.setText("Show");
+        }
+    }
+
+    private void setRasterSettingPanelVisible(boolean val) {
+        rasterSettingPanel_.setVisible(val);
+        toggleRasterSetting_.setSelected(val);
+        if (val == true) {
+            toggleRasterSetting_.setText("Hide");
+        } else {
+            toggleRasterSetting_.setText("Show");
+        }
+    }
+
+    private void setShotListPanelVisible(boolean val) {
+        shotListContainerPanel_.setVisible(val);
+        toggleShotList_.setSelected(val);
+        if (val == true) {
+            toggleShotList_.setText("Hide");
+        } else {
+            toggleShotList_.setText("Show");
+        }
+    }
+
+    public void showSpecialRasterDisplay() {
+        specialRasterPanel_.showPopup();
+    }
+
+    private void prepareForRasterTest() {
+        SpecialRasterPanel.RasterParams rasterData = specialRasterPanel_.getRasterData();
 
         if (rasterData != null) {
-            
-            bTestInProgress_ = true;
-            
-            ThreadUtils.CPUThreads.execute(new Runnable() {
 
-                @Override
-                public void run() {
-                    int i = 0;
-                    logger_.info("Starting Progressive Bar.");
-                    progbarRasterTest_.setVisible(true);
-                    while (bTestInProgress_) {
-                        progbarRasterTest_.setValue(i);
-                        try {
-                            Thread.sleep(1000);
-                            i+= 10;
-                        } catch (InterruptedException ex) {
-                            //logger_.error("Thread sleep failed");
-                        }
-                        
-                    }
-                }
-            });
-            
             ThreadUtils.IOThreads.execute(new Runnable() {
 
                 @Override
@@ -164,115 +360,244 @@ public class SpectrometerStackPanel extends javax.swing.JPanel {
                     startRasterTest(rasterData);
                 }
             });
+
+            ThreadUtils.CPUThreads.execute(new Runnable() {
+
+                @Override
+                public void run() {
+                    int i = 0;
+
+                    progbarRasterTest_.setVisible(true);
+
+                    while (bTestInProgress_) {
+                        progbarRasterTest_.setValue(i);
+                        try {
+                            Thread.sleep(1000);
+
+                            // assumming the test will be done within 9 seconds
+                            if (i <= 80) {
+                                i += 2;
+                            }
+                        } catch (InterruptedException ex) {
+                            //logger_.error("Thread sleep failed");
+                        }
+                    }
+
+                    progbarRasterTest_.setVisible(false);
+                    progbarRasterTest_.setValue(0);
+                }
+            });
         }
-    }//GEN-LAST:event_btnScan_ActionPerformed
-
-    private JFreeChart createChart(XYDataset dataset) {
-
-        // create the chart...
-        final JFreeChart chart = ChartFactory.createXYLineChart(
-                "Spectro Meter Stack", // chart title
-                "Wave Length", // x axis label
-                "Intensity", // y axis label
-                dataset, // data
-                PlotOrientation.VERTICAL,
-                false, // include legend
-                true, // tooltips
-                false // urls
-        );
-
-        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-        chart.setBackgroundPaint(Color.white);
-
-        // final StandardLegend legend = (StandardLegend) chart.getLegend();
-        // legend.setDisplaySeriesShapes(true);
-        // get a reference to the plot for further customisation...
-        final XYPlot plot = chart.getXYPlot();
-        plot.setBackgroundPaint(Color.lightGray);
-        //    plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-
-        //final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        //renderer.setSeriesLinesVisible(0, true);
-        //renderer.setSeriesShapesVisible(1, false);
-        //plot.setRenderer(renderer);
-        // change the auto tick unit selection to integer units only...
-        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        // OPTIONAL CUSTOMISATION COMPLETED.
-
-        return chart;
     }
 
-    public void showSpecialRasterDisplay() {
-        specialRasterPanel_.showPopup();
-    }
-
-    private void startRasterTest(JSONObject rasterData) {
-        logger_.info("starting a raster test");
+    private void startRasterTest(SpecialRasterPanel.RasterParams rasterData) {
+        logger_.info("Starting a raster test");
         
         btnScan_.setEnabled(false);
-        
-        CloseableHttpClient httpclient = HttpClients.createDefault();
- 
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(SpectrometerStackPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        try {
+        setShotListPanelVisible (false);
+        setRasterSettingPanelVisible(false);
+        setRegionPanelVisible (false);
+        toggleShotList_.setEnabled(false);
+        toggleRegion_.setEnabled(false);
+        bTestInProgress_ = true;
 
-            String URL = Common.LIBZ_URL + "/rastertest";
-            logger_.info("LIBZ URL: " + URL);
+        Gson gson = new GsonBuilder().create();
+
+        // Remove any current shots
+        shotCheckListPanel_.removeAllItem();
+
+        // Remove any current series data
+        xySeriesCollection_.removeAllSeries();
+
+        // Reset the bounds incase it is zoomed in/out
+        jFreeChartPanel_.getChartPanel().restoreAutoBounds();
+
+        String URL = "http://" + Constants.LIBZ_URL + ":9000/laser/raster";
+        String jsonString = gson.toJson(rasterData);
+
+        LibzHttpClient httpClient = new LibzHttpClient();
+        laserResponse_ = httpClient.executePost(URL, jsonString, LaserResponse.class);
+
+        if (laserResponse_ != null) {
+
+            scanCount_ ++;
             
-            HttpPut httpPut = new HttpPut(URL);
+            int shotCount = 1;
+            for (LaserResponse.Shot shot : laserResponse_.data) {
 
-            StringEntity input;
-            input = new StringEntity(rasterData.toString());
+                CheckListShotItem item = new CheckListShotItem(scanCount_, shotCount);
+                item.addShot(shot);
 
-            httpPut.setEntity(input);
+                shotCheckListPanel_.addItem(item);
 
-            // The underlying HTTP connection is still held by the response object
-            // to allow the response content to be streamed directly from the network socket.
-            // In order to ensure correct deallocation of system resources
-            // the user MUST call CloseableHttpResponse#close() from a finally clause.
-            // Please note that if response content is not fully consumed the underlying
-            // connection cannot be safely re-used and will be shut down and discarded
-            // by the connection manager.
-            CloseableHttpResponse response1 = httpclient.execute(httpPut);
-            System.out.println(response1.getStatusLine());
-            HttpEntity entity1 = response1.getEntity();
+                shotCount++;
+            }
 
-            // do something useful with the response body
-            // and ensure it is fully consumed
-            EntityUtils.consume(entity1);
+            // Okay, theres data, enable them
+            setShotListPanelVisible (true);
+            toggleShotList_.setEnabled(true);
+            toggleRegion_.setEnabled(true);
             
+            shotCheckListPanel_.doCreateScanAvg(scanCount_);
+        
             logger_.info("Raster test completed.");
 
-        } catch (IOException ex) {
-            logger_.error("Raster test failed", ex);
-        } finally {
-
-            try {
-                httpclient.close();
-            } catch (IOException ex) {
-                logger_.error("Raster Test: Http client close failed", ex);
-            }
-            
+        } else {
             bTestInProgress_ = false;
-            progbarRasterTest_.setVisible(false);
-            progbarRasterTest_.setValue(0);
-            
-            btnScan_.setEnabled(true);
+            logger_.error("Raster test failed");
+            JOptionPane.showMessageDialog(null,
+                    "Raster Test Failed.",
+                    "Raster Test", JOptionPane.ERROR_MESSAGE);
+        }
+
+        btnScan_.setEnabled(true);
+        bTestInProgress_ = false;
+    }
+
+    private void getSpectrumPixelXYSeries(CheckListShotItem shotItem) {
+
+        VectorMean[] mean = new VectorMean[Constants.MAX_SPECTROMETER];
+        for (int i = 0; i < Constants.MAX_SPECTROMETER; i++) {
+            mean[i] = new VectorMean(2066);
+        }
+
+        for (LaserResponse.Shot shot : shotItem.getShots()) {
+            for (int i = 0; i < Constants.MAX_SPECTROMETER; i++) {
+
+                double[] tmp = new double[shot.data[i].length];
+
+                for (int j = 0; j < shot.data[i].length; j++) {
+                    tmp[j] = shot.data[i][j];
+                }
+                mean[i].addValue(tmp);
+            }
+        }
+
+        LIBZPixelSpectrum.SerializationObj obj = new LIBZPixelSpectrum.SerializationObj();
+        obj.knots = laserResponse_.knots;
+        obj.pixels = new double[Constants.MAX_SPECTROMETER][];
+        obj.wlCalibrations = new SpectrometerCalibration[Constants.MAX_SPECTROMETER];
+        for (int i = 0; i < 4; i++) {
+            obj.pixels[i] = mean[i].getMean();
+            obj.wlCalibrations[i] = laserResponse_.calibration[i];
+        }
+
+        LIBZPixelSpectrum spectrum = new LIBZPixelSpectrum(obj);
+
+        double[] x = spectrum.getPixelLocations();
+        double[] y = new double[x.length];
+        UnivariateFunction yfun = spectrum.getIntensityFunction();
+        for (int i = 0; i < x.length; i++) {
+            y[i] = yfun.value(x[i]);
+        }
+
+        for (int i = 0; i < x.length; i++) {
+            shotItem.getXYSeries().add(x[i], y[i]);
         }
     }
+
+    public void addRegion(String regionName, int wavelengthMin, int wavelengthMax, Marker... associatedMarkers) {
+
+        /*if (LibzUnitManager.getInstance().getRegions().isEmpty()) {
+         HttpLibzUnitApiHandler httpLibzUnitApiHandler = new HttpLibzUnitApiHandler();
+
+         LibzUnitManager.getInstance().setRegions(httpLibzUnitApiHandler.getRegions("xyz"));
+         } else {
+         regionsJXCollapsiblePane_.addRegion(regionName, wavelengthMin, wavelengthMax, associatedMarkers);
+         }*/
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void removeChartMarkers(Marker[] regionMarkers) {
+
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void doShowShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+            @Override
+            public void run() {
+                logger_.info("Displaying selected shot");
+                if (item.getXYSeries().isEmpty()) {
+                    getSpectrumPixelXYSeries(item);
+                }
+                try {
+                    xySeriesCollection_.addSeries(item.getXYSeries());
+                } catch (Exception ex) {
+                    logger_.error("Failed to remove XYSeries: " + ex.getMessage());
+                }
+            }
+        });
+
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void doRemoveShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    xySeriesCollection_.removeSeries(item.getXYSeries());
+                } catch (Exception ex) {
+                    logger_.error("Failed to remove XYSeries: " + ex.getMessage());
+                }
+            }
+        });
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addRegion(String regionName, double wavelengthMin, double wavelengthMax, Marker... associatedMarkers) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onRegionDeleted(String regionName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onRegionClicked(String regionName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static class LaserResponse {
+
+        public static class Shot {
+
+            int shot;
+            int[][] data;
+        }
+
+        SpectrometerCalibration[] calibration;
+        Shot[] data;
+        double[] knots;
+
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnScan_;
     private javax.swing.JPanel controlPanel_;
     private javax.swing.JPanel displayPanel_;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JProgressBar progbarRasterTest_;
+    private javax.swing.JPanel rasterSettingPanel_;
+    private javax.swing.JPanel regionContainerPanel_;
+    private javax.swing.JPanel shotListContainerPanel_;
+    private javax.swing.JToggleButton toggleRasterSetting_;
+    private javax.swing.JToggleButton toggleRegion_;
+    private javax.swing.JToggleButton toggleShotList_;
     // End of variables declaration//GEN-END:variables
 }
