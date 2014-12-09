@@ -9,6 +9,7 @@ import com.sciaps.view.FrmMain;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.jfree.ui.RefineryUtilities;
 
 /**
  *
@@ -23,6 +24,7 @@ public class Main {
                 FrmMain frmMain = new FrmMain();
                 frmMain.setSize(new Dimension(1200, 800));
                 frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                RefineryUtilities.centerFrameOnScreen(frmMain);
                 frmMain.setVisible(true);
             }
         }

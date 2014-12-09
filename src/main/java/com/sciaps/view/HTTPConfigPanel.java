@@ -6,6 +6,7 @@
 package com.sciaps.view;
 
 import com.sciaps.common.Constants;
+import com.sciaps.common.webserver.LIBZHttpClient;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -122,7 +123,7 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
 
             saveIPAddress(ipaddress);
 
-            Constants.LIBZ_URL = ipaddress;
+            Constants.mHttpClient = new LIBZHttpClient("http://" + ipaddress + ":9000");
             popupDisplay_.dispose();
         } else {
             JOptionPane.showMessageDialog(null, "Invalid IP Address Syntax", "IP Addess",  JOptionPane.ERROR_MESSAGE);
@@ -162,7 +163,7 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
             bw.close();
 
             if (frmParent_ != null) {
-                frmParent_.displayLibzIPAddress();
+                frmParent_.displayLibzIPAddress(ipaddress);
             }
             
             logger_.info("Save LIBZ IP Address: Done");
@@ -176,9 +177,10 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
     }
     
     public void showPopup() {
-        txtIPAddress_.setText(Constants.LIBZ_URL);
+        String ip = "127.0.0.1";
+        txtIPAddress_.setText(ip);
         txtIPAddress_.setSelectionStart(0);
-        txtIPAddress_.setSelectionEnd(Constants.LIBZ_URL.length());
+        txtIPAddress_.setSelectionEnd(ip.length());
         this.getRootPane().setDefaultButton(btnSave_);
         popupDisplay_.setVisible(true);
     }

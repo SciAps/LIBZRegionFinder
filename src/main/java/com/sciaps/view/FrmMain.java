@@ -6,6 +6,7 @@
 package com.sciaps.view;
 
 import com.sciaps.common.Constants;
+import com.sciaps.common.webserver.LIBZHttpClient;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,6 +60,7 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuMainBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
         mnuFileExportCSV_ = new javax.swing.JMenuItem();
+        mnuFileLoadRegions_ = new javax.swing.JMenuItem();
         mnuFileExit = new javax.swing.JMenuItem();
         mnuConfig = new javax.swing.JMenu();
         mnuConfigSetLibzIP = new javax.swing.JMenuItem();
@@ -80,6 +82,14 @@ public final class FrmMain extends javax.swing.JFrame {
             }
         });
         mnuFile.add(mnuFileExportCSV_);
+
+        mnuFileLoadRegions_.setText("Load Regions");
+        mnuFileLoadRegions_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileLoadRegions_ActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuFileLoadRegions_);
 
         mnuFileExit.setText("Exit");
         mnuFileExit.addActionListener(new java.awt.event.ActionListener() {
@@ -120,6 +130,10 @@ public final class FrmMain extends javax.swing.JFrame {
     private void mnuFileExportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExportCSV_ActionPerformed
        
     }//GEN-LAST:event_mnuFileExportCSV_ActionPerformed
+
+    private void mnuFileLoadRegions_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegions_ActionPerformed
+        spectrometerStackPanel_.getRegionTextFromUser();
+    }//GEN-LAST:event_mnuFileLoadRegions_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -170,11 +184,11 @@ public final class FrmMain extends javax.swing.JFrame {
         displayPanel_.repaint();
     }
 
-    public void displayLibzIPAddress() {
+    public void displayLibzIPAddress(String ipAddress) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                setTitle("Region Finder - LIBZ@" + Constants.LIBZ_URL);
+                setTitle("Region Finder - LIBZ@" + ipAddress);
             }
         });
     }
@@ -193,7 +207,8 @@ public final class FrmMain extends javax.swing.JFrame {
 
             // Making sure the ip address is valid
             if (com.sciaps.utils.Util.validateIPAddress(line)) {
-                Constants.LIBZ_URL = line;
+                Constants.mHttpClient = new LIBZHttpClient("http://" + line + ":9000");
+                displayLibzIPAddress(line);
             } else {
                 JOptionPane.showMessageDialog(null,
                         "ERROR: Invalid LIBZ IP Address read from file.",
@@ -202,7 +217,7 @@ public final class FrmMain extends javax.swing.JFrame {
                 httpConfigPanel_.showPopup();
             }
 
-            displayLibzIPAddress();
+            
             
         } catch (FileNotFoundException ex) {
             httpConfigPanel_.showPopup();
@@ -218,6 +233,7 @@ public final class FrmMain extends javax.swing.JFrame {
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuFileExit;
     private javax.swing.JMenuItem mnuFileExportCSV_;
+    private javax.swing.JMenuItem mnuFileLoadRegions_;
     private javax.swing.JMenuBar mnuMainBar;
     // End of variables declaration//GEN-END:variables
 }

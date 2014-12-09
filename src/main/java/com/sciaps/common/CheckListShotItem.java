@@ -5,6 +5,7 @@
  */
 package com.sciaps.common;
 
+import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.view.SpectrometerStackPanel;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ public class CheckListShotItem {
     private int scanID_;
     private int shotID_;
     private String name_;
-    private List<SpectrometerStackPanel.LaserResponse.Shot> shots_;
+    //private List<SpectrometerStackPanel.LaserResponse.Shot> shots_;
+    private Spectrum shot_;
     private boolean isSelected_ = false;
     private XYSeries xySeries_;
 
@@ -36,7 +38,7 @@ public class CheckListShotItem {
         shotID_ = shotID;
         name_ = "Scan " + scanID_ + ": " + shotID_;
         xySeries_ = new XYSeries(name_);
-        shots_ = new ArrayList<>();
+        //shot_ = new ArrayList<>();
     }
 
     public boolean isSelected() {
@@ -79,11 +81,11 @@ public class CheckListShotItem {
         return xySeries_;
     }
 
-    public void addShot(SpectrometerStackPanel.LaserResponse.Shot shot) {
-        shots_.add(shot);
+    public Spectrum getShot() {
+       return shot_;
     }
 
-    public List<SpectrometerStackPanel.LaserResponse.Shot> getShots() {
-        return shots_;
+    public void setShot(Spectrum shot) {
+        shot_ = shot;
     }
 }

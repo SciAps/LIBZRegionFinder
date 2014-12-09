@@ -5,20 +5,20 @@
  */
 package com.sciaps.view;
 
-import com.sciaps.common.data.Region;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import org.jfree.chart.plot.IntervalMarker;
+import org.jfree.chart.plot.Marker;
 import org.slf4j.LoggerFactory;
-
 
 /**
  *
@@ -26,98 +26,112 @@ import org.slf4j.LoggerFactory;
  */
 public class RegionsPanel extends JPanel {
 
-    public interface RegionsPanelCallback
-    {
+    public interface RegionsPanelCallback {
+
         void onRegionDeleted(String regionName);
         void onRegionClicked(String regionName);
+        void addRegionMarker(Marker marker);
+        void removeRegionMarker(Marker marker);
+        int getNumberOfSelectedShots();
     }
-    
+
     private final org.slf4j.Logger logger_ = LoggerFactory.getLogger(RegionsPanel.class);
     private RegionsPanelCallback callback_;
     private String[] columnNames_;
     private DefaultTableModel tableModel_;
     private TableRowSorter<DefaultTableModel> sorter_;
-    
-    public RegionsPanel() {
-        
+
+    public RegionsPanel(String[] columnNames) {
+        initComponents();
+
+        callback_ = null;
+        columnNames_ = columnNames;
         initializePanel();
+
     }
     
     /**
      * Creates new form RegionFinderRegionsPanel
-     * @param callback
-     */
-    public RegionsPanel(RegionsPanelCallback callback) {
-        initializePanel();
-        callback_ = callback;        
-    }
-    
-    /**
-     * Creates new form RegionFinderRegionsPanel
+     *
      * @param callback
      * @param columnNames
      */
     public RegionsPanel(RegionsPanelCallback callback, String[] columnNames) {
-        initializePanel();
+        initComponents();
+
         callback_ = callback;
         columnNames_ = columnNames;
+        initializePanel();
+
     }
 
     private void initializePanel() {
-        initComponents();
-        
         tableModel_ = new DefaultTableModel();
-        
+        if (columnNames_ != null) {
+            for (String colname : columnNames_) {
+                tableModel_.addColumn(colname);
+            }
+        }
+
         sorter_ = new TableRowSorter<>(tableModel_);
         tblRegions_.setRowSorter(sorter_);
         tblRegions_.setModel(tableModel_);
-        
-        txtFilterText_.getDocument().addDocumentListener(new DocumentListener()
-        {
+
+        txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void changedUpdate(DocumentEvent e)
-            {
+            public void changedUpdate(DocumentEvent e) {
                 filterTable();
             }
 
             @Override
-            public void insertUpdate(DocumentEvent e)
-            {
+            public void insertUpdate(DocumentEvent e) {
                 filterTable();
             }
 
             @Override
-            public void removeUpdate(DocumentEvent e)
-            {
+            public void removeUpdate(DocumentEvent e) {
                 filterTable();
             }
         });
     }
-    
-    private void filterTable()
-    {
-        try
-        {
+
+    public void addCallbackListener(RegionsPanelCallback callback) {
+        callback_ = callback;
+    }
+
+    public void addRow(Object[] obj) {
+        tableModel_.addRow(obj);
+    }
+
+    public void addRow(Vector obj) {
+        tableModel_.addRow(obj);
+    }
+
+    private void removeSelectedRows() {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                int selectedIndex = tblRegions_.getSelectedRow();
+                while (selectedIndex >= 0) {
+                    int modelIndex = tblRegions_.convertRowIndexToModel(selectedIndex);
+                    tableModel_.removeRow(modelIndex);
+
+                    selectedIndex = tblRegions_.getSelectedRow();
+                }
+            }
+        });
+    }
+
+    private void filterTable() {
+        try {
             RowFilter<DefaultTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtFilterText_.getText(), 0);
             sorter_.setRowFilter(rowFilter);
-        }
-        catch (java.util.regex.PatternSyntaxException e)
-        {
-            // If current expression doesn't parse, don't update.
-            Logger.getLogger(com.sciaps.common.swing.view.RegionsPanel.class.getName()).log(Level.INFO, null, e);
+        } catch (java.util.regex.PatternSyntaxException ex) {
+            logger_.error(ex.getMessage());
         }
     }
-    
-    public void loadCustomizedRegion() {
-        String retval = JOptionPane.showInputDialog(null,
-                    "Enter region string:",
-                    "Region",
-                    JOptionPane.QUESTION_MESSAGE);
-       if (retval != null) {
-           Region r = Region.parse(retval);
 
-       }
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -130,11 +144,18 @@ public class RegionsPanel extends JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRegions_ = new javax.swing.JTable();
-        btnDelete_ = new javax.swing.JButton();
         txtFilterText_ = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        btnDelete_ = new javax.swing.JButton();
+        btnCalculateValue_ = new javax.swing.JButton();
+        btnAddMarker_ = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
 
+        setMaximumSize(new java.awt.Dimension(350, 759));
+        setMinimumSize(new java.awt.Dimension(350, 759));
+        setPreferredSize(new java.awt.Dimension(350, 759));
         setLayout(new java.awt.GridBagLayout());
 
         tblRegions_.setModel(new javax.swing.table.DefaultTableModel(
@@ -153,7 +174,7 @@ public class RegionsPanel extends JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 223;
         gridBagConstraints.ipady = 315;
@@ -161,44 +182,142 @@ public class RegionsPanel extends JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(jScrollPane1, gridBagConstraints);
-
-        btnDelete_.setText("Delete");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        add(btnDelete_, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtFilterText_, gridBagConstraints);
 
         jLabel2.setText("Filter");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel2, gridBagConstraints);
 
         jLabel1.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel1.setText("Shot List:");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Regions");
+        jLabel1.setFocusable(false);
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setOpaque(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(jLabel1, gridBagConstraints);
+
+        btnDelete_.setText("Delete");
+        btnDelete_.setMaximumSize(new java.awt.Dimension(77, 23));
+        btnDelete_.setMinimumSize(new java.awt.Dimension(77, 23));
+        btnDelete_.setPreferredSize(new java.awt.Dimension(77, 23));
+        btnDelete_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelete_ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnDelete_);
+
+        btnCalculateValue_.setText("Calculate");
+        btnCalculateValue_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalculateValue_ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnCalculateValue_);
+
+        btnAddMarker_.setText("Add Marker");
+        btnAddMarker_.setMaximumSize(new java.awt.Dimension(77, 23));
+        btnAddMarker_.setMinimumSize(new java.awt.Dimension(77, 23));
+        btnAddMarker_.setPreferredSize(new java.awt.Dimension(77, 23));
+        btnAddMarker_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddMarker_ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnAddMarker_);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        add(jPanel1, gridBagConstraints);
+
+        jLabel3.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel3.setText("Region List:");
+        jLabel3.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-        add(jLabel1, gridBagConstraints);
+        add(jLabel3, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnDelete_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete_ActionPerformed
 
+        doDelete();
+
+    }//GEN-LAST:event_btnDelete_ActionPerformed
+
+    private void btnCalculateValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateValue_ActionPerformed
+        doCalculate();
+    }//GEN-LAST:event_btnCalculateValue_ActionPerformed
+
+    private void btnAddMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMarker_ActionPerformed
+        doAddMarker();
+    }//GEN-LAST:event_btnAddMarker_ActionPerformed
+
+    private void doAddMarker() {
+        int selectedRow = tblRegions_.getSelectedRow();
+        System.out.println(selectedRow);
+        if (selectedRow >= 0 && callback_ != null) {
+            final Color c = new Color(255, 60, 24, 63);
+            Marker marker = new IntervalMarker(
+                    (double)tableModel_.getValueAt(selectedRow, 2), 
+                    (double)tableModel_.getValueAt(selectedRow, 3), c, new BasicStroke(2.0f), null, null, 1.0f);
+            System.out.println((double)tableModel_.getValueAt(selectedRow, 2));
+            System.out.println((double)tableModel_.getValueAt(selectedRow, 3));
+            
+            callback_.addRegionMarker(marker);
+        }
+    }
+    
+    private void doDelete() {
+        
+        if (tblRegions_.getSelectedRowCount() > 0) {
+            int retval = JOptionPane.showConfirmDialog(null, "Delete Selected Row(s)?");
+            if (retval == JOptionPane.YES_OPTION) {
+                removeSelectedRows();
+            }
+        }
+    }
+
+    private void doCalculate() {
+        if (callback_ != null) {
+            int numOfSelected = callback_.getNumberOfSelectedShots();
+            if (numOfSelected == 1) {
+                //TODO
+            } else if (numOfSelected == -1) {
+                JOptionPane.showMessageDialog(null, "Select a shot and continue.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Only one shot should be selected.");
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddMarker_;
+    private javax.swing.JButton btnCalculateValue_;
     private javax.swing.JButton btnDelete_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblRegions_;
     private javax.swing.JTextField txtFilterText_;

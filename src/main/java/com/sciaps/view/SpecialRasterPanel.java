@@ -5,6 +5,7 @@
  */
 package com.sciaps.view;
 
+import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.utils.Util;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -80,6 +81,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         txtStepSize_ = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(260, 380));
         setRequestFocusEnabled(false);
@@ -95,7 +97,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtDataShots_, gridBagConstraints);
@@ -110,7 +112,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtArgonPreflush_, gridBagConstraints);
@@ -125,7 +127,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtIntegrationDelay_, gridBagConstraints);
@@ -140,14 +142,14 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtLocations_, gridBagConstraints);
 
         jLabel1.setText("Locations");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel1, gridBagConstraints);
@@ -155,7 +157,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel4.setText("Data Shots");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel4, gridBagConstraints);
@@ -163,7 +165,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel5.setText("Integration Delay");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel5, gridBagConstraints);
@@ -171,7 +173,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel6.setText("Argon Preflush");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel6, gridBagConstraints);
@@ -180,18 +182,18 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         chkGating_.setText("Gating");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(chkGating_, gridBagConstraints);
 
         chkResetStage_.setText("Reset Stage");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridy = 13;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(chkResetStage_, gridBagConstraints);
 
         txtPulsePeriod_.setText("100");
@@ -204,7 +206,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtPulsePeriod_, gridBagConstraints);
@@ -212,7 +214,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel8.setText("Pulse Period");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel8, gridBagConstraints);
@@ -227,7 +229,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtStopPosition_, gridBagConstraints);
@@ -242,7 +244,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtStartPosition_, gridBagConstraints);
@@ -257,7 +259,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtIntegrationPeriod_, gridBagConstraints);
@@ -265,7 +267,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel9.setText("Stop Position X,Y");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel9, gridBagConstraints);
@@ -273,7 +275,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel10.setText("Start Position X,Y,Z");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel10, gridBagConstraints);
@@ -281,7 +283,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel11.setText("Integration Period");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel11, gridBagConstraints);
@@ -289,7 +291,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel12.setText("Step Size");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel12, gridBagConstraints);
@@ -304,10 +306,25 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(txtStepSize_, gridBagConstraints);
+
+        jLabel2.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Raster Setting");
+        jLabel2.setFocusable(false);
+        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel2.setOpaque(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 6, 0);
+        add(jLabel2, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtLocations_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLocations_KeyReleased
@@ -489,21 +506,6 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         popupDisplay_.setVisible(true);
     }
 
-    public static class RasterParams {
-
-        public int[] startLocation;
-        public int[] endLocation;
-        public int numlocations;
-        public int numdatashotperlocation;
-        public int argonpreflush;
-        public boolean resetStage = true;
-        public boolean useGating = true;
-        public int pulsePeriod = 0;
-        public int intergrationDelay = 0;
-        public int intergrationPeriod = 0;
-        public int stepSize = 0;
-    }
-
     public RasterParams getRasterData() {
 
         RasterParams retval = new RasterParams();
@@ -533,6 +535,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
