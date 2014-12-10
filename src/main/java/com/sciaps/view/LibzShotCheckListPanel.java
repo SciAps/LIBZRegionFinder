@@ -8,6 +8,9 @@ package com.sciaps.view;
 import com.sciaps.common.CheckListShotItem;
 import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.spectrum.Spectrum;
+import static com.sciaps.utils.Util.createAverage;
+import static com.sciaps.utils.Util.validateOneOrGreater;
+import static com.sciaps.utils.Util.validateZeroOrGreater;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
@@ -112,6 +115,8 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         btnDeleteScan_ = new javax.swing.JButton();
         btnDeleteHighlightedItems_ = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        txtSampleRate_ = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(160, 190));
         setMinimumSize(new java.awt.Dimension(160, 190));
@@ -127,7 +132,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -142,7 +147,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(btnCreateAvg_, gridBagConstraints);
@@ -155,7 +160,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -166,8 +171,9 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         jLabel1.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(jLabel1, gridBagConstraints);
 
         btnDeleteScan_.setText("Del Scan");
@@ -178,7 +184,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -193,7 +199,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -202,7 +208,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         jLabel2.setBackground(new java.awt.Color(204, 204, 204));
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Scan History");
+        jLabel2.setText("Scan Data");
         jLabel2.setFocusable(false);
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel2.setOpaque(true);
@@ -212,6 +218,28 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         add(jLabel2, gridBagConstraints);
+
+        txtSampleRate_.setText("30");
+        txtSampleRate_.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSampleRate_KeyReleased(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(txtSampleRate_, gridBagConstraints);
+
+        jLabel3.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel3.setText("Sample Rate:");
+        jLabel3.setOpaque(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(jLabel3, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateAvg_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAvg_ActionPerformed
@@ -229,6 +257,10 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
     private void btnDeleteHighlightedItems_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteHighlightedItems_ActionPerformed
         doDeleteHighLigtedItems();
     }//GEN-LAST:event_btnDeleteHighlightedItems_ActionPerformed
+
+    private void txtSampleRate_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSampleRate_KeyReleased
+        validateOneOrGreater(txtSampleRate_);
+    }//GEN-LAST:event_txtSampleRate_KeyReleased
 
     private void doDeleteScan() {
         boolean allgood = false;
@@ -256,9 +288,10 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
             }
         }
     }
+
     private void doDeleteHighLigtedItems() {
         int highLightedIndex = lstOfShots_.getSelectedIndex();
-        while (highLightedIndex >= 0) {         
+        while (highLightedIndex >= 0) {
             listModel_.removeElementAt(highLightedIndex);
             highLightedIndex = lstOfShots_.getSelectedIndex();
         }
@@ -275,12 +308,11 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         }
     }
 
-
     private void doCreateAvg() {
 
         ThreadUtils.CPUThreads.execute(new Runnable() {
             @Override
-        public void run() {
+            public void run() {
 
                 logger_.info("Creating avg from highlighted shots...");
 
@@ -290,7 +322,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
                 boolean gotScanID = false;
                 int[] selectedList = lstOfShots_.getSelectedIndices();
-                List<Spectrum> averageShotData = new ArrayList<>();
+                List<Spectrum> shotDatas = new ArrayList<>();
 
                 for (int i = 0; i < selectedList.length; i++) {
                     CheckListShotItem shotItem = (CheckListShotItem) listModel_.getElementAt(selectedList[i]);
@@ -301,21 +333,33 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                     name.append(shotItem.getShotID());
                     name.append(",");
 
-                    averageShotData.add(shotItem.getShot());
+                    shotDatas.add(shotItem.getShot());
                 }
 
-                String retval = JOptionPane.showInputDialog("Enter a name for the selected shots", name);
-
-                if (retval != null) {
-                    newShotItem.setName(retval);
+                AverageShotsSettingPanel avgPanel = new AverageShotsSettingPanel();
+                avgPanel.setAvgShotName(name.toString());
+                int sampleRate = validateOneOrGreater(txtSampleRate_);
+                if (sampleRate >= 1) {
+                    avgPanel.setSampleRate(sampleRate);
                 } else {
-                    newShotItem.setName(name.toString());
+                    avgPanel.setSampleRate(30);
                 }
+                avgPanel.showPopup();
+
+                String newName = avgPanel.getAvgShotName();
+                int newSampleRate = avgPanel.getSampleRate();
+
+                newShotItem.setName(newName);
+                newShotItem.setShot(createAverage(shotDatas, newSampleRate));
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
-        public void run() {
+                    public void run() {
                         listModel_.add(0, newShotItem);
+                        if (callbackListener_ != null) {
+                            newShotItem.setSelected(true);
+                            callbackListener_.doShowShotXYSeries(newShotItem);
+                        }
                     }
                 });
 
@@ -341,38 +385,44 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
             }
         }
         logger_.info("Removing scan " + scanID + " .... done");
-    
 
-}
-
-
-public class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer {
-
-    @Override
-    public Component getListCellRendererComponent(JList list, Object value, int index,
-            boolean isSelected, boolean cellHasFocus) {
-
-        setComponentOrientation(list.getComponentOrientation());
-        setFont(list.getFont());
-        setOpaque(true);
-        if (isSelected) {
-            setBackground(Color.LIGHT_GRAY);
-        } else {
-            setBackground(list.getBackground());
-        }
-        setForeground(list.getForeground());
-
-        setSelected(((CheckListShotItem) value).isSelected());
-
-        setEnabled(list.isEnabled());
-
-        setText(value == null ? "" : value.toString());
-
-        return this;
     }
-}
 
-public void addItem(int index, CheckListShotItem item) {
+    public int getSampleRate() {
+        int sampleRate = validateZeroOrGreater(txtSampleRate_);
+        if (sampleRate < 1) {
+            JOptionPane.showMessageDialog(null, "Invalid Sample Rate value.");
+        }
+        return sampleRate;
+    }
+
+    public class CheckboxListCellRenderer extends JCheckBox implements ListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index,
+                boolean isSelected, boolean cellHasFocus) {
+
+            setComponentOrientation(list.getComponentOrientation());
+            setFont(list.getFont());
+            setOpaque(true);
+            if (isSelected) {
+                setBackground(Color.LIGHT_GRAY);
+            } else {
+                setBackground(list.getBackground());
+            }
+            setForeground(list.getForeground());
+
+            setSelected(((CheckListShotItem) value).isSelected());
+
+            setEnabled(list.isEnabled());
+
+            setText(value == null ? "" : value.toString());
+
+            return this;
+        }
+    }
+
+    public void addItem(int index, CheckListShotItem item) {
         listModel_.add(index, item);
     }
 
@@ -399,7 +449,9 @@ public void addItem(int index, CheckListShotItem item) {
     private javax.swing.JButton btnUncheckAll_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList lstOfShots_;
+    private javax.swing.JTextField txtSampleRate_;
     // End of variables declaration//GEN-END:variables
 }

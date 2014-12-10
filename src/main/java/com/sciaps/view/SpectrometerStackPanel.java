@@ -7,6 +7,7 @@ package com.sciaps.view;
 
 import com.sciaps.common.CheckListShotItem;
 import com.sciaps.common.Constants;
+import com.sciaps.common.RegionMarkerItem;
 import com.sciaps.view.LibzShotCheckListPanel.LibzShotItemClickListenerCallback;
 import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.data.Region;
@@ -18,13 +19,13 @@ import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
 import static com.sciaps.utils.Util.createAverage;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
-import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -56,8 +57,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public SpectrometerStackPanel() {
         initComponents();
 
-        String[] regionColumnNames = {"Name", "Symbol", "Min", "Max", "Value"};
-        regionPanels_ = new RegionsPanel(this, regionColumnNames);
+        regionPanels_ = new RegionsPanel(this);
         regionContainerPanel_.add(regionPanels_);
 
         progbarRasterTest_.setVisible(false);
@@ -80,7 +80,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         //TODO
         //jFreeChartPanel_.getChartPanel().addChartMouseListener(libzChartMouseListener_);
-        
         shotCheckListPanel_ = new LibzShotCheckListPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
 
@@ -98,6 +97,12 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         toggleShotList_.setEnabled(true);
         toggleRegion_.setEnabled(true);
         //shotCheckListPanel_.doCreateScanAvg(0);
+
+        XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
+        org.jfree.chart.axis.ValueAxis rangeAxis = plot.getRangeAxis();
+        org.jfree.chart.axis.ValueAxis domainAxis = plot.getDomainAxis();
+        rangeAxis.setRange(0, 1000);
+        domainAxis.setRange(0, 1000);
         // ==== end of testing code
 
     }
@@ -351,6 +356,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private void prepareForRasterTest() {
 
         RasterParams rasterData = specialRasterPanel_.getRasterData();
+        int sampleRate = shotCheckListPanel_.getSampleRate();
+        if (sampleRate < 1) {
+            return;
+        }
 
         if (rasterData != null) {
 
@@ -358,7 +367,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
                 @Override
                 public void run() {
-                    startRasterTest(rasterData);
+                    startRasterTest(rasterData, sampleRate);
                 }
             });
 
@@ -391,7 +400,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         }
     }
 
-    private void startRasterTest(RasterParams rasterData) {
+    private void startRasterTest(RasterParams rasterData, int sampleRate) {
         logger_.info("Starting a raster test");
 
         btnScan_.setEnabled(false);
@@ -438,7 +447,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 toggleShotList_.setEnabled(true);
                 toggleRegion_.setEnabled(true);
 
-                Spectrum avgSpectrum = createAverage(shots, 30.0);
+                Spectrum avgSpectrum = createAverage(shots, sampleRate);
                 CheckListShotItem avgShotItem = new CheckListShotItem();
                 avgShotItem.setName("Scan " + scanCount_ + ": Avg");
                 avgShotItem.setShot(avgSpectrum);
@@ -494,40 +503,43 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         String retval = JOptionPane.showInputDialog(null,
                 "Enter region string:",
-                "Fe371.76-372.16,480.85-480.15,Co257.88-258.12,324.4-325,Ni341.05-341.7,359.05-359.6,334.67-335.15,394.1-394.7");
+                "Fe371.76-472.16,480.85-480.15,Co257.88-258.12,324.4-325,Ni341.05-341.7,359.05-359.6,334.67-335.15,394.1-394.7");
 
-        String[] regions = retval.split(",");
+        if (!retval.isEmpty()) {
+            String[] regions = retval.split(",");
 
-        for (String region : regions) {
+            for (String region : regions) {
 
-            try {
-                Region r = Region.parse(region);
-                if (r != null) {
-                    Vector row = new Vector();
+                try {
+                    Region r = Region.parse(region);
+                    if (r != null) {
 
-                    row.add(r.name);
-                    if (r.getElement() != null && r.getElement().symbol != null) {
-                        row.add(r.getElement().symbol);
-                    } else {
-                        row.add("");
+                        RegionMarkerItem markerItem = new RegionMarkerItem();
+
+                        markerItem.setName(r.name);
+                        if (r.getElement() != null && r.getElement().symbol != null) {
+                            markerItem.setSymbol(r.getElement().symbol);
+                        } else {
+                            markerItem.setSymbol("");
+                        }
+                        markerItem.setMin(r.wavelengthRange.getMinimumDouble());
+                        markerItem.setMax(r.wavelengthRange.getMaximumDouble());
+                        markerItem.setValue(0);
+
+                        regionPanels_.addRow(markerItem);
                     }
-                    row.add(r.wavelengthRange.getMinimumDouble());
-                    row.add(r.wavelengthRange.getMaximumDouble());
-                    row.add(0);
-
-                    regionPanels_.addRow(row);
+                } catch (Exception ex) {
+                    errText.append(region);
+                    errText.append(" ");
+                    iValide = false;
                 }
-            } catch (Exception ex) {
-                errText.append(region);
-                errText.append(" ");
-                iValide = false;
             }
-        }
 
-        if (iValide == false) {
-            JOptionPane.showMessageDialog(null, "Input contains invalid data:\n" + errText);
+            if (iValide == false) {
+                JOptionPane.showMessageDialog(null, "Input contains invalid data:\n" + errText);
+            }
+            setRegionPanelVisible(true);
         }
-        setRegionPanelVisible(true);
     }
 
     @Override
@@ -574,14 +586,14 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public void addRegion(String regionName, double wavelengthMin, double wavelengthMax, Marker... associatedMarkers) {
 
         System.out.println(associatedMarkers.toString());
-        Vector row = new Vector();
+        RegionMarkerItem markerItem = new RegionMarkerItem();
+        markerItem.setName(regionName);
+        markerItem.setSymbol("");
+        markerItem.setMin(wavelengthMin);
+        markerItem.setMax(wavelengthMax);
+        markerItem.setValue(0);
 
-        row.add(regionName);
-        row.add("");
-        row.add(wavelengthMin);
-        row.add(wavelengthMax);
-        row.add(0);
-        regionPanels_.addRow(row);
+        regionPanels_.addRow(markerItem);
     }
 
     @Override
@@ -598,12 +610,14 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public void addRegionMarker(Marker marker) {
         jFreeChartPanel_.getJFreeChart().getXYPlot().addDomainMarker(marker);
     }
-    
+
     @Override
     public void removeRegionMarker(Marker marker) {
+        IntervalMarker m = (IntervalMarker) marker;
+        System.out.println(m.getStartValue() + "-" + m.getEndValue());
         jFreeChartPanel_.getJFreeChart().getXYPlot().removeDomainMarker(marker);
     }
-    
+
     @Override
     public int getNumberOfSelectedShots() {
         return shotCheckListPanel_.getNumberOfSelectedItem();

@@ -5,16 +5,26 @@
  */
 package com.sciaps.view;
 
+import com.sciaps.common.RegionMarkerItem;
+import com.sciaps.model.RegionsTableModel;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
@@ -29,53 +39,81 @@ public class RegionsPanel extends JPanel {
     public interface RegionsPanelCallback {
 
         void onRegionDeleted(String regionName);
+
         void onRegionClicked(String regionName);
+
         void addRegionMarker(Marker marker);
+
         void removeRegionMarker(Marker marker);
+
         int getNumberOfSelectedShots();
     }
 
     private final org.slf4j.Logger logger_ = LoggerFactory.getLogger(RegionsPanel.class);
     private RegionsPanelCallback callback_;
-    private String[] columnNames_;
-    private DefaultTableModel tableModel_;
-    private TableRowSorter<DefaultTableModel> sorter_;
+    private RegionsTableModel tableModel_;
+    private TableRowSorter<RegionsTableModel> sorter_;
+    private List<IntervalMarker> listOfMarkers_;
+    private Vector data_;
 
-    public RegionsPanel(String[] columnNames) {
+    public RegionsPanel() {
         initComponents();
 
         callback_ = null;
-        columnNames_ = columnNames;
         initializePanel();
 
     }
-    
+
     /**
      * Creates new form RegionFinderRegionsPanel
      *
      * @param callback
      * @param columnNames
      */
-    public RegionsPanel(RegionsPanelCallback callback, String[] columnNames) {
+    public RegionsPanel(RegionsPanelCallback callback) {
         initComponents();
 
         callback_ = callback;
-        columnNames_ = columnNames;
         initializePanel();
-
     }
 
     private void initializePanel() {
-        tableModel_ = new DefaultTableModel();
-        if (columnNames_ != null) {
+        listOfMarkers_ = new ArrayList<>();
+
+        tableModel_ = new RegionsTableModel();
+        /*if (columnNames_ != null) {
             for (String colname : columnNames_) {
                 tableModel_.addColumn(colname);
             }
-        }
+        }*/
 
         sorter_ = new TableRowSorter<>(tableModel_);
         tblRegions_.setRowSorter(sorter_);
         tblRegions_.setModel(tableModel_);
+        
+        tblRegions_.getColumnModel().getColumn(2).setCellRenderer(new TableCellDoubleTypeRenderer());
+        tblRegions_.getColumnModel().getColumn(3).setCellRenderer(new TableCellDoubleTypeRenderer());
+
+        tblRegions_.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                int col = tblRegions_.getSelectedColumn();
+                int row = tblRegions_.getSelectedRow();
+                System.out.println(tblRegions_.getValueAt(row, col));
+                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
 
         txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -99,12 +137,21 @@ public class RegionsPanel extends JPanel {
         callback_ = callback;
     }
 
-    public void addRow(Object[] obj) {
-        tableModel_.addRow(obj);
+    public void addRow(RegionMarkerItem markerItem) {
+        tableModel_.addRow(markerItem);
     }
 
-    public void addRow(Vector obj) {
-        tableModel_.addRow(obj);
+    private int getMarkerIndex(double min, double max) {
+        int index = -1;
+        for (int i = 0; i < listOfMarkers_.size(); i++) {
+            IntervalMarker marker = listOfMarkers_.get(i);
+            if (min == marker.getStartValue() && max == marker.getEndValue()) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
     }
 
     private void removeSelectedRows() {
@@ -112,12 +159,24 @@ public class RegionsPanel extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                int selectedIndex = tblRegions_.getSelectedRow();
-                while (selectedIndex >= 0) {
-                    int modelIndex = tblRegions_.convertRowIndexToModel(selectedIndex);
+                int selectedRow = tblRegions_.getSelectedRow();
+                while (selectedRow >= 0) {
+
+                    double min = Double.parseDouble((String) tableModel_.getValueAt(selectedRow, 2));
+                    double max = Double.parseDouble((String) tableModel_.getValueAt(selectedRow, 3));
+                    int index = getMarkerIndex(min, max);
+                    if (index > -1) {
+                        IntervalMarker marker = listOfMarkers_.get(index);
+                        if (callback_ != null) {
+                            callback_.removeRegionMarker(marker);
+                        }
+                        listOfMarkers_.remove(index);
+                    }
+
+                    int modelIndex = tblRegions_.convertRowIndexToModel(selectedRow);
                     tableModel_.removeRow(modelIndex);
 
-                    selectedIndex = tblRegions_.getSelectedRow();
+                    selectedRow = tblRegions_.getSelectedRow();
                 }
             }
         });
@@ -125,7 +184,7 @@ public class RegionsPanel extends JPanel {
 
     private void filterTable() {
         try {
-            RowFilter<DefaultTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtFilterText_.getText(), 0);
+            RowFilter<RegionsTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtFilterText_.getText(), 0);
             sorter_.setRowFilter(rowFilter);
         } catch (java.util.regex.PatternSyntaxException ex) {
             logger_.error(ex.getMessage());
@@ -151,6 +210,7 @@ public class RegionsPanel extends JPanel {
         btnDelete_ = new javax.swing.JButton();
         btnCalculateValue_ = new javax.swing.JButton();
         btnAddMarker_ = new javax.swing.JButton();
+        btnRemoveMarker_ = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(350, 759));
@@ -209,42 +269,68 @@ public class RegionsPanel extends JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(jLabel1, gridBagConstraints);
 
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
         btnDelete_.setText("Delete");
-        btnDelete_.setMaximumSize(new java.awt.Dimension(77, 23));
-        btnDelete_.setMinimumSize(new java.awt.Dimension(77, 23));
-        btnDelete_.setPreferredSize(new java.awt.Dimension(77, 23));
+        btnDelete_.setMaximumSize(new java.awt.Dimension(100, 23));
+        btnDelete_.setMinimumSize(new java.awt.Dimension(100, 23));
+        btnDelete_.setPreferredSize(new java.awt.Dimension(100, 23));
         btnDelete_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDelete_ActionPerformed(evt);
             }
         });
-        jPanel1.add(btnDelete_);
+        jPanel1.add(btnDelete_, new java.awt.GridBagConstraints());
 
         btnCalculateValue_.setText("Calculate");
+        btnCalculateValue_.setMaximumSize(new java.awt.Dimension(100, 23));
+        btnCalculateValue_.setMinimumSize(new java.awt.Dimension(100, 23));
+        btnCalculateValue_.setPreferredSize(new java.awt.Dimension(100, 23));
         btnCalculateValue_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCalculateValue_ActionPerformed(evt);
             }
         });
-        jPanel1.add(btnCalculateValue_);
+        jPanel1.add(btnCalculateValue_, new java.awt.GridBagConstraints());
 
-        btnAddMarker_.setText("Add Marker");
-        btnAddMarker_.setMaximumSize(new java.awt.Dimension(77, 23));
-        btnAddMarker_.setMinimumSize(new java.awt.Dimension(77, 23));
-        btnAddMarker_.setPreferredSize(new java.awt.Dimension(77, 23));
+        btnAddMarker_.setText("Set Marker");
+        btnAddMarker_.setMaximumSize(new java.awt.Dimension(100, 23));
+        btnAddMarker_.setMinimumSize(new java.awt.Dimension(100, 23));
+        btnAddMarker_.setPreferredSize(new java.awt.Dimension(100, 23));
         btnAddMarker_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddMarker_ActionPerformed(evt);
             }
         });
-        jPanel1.add(btnAddMarker_);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        jPanel1.add(btnAddMarker_, gridBagConstraints);
+
+        btnRemoveMarker_.setText("Undo Marker");
+        btnRemoveMarker_.setMaximumSize(new java.awt.Dimension(100, 23));
+        btnRemoveMarker_.setMinimumSize(new java.awt.Dimension(100, 23));
+        btnRemoveMarker_.setPreferredSize(new java.awt.Dimension(100, 23));
+        btnRemoveMarker_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveMarker_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        jPanel1.add(btnRemoveMarker_, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         add(jPanel1, gridBagConstraints);
 
         jLabel3.setBackground(new java.awt.Color(204, 204, 204));
@@ -260,36 +346,81 @@ public class RegionsPanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDelete_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete_ActionPerformed
-
         doDelete();
-
     }//GEN-LAST:event_btnDelete_ActionPerformed
 
     private void btnCalculateValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateValue_ActionPerformed
         doCalculate();
+        for (int i = 0; i < data_.size(); i++) {
+            System.out.println(data_.get(i));
+        }
     }//GEN-LAST:event_btnCalculateValue_ActionPerformed
 
     private void btnAddMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMarker_ActionPerformed
-        doAddMarker();
+
+        int[] selectedRows = tblRegions_.getSelectedRows();
+
+        for (int i = 0; i < selectedRows.length; i++) {
+            try {
+                double min = Double.parseDouble((String) tableModel_.getValueAt(selectedRows[i], 2));
+                double max = Double.parseDouble((String) tableModel_.getValueAt(selectedRows[i], 3));
+                doAddMarker(min, max);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Invalid region min/max");
+            }
+        }
     }//GEN-LAST:event_btnAddMarker_ActionPerformed
 
-    private void doAddMarker() {
-        int selectedRow = tblRegions_.getSelectedRow();
-        System.out.println(selectedRow);
-        if (selectedRow >= 0 && callback_ != null) {
-            final Color c = new Color(255, 60, 24, 63);
-            Marker marker = new IntervalMarker(
-                    (double)tableModel_.getValueAt(selectedRow, 2), 
-                    (double)tableModel_.getValueAt(selectedRow, 3), c, new BasicStroke(2.0f), null, null, 1.0f);
-            System.out.println((double)tableModel_.getValueAt(selectedRow, 2));
-            System.out.println((double)tableModel_.getValueAt(selectedRow, 3));
-            
+    private void btnRemoveMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveMarker_ActionPerformed
+        int[] selectedRows = tblRegions_.getSelectedRows();
+
+        for (int i = 0; i < selectedRows.length; i++) {
+            try {
+                double min = Double.parseDouble((String) tableModel_.getValueAt(selectedRows[i], 2));
+                double max = Double.parseDouble((String) tableModel_.getValueAt(selectedRows[i], 3));
+                doRemoveMarker(min, max);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Invalid region min/max");
+            }
+        }
+    }//GEN-LAST:event_btnRemoveMarker_ActionPerformed
+
+    private void doAddMarker(double min, double max) {
+
+        int index = getMarkerIndex(min, max);
+        // index == -1 means theres no marker object for this region yet
+        if (index == -1) {
+            if (callback_ != null) {
+                //final Color c = new Color(255, 60, 24, 63);
+                final Color c = new Color(255, 0, 0, 63);
+                IntervalMarker marker = new IntervalMarker(
+                        min, max, c,
+                        new BasicStroke(2.0f), null, null, 1.0f);
+
+                listOfMarkers_.add(marker);
+                callback_.addRegionMarker(marker);
+            }
+        } else {
+            // this region marker already create, therefore, just display it
+            IntervalMarker marker = listOfMarkers_.get(index);
             callback_.addRegionMarker(marker);
         }
+
     }
-    
+
+    private void doRemoveMarker(double min, double max) {
+
+        int index = getMarkerIndex(min, max);
+        if (index != -1) {
+            IntervalMarker marker = listOfMarkers_.get(index);
+            callback_.removeRegionMarker(marker);
+        }
+
+    }
+
     private void doDelete() {
-        
+
         if (tblRegions_.getSelectedRowCount() > 0) {
             int retval = JOptionPane.showConfirmDialog(null, "Delete Selected Row(s)?");
             if (retval == JOptionPane.YES_OPTION) {
@@ -310,10 +441,36 @@ public class RegionsPanel extends JPanel {
             }
         }
     }
+
+    class TableCellDoubleTypeRenderer implements TableCellRenderer {
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                boolean hasFocus, int row, int column) {
+            JTextField editor = new JTextField();
+            if (value != null) {
+                editor.setText(value.toString());
+            }
+            
+            try {
+                Double.parseDouble((String)value);
+                if (isSelected) {
+                    editor.setBackground(table.getSelectionBackground());
+                } else {
+                    editor.setBackground(table.getBackground());
+                }
+            } catch (NumberFormatException ex) {
+                editor.setBackground(Color.red);
+                btnDelete_.setEnabled(false);
+            }
+            return editor;
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddMarker_;
     private javax.swing.JButton btnCalculateValue_;
     private javax.swing.JButton btnDelete_;
+    private javax.swing.JButton btnRemoveMarker_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
