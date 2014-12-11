@@ -21,13 +21,11 @@ import static com.sciaps.utils.Util.createAverage;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
 import java.io.IOException;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +89,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         toggleRegion_.setEnabled(false);
 
         // ==== start of testing code
-        for (int i = 1; i <= 200; i++) {
+        /*for (int i = 1; i <= 200; i++) {
             shotCheckListPanel_.addItem(new CheckListShotItem(scanCount_, i));
         }
         toggleShotList_.setEnabled(true);
@@ -102,7 +100,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         org.jfree.chart.axis.ValueAxis rangeAxis = plot.getRangeAxis();
         org.jfree.chart.axis.ValueAxis domainAxis = plot.getDomainAxis();
         rangeAxis.setRange(0, 1000);
-        domainAxis.setRange(0, 1000);
+        domainAxis.setRange(0, 1000);*/
         // ==== end of testing code
 
     }
@@ -166,11 +164,11 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         progbarRasterTest_.setOpaque(true);
         progbarRasterTest_.setPreferredSize(new java.awt.Dimension(100, 14));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         controlPanel_.add(progbarRasterTest_, gridBagConstraints);
@@ -457,6 +455,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     @Override
                     public void run() {
                         shotCheckListPanel_.addItem(0, avgShotItem);
+                        avgShotItem.setSelected(true);
                         xySeriesCollection_.addSeries(avgShotItem.getXYSeries());
                     }
                 });
@@ -503,9 +502,9 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         String retval = JOptionPane.showInputDialog(null,
                 "Enter region string:",
-                "Fe371.76-472.16,480.85-480.15,Co257.88-258.12,324.4-325,Ni341.05-341.7,359.05-359.6,334.67-335.15,394.1-394.7");
+                "Fe371.76-472.16,480.85-481.15,Co257.88-258.12,324.4-325,Ni341.05-341.7,359.05-359.6,334.67-335.15,394.1-394.7");
 
-        if (!retval.isEmpty()) {
+        if (retval != null && !retval.isEmpty()) {
             String[] regions = retval.split(",");
 
             for (String region : regions) {
@@ -529,6 +528,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                         regionPanels_.addRow(markerItem);
                     }
                 } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                    ex.printStackTrace();
                     errText.append(region);
                     errText.append(" ");
                     iValide = false;

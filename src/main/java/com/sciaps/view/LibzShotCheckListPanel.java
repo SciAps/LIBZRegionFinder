@@ -306,6 +306,8 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                 callbackListener_.doRemoveShotXYSeries(shotItem);
             }
         }
+        
+        lstOfShots_.repaint();
     }
 
     private void doCreateAvg() {

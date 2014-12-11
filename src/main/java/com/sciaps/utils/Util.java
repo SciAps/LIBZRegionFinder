@@ -88,12 +88,14 @@ public class Util {
             maxWL.increment(shot.getValidRange().getMaximumDouble());
         }
 
-        double range = maxWL.evaluate() - minWL.evaluate();
+        double range = maxWL.getResult() - minWL.getResult();
+        //double range = maxWL.evaluate() - minWL.evaluate();
         int numSamples = (int) Math.floor(range * sampleRate);
         double[][] data = new double[2][numSamples];
         Mean avgy = new Mean();
         for (int i = 0; i < numSamples; i++) {
-            double x = minWL.evaluate() + 1 / sampleRate;
+            //double x = minWL.evaluate() + 1 / sampleRate;
+            double x = minWL.getResult() + i*(1 / sampleRate);
             avgy.clear();
             for (Spectrum shot : shots) {
                 if (shot.getValidRange().containsDouble(x)) {
