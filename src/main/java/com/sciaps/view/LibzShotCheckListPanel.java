@@ -270,6 +270,11 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
     private void doDeleteScan() {
         boolean allgood = false;
 
+        if (listModel_.getSize() == 0) {
+            showErrorDialog("List is Empty. Nothing to remove.");
+            return;
+        }
+        
         while (allgood == false) {
 
             String retval = JOptionPane.showInputDialog(null,
@@ -372,6 +377,10 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
     public void doRemoveScan(int scanID) {
         logger_.info("Removing scan " + scanID + " ....");
+        
+        if (listModel_.getSize() == 0)
+            return;
+        
         int index = 0;
         int i = 0;
         while (index != (listModel_.getSize() - 1)) {
@@ -445,7 +454,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
     private void showErrorDialog(String msg) {
         logger_.error(msg);
-        JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateAvg_;
