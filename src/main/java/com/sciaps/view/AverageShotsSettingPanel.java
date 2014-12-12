@@ -25,9 +25,8 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
     private final Logger logger_ = LoggerFactory.getLogger(AverageShotsSettingPanel.class);
     private int sampleRate_;
     private String avgShotName_;
-    
-    private JDialog popupDisplay_;
 
+    private JDialog popupDisplay_;
 
     /**
      * Creates new form HTTPConfigPanel
@@ -37,7 +36,7 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         sampleRate_ = -1;
         avgShotName_ = "";
 
-        createPopupDisplay();       
+        createPopupDisplay();
     }
 
     /**
@@ -140,11 +139,11 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOK_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOK_ActionPerformed
-        
+
         if (validateData() && popupDisplay_ != null) {
             popupDisplay_.dispose();
         }
-        
+
     }//GEN-LAST:event_btnOK_ActionPerformed
 
     private void txtSampleRate_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSampleRate_KeyReleased
@@ -163,7 +162,7 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
     private void createPopupDisplay() {
         popupDisplay_ = new JDialog();
         popupDisplay_.setResizable(false);
-        popupDisplay_.setTitle("LIBZ Connection Setting");
+        popupDisplay_.setTitle("Create Average Shots Setting");
         popupDisplay_.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         popupDisplay_.addWindowListener(new WindowAdapter() {
             @Override
@@ -179,20 +178,20 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
 
     private boolean validateData() {
         boolean allGood = true;
-        
-        try {           
+
+        try {
             sampleRate_ = validateZeroOrGreater(txtSampleRate_);
             if (sampleRate_ < 1) {
-                JOptionPane.showMessageDialog(null, "Sample rate must be greater than 0");
+                showErrorDialog("Sample rate must be greater than 0");
             }
             avgShotName_ = txtName_.getText();
             if (avgShotName_.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Name field can not be blank.");
+                showErrorDialog("Name field can not be blank.");
             }
         } catch (NumberFormatException ex) {
             allGood = false;
         }
-        
+
         return allGood;
     }
 
@@ -200,25 +199,29 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         this.getRootPane().setDefaultButton(btnOK_);
         popupDisplay_.setVisible(true);
     }
-    
+
     public void setAvgShotName(String name) {
         avgShotName_ = name;
         txtName_.setText(name);
     }
-    
+
     public String getAvgShotName() {
         return avgShotName_;
     }
-    
-    public void setSampleRate(int sampleRate){
+
+    public void setSampleRate(int sampleRate) {
         sampleRate_ = sampleRate;
         txtSampleRate_.setText(String.valueOf(sampleRate));
     }
-        
+
     public int getSampleRate() {
         return sampleRate_;
     }
-    
+
+    private void showErrorDialog(String msg) {
+        logger_.error(msg);
+        JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOK_;

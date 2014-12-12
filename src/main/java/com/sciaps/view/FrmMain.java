@@ -7,12 +7,8 @@ package com.sciaps.view;
 
 import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.LIBZHttpClient;
+import com.sciaps.utils.Util;
 import java.awt.Dimension;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -83,7 +79,7 @@ public final class FrmMain extends javax.swing.JFrame {
         });
         mnuFile.add(mnuFileExportCSV_);
 
-        mnuFileLoadRegions_.setText("Load Regions");
+        mnuFileLoadRegions_.setText("Load Region Text");
         mnuFileLoadRegions_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuFileLoadRegions_ActionPerformed(evt);
@@ -128,7 +124,7 @@ public final class FrmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuConfigSetLibzIPActionPerformed
 
     private void mnuFileExportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExportCSV_ActionPerformed
-       
+        JOptionPane.showMessageDialog(this, "This function is not yet supported");
     }//GEN-LAST:event_mnuFileExportCSV_ActionPerformed
 
     private void mnuFileLoadRegions_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegions_ActionPerformed
@@ -184,7 +180,7 @@ public final class FrmMain extends javax.swing.JFrame {
         displayPanel_.repaint();
     }
 
-    public void displayLibzIPAddress(String ipAddress) {
+    public void displayLibzIPAddress(final String ipAddress) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -192,36 +188,14 @@ public final class FrmMain extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private void readIPAddress() {
 
-        try {
-            File file = new File(Constants.LIBZ_URL_FILE_NAME);
-
-            FileReader fr = new FileReader(file.getAbsoluteFile());
-            BufferedReader br = new BufferedReader(fr);
-
-            String line = br.readLine();
-            line = line.trim();
-            br.close();
-
-            // Making sure the ip address is valid
-            if (com.sciaps.utils.Util.validateIPAddress(line)) {
-                Constants.mHttpClient = new LIBZHttpClient("http://" + line + ":9000");
-                displayLibzIPAddress(line);
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "ERROR: Invalid LIBZ IP Address read from file.",
-                        "LIBZ IP Address",
-                        JOptionPane.ERROR_MESSAGE);
-                httpConfigPanel_.showPopup();
-            }
-
-            
-            
-        } catch (FileNotFoundException ex) {
-            httpConfigPanel_.showPopup();
-        } catch (IOException ex) {
+        String address = Util.getIPAddress();
+        if (address != null) {
+            Constants.mHttpClient = new LIBZHttpClient("http://" + address + ":9000");
+            displayLibzIPAddress(address);
+        } else {
             httpConfigPanel_.showPopup();
         }
     }

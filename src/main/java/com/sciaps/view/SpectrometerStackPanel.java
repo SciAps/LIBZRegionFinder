@@ -13,19 +13,17 @@ import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.data.Region;
 import com.sciaps.common.spectrum.LIBZPixelSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
-import com.sciaps.common.swing.listener.LibzChartMouseListener;
-import com.sciaps.common.swing.listener.LibzChartMouseListener.LibzChartMouseListenerCallback;
 import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
+import com.sciaps.listener.JFreeChartMouseListener;
 import static com.sciaps.utils.Util.createAverage;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
-import java.io.IOException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.jfree.chart.plot.IntervalMarker;
-import org.jfree.chart.plot.Marker;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,18 +33,16 @@ import org.slf4j.LoggerFactory;
  * @author jchen
  */
 public class SpectrometerStackPanel extends javax.swing.JPanel
-        implements RegionsPanelCallback, LibzChartMouseListenerCallback, LibzShotItemClickListenerCallback {
+        implements RegionsPanelCallback, LibzShotItemClickListenerCallback {
 
     private final Logger logger_ = LoggerFactory.getLogger(SpectrometerStackPanel.class);
 
     private final XYSeriesCollection xySeriesCollection_;
-    private JFreeChartWrapperPanel jFreeChartPanel_;
-    private LibzChartMouseListener libzChartMouseListener_;
-    private RegionsPanel regionPanels_;
-    private LibzShotCheckListPanel shotCheckListPanel_;
+    private final JFreeChartWrapperPanel jFreeChartPanel_;
+    private final JFreeChartMouseListener chartMouseListener_;
+    private final RegionsPanel regionPanels_;
+    private final LibzShotCheckListPanel shotCheckListPanel_;
     private final SpecialRasterPanel specialRasterPanel_;
-
-    boolean bTestInProgress_;
     private int scanCount_ = 0;
 
     /**
@@ -58,10 +54,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         regionPanels_ = new RegionsPanel(this);
         regionContainerPanel_.add(regionPanels_);
 
-        progbarRasterTest_.setVisible(false);
-        progbarRasterTest_.setValue(0);
-        bTestInProgress_ = false;
-
         specialRasterPanel_ = new SpecialRasterPanel();
         rasterSettingPanel_.add(specialRasterPanel_);
 
@@ -71,38 +63,34 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 xySeriesCollection_, "Spectro Meter Stack", "Wave Length", "Intensity");
         displayPanel_.add(jFreeChartPanel_);
 
-        libzChartMouseListener_ = new LibzChartMouseListener(
-                jFreeChartPanel_.getChartPanel(),
+        chartMouseListener_ = new JFreeChartMouseListener(
                 jFreeChartPanel_.getJFreeChart(),
-                this, this);
+                jFreeChartPanel_.getChartPanel(),
+                regionPanels_);
+        jFreeChartPanel_.getChartPanel().addChartMouseListener(chartMouseListener_);
 
-        //TODO
-        //jFreeChartPanel_.getChartPanel().addChartMouseListener(libzChartMouseListener_);
         shotCheckListPanel_ = new LibzShotCheckListPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
 
-        // diable them by default
+        // disable them by default
         shotListContainerPanel_.setVisible(false);
         rasterSettingPanel_.setVisible(false);
         regionContainerPanel_.setVisible(false);
-        toggleShotList_.setEnabled(false);
-        toggleRegion_.setEnabled(false);
 
         // ==== start of testing code
         /*for (int i = 1; i <= 200; i++) {
-            shotCheckListPanel_.addItem(new CheckListShotItem(scanCount_, i));
-        }
-        toggleShotList_.setEnabled(true);
-        toggleRegion_.setEnabled(true);
-        //shotCheckListPanel_.doCreateScanAvg(0);
-
+         shotCheckListPanel_.addItem(new CheckListShotItem(scanCount_, i));
+         }
+         toggleShotList_.setEnabled(true);
+         toggleRegion_.setEnabled(true);
+         //shotCheckListPanel_.doCreateScanAvg(0);
+         */
         XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
         org.jfree.chart.axis.ValueAxis rangeAxis = plot.getRangeAxis();
         org.jfree.chart.axis.ValueAxis domainAxis = plot.getDomainAxis();
         rangeAxis.setRange(0, 1000);
-        domainAxis.setRange(0, 1000);*/
+        domainAxis.setRange(0, 1000);
         // ==== end of testing code
-
     }
 
     /**
@@ -118,7 +106,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         displayPanel_ = new javax.swing.JPanel();
         regionContainerPanel_ = new javax.swing.JPanel();
         controlPanel_ = new javax.swing.JPanel();
-        progbarRasterTest_ = new javax.swing.JProgressBar();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         toggleShotList_ = new javax.swing.JToggleButton();
@@ -158,20 +145,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         controlPanel_.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         controlPanel_.setLayout(new java.awt.GridBagLayout());
-
-        progbarRasterTest_.setMaximumSize(new java.awt.Dimension(100, 14));
-        progbarRasterTest_.setMinimumSize(new java.awt.Dimension(100, 14));
-        progbarRasterTest_.setOpaque(true);
-        progbarRasterTest_.setPreferredSize(new java.awt.Dimension(100, 14));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        controlPanel_.add(progbarRasterTest_, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 0;
@@ -352,14 +325,25 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     }
 
     private void prepareForRasterTest() {
-
-        RasterParams rasterData = specialRasterPanel_.getRasterData();
-        int sampleRate = shotCheckListPanel_.getSampleRate();
+       
+        final int sampleRate = shotCheckListPanel_.getSampleRate();
         if (sampleRate < 1) {
+            showErrorDialog("Sample Rate can not be less than 1");
+            return;
+        }
+        
+        if (Constants.mHttpClient == null) {
+            showErrorDialog("Can't find LIBZ IP Address.");
             return;
         }
 
+        final RasterParams rasterData = specialRasterPanel_.getRasterData();
+        
         if (rasterData != null) {
+
+            setShotListPanelVisible(true);
+            setRasterSettingPanelVisible(false);
+            setRegionPanelVisible(false);
 
             ThreadUtils.IOThreads.execute(new Runnable() {
 
@@ -368,54 +352,26 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     startRasterTest(rasterData, sampleRate);
                 }
             });
-
-            ThreadUtils.CPUThreads.execute(new Runnable() {
-
-                @Override
-                public void run() {
-                    int i = 0;
-
-                    progbarRasterTest_.setVisible(true);
-
-                    while (bTestInProgress_) {
-                        progbarRasterTest_.setValue(i);
-                        try {
-                            Thread.sleep(1000);
-
-                            // assumming the test will be done within 9 seconds
-                            if (i <= 80) {
-                                i += 2;
-                            }
-                        } catch (InterruptedException ex) {
-                            //logger_.error("Thread sleep failed");
-                        }
-                    }
-
-                    progbarRasterTest_.setVisible(false);
-                    progbarRasterTest_.setValue(0);
-                }
-            });
-        }
+        } 
     }
 
+    // This function is call from a in house IOThread
     private void startRasterTest(RasterParams rasterData, int sampleRate) {
         logger_.info("Starting a raster test");
 
-        btnScan_.setEnabled(false);
-        setShotListPanelVisible(false);
-        setRasterSettingPanelVisible(false);
-        setRegionPanelVisible(false);
-        toggleShotList_.setEnabled(false);
-        toggleRegion_.setEnabled(false);
-        bTestInProgress_ = true;
+        StringBuilder errMsg = new StringBuilder();
 
-        // Remove any current shots
-        //shotCheckListPanel_.removeAllItem();
-        // Remove any current series data
-        //xySeriesCollection_.removeAllSeries();
         // Reset the bounds incase it is zoomed in/out
         jFreeChartPanel_.getChartPanel().restoreAutoBounds();
+        final ProgressStatusPanel progressbar = new ProgressStatusPanel();
+        SwingUtilities.invokeLater(new Runnable() {
 
+                @Override
+                public void run() {
+                    progressbar.showPopup();
+                }
+            });
+        
         try {
 
             List<LIBZPixelSpectrum> shots = Constants.mHttpClient.rasterTest(rasterData);
@@ -427,7 +383,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 int shotCount = 1;
                 for (LIBZPixelSpectrum shot : shots) {
 
-                    CheckListShotItem item = new CheckListShotItem(scanCount_, shotCount);
+                    final CheckListShotItem item = new CheckListShotItem(scanCount_, shotCount);
                     item.setShot(shot);
 
                     SwingUtilities.invokeLater(new Runnable() {
@@ -440,13 +396,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     shotCount++;
                 }
 
-                // Okay, theres data, enable them
-                setShotListPanelVisible(true);
-                toggleShotList_.setEnabled(true);
-                toggleRegion_.setEnabled(true);
-
                 Spectrum avgSpectrum = createAverage(shots, sampleRate);
-                CheckListShotItem avgShotItem = new CheckListShotItem();
+                final CheckListShotItem avgShotItem = new CheckListShotItem();
                 avgShotItem.setName("Scan " + scanCount_ + ": Avg");
                 avgShotItem.setShot(avgSpectrum);
                 getSpectrumPixelXYSeries(avgShotItem);
@@ -463,23 +414,19 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 logger_.info("Raster test completed.");
 
             } else {
-                bTestInProgress_ = false;
-                logger_.error("Raster test failed, no returned data from Libz unit.");
-                JOptionPane.showMessageDialog(null,
-                        "Raster test failed, no returned data from Libz unit.",
-                        "Raster Test", JOptionPane.ERROR_MESSAGE);
+                errMsg.append("Raster test failed, no returned data from Libz unit.");
             }
 
-        } catch (IOException ex) {
-            bTestInProgress_ = false;
-            logger_.error("Raster test failed: " + ex.getMessage());
-            JOptionPane.showMessageDialog(null,
-                    "Raster Test Failed. " + ex.getMessage(),
-                    "Raster Test", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            errMsg.append("Raster test failed ");
+            errMsg.append(ex.getMessage());
         }
 
-        btnScan_.setEnabled(true);
-        bTestInProgress_ = false;
+        progressbar.closePopup();
+
+        if (errMsg.length() != 0) {
+            showErrorDialog(errMsg.toString());
+        }
     }
 
     private void getSpectrumPixelXYSeries(CheckListShotItem shotItem) {
@@ -528,7 +475,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                         regionPanels_.addRow(markerItem);
                     }
                 } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
                     ex.printStackTrace();
                     errText.append(region);
                     errText.append(" ");
@@ -537,7 +483,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
             }
 
             if (iValide == false) {
-                JOptionPane.showMessageDialog(null, "Input contains invalid data:\n" + errText);
+                showErrorDialog("Input contains invalid data:\n" + errText);
             }
             setRegionPanelVisible(true);
         }
@@ -545,77 +491,35 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
     @Override
     public void doShowShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+        logger_.info("Displaying selected shot");
+        
+        if (item.getXYSeries().isEmpty()) {
+            getSpectrumPixelXYSeries(item);
+        }
 
-        ThreadUtils.CPUThreads.execute(new Runnable() {
-            @Override
-            public void run() {
-                logger_.info("Displaying selected shot");
-                if (item.getXYSeries().isEmpty()) {
-                    getSpectrumPixelXYSeries(item);
-                }
-
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            xySeriesCollection_.addSeries(item.getXYSeries());
-                        } catch (Exception ex) {
-                            logger_.error("Failed to Add XYSeries: " + ex.getMessage());
-                        }
-                    }
-                });
-            }
-        });
-
+        try {
+            xySeriesCollection_.addSeries(item.getXYSeries());
+        } catch (Exception ex) {
+            logger_.error("Failed to Add XYSeries: " + ex.getMessage());
+        }
     }
 
     @Override
     public void doRemoveShotXYSeries(com.sciaps.common.CheckListShotItem item) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    xySeriesCollection_.removeSeries(item.getXYSeries());
-                } catch (Exception ex) {
-                    logger_.error("Failed to remove XYSeries: " + ex.getMessage());
-                }
-            }
-        });
+        try {
+            xySeriesCollection_.removeSeries(item.getXYSeries());
+        } catch (Exception ex) {
+            logger_.error("Failed to remove XYSeries: " + ex.getMessage());
+        }
     }
 
     @Override
-    public void addRegion(String regionName, double wavelengthMin, double wavelengthMax, Marker... associatedMarkers) {
-
-        System.out.println(associatedMarkers.toString());
-        RegionMarkerItem markerItem = new RegionMarkerItem();
-        markerItem.setName(regionName);
-        markerItem.setSymbol("");
-        markerItem.setMin(wavelengthMin);
-        markerItem.setMax(wavelengthMax);
-        markerItem.setValue(0);
-
-        regionPanels_.addRow(markerItem);
-    }
-
-    @Override
-    public void onRegionDeleted(String regionName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void onRegionClicked(String regionName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addRegionMarker(Marker marker) {
+    public void addRegionMarker(IntervalMarker marker) {
         jFreeChartPanel_.getJFreeChart().getXYPlot().addDomainMarker(marker);
     }
 
     @Override
-    public void removeRegionMarker(Marker marker) {
-        IntervalMarker m = (IntervalMarker) marker;
-        System.out.println(m.getStartValue() + "-" + m.getEndValue());
+    public void removeRegionMarker(IntervalMarker marker) {
         jFreeChartPanel_.getJFreeChart().getXYPlot().removeDomainMarker(marker);
     }
 
@@ -624,6 +528,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         return shotCheckListPanel_.getNumberOfSelectedItem();
     }
 
+    private void showErrorDialog(String msg) {
+        logger_.error(msg);
+        JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnScan_;
@@ -638,7 +546,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JProgressBar progbarRasterTest_;
     private javax.swing.JPanel rasterSettingPanel_;
     private javax.swing.JPanel regionContainerPanel_;
     private javax.swing.JPanel shotListContainerPanel_;

@@ -5,11 +5,8 @@
  */
 package com.sciaps.common;
 
-import com.sciaps.common.data.Region;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import org.jfree.chart.plot.IntervalMarker;
 
 /**
@@ -31,7 +28,7 @@ public class RegionMarkerItem {
         min_ = 0;
         max_ = 0;
         value_ = 0;
-        
+
         createMarker();
     }
 
@@ -41,7 +38,7 @@ public class RegionMarkerItem {
         min_ = min;
         max_ = max;
         value_ = value;
-        
+
         createMarker();
     }
 
@@ -75,7 +72,7 @@ public class RegionMarkerItem {
     public void setMax(double max) {
         max_ = max;
         createMarker();
-        resetName();  
+        resetName();
     }
 
     public double getMax() {
@@ -93,7 +90,7 @@ public class RegionMarkerItem {
     public IntervalMarker getMarker() {
         return marker_;
     }
-    
+
     private void resetName() {
         if (symbol_.isEmpty()) {
             name_ = String.format("%d-%d", Math.round(min_), Math.round(max_));
@@ -101,12 +98,13 @@ public class RegionMarkerItem {
             name_ = String.format("%s_%d", symbol_, Math.round(min_));
         }
     }
+
     private void createMarker() {
         if (min_ <= max_) {
             final Color c = new Color(255, 0, 0, 63);
             marker_ = new IntervalMarker(
                     min_, max_, c,
                     new BasicStroke(2.0f), null, null, 1.0f);
-        } 
+        }
     }
 }

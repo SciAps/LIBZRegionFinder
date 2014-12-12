@@ -20,11 +20,11 @@ import org.jfree.chart.plot.IntervalMarker;
  */
 public class RegionsTableModel extends AbstractTableModel {
 
-    private List<RegionMarkerItem> data_;
+    private final List<RegionMarkerItem> data_;
     String[] columnNames_ = {"Name", "Symbol", "Min", "Max", "Value"};
 
     public RegionsTableModel() {
-        data_ = new ArrayList<>();
+        data_ = new ArrayList<RegionMarkerItem>();
     }
 
     @Override
@@ -35,6 +35,11 @@ public class RegionsTableModel extends AbstractTableModel {
     @Override
     public int getColumnCount() {
         return columnNames_.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return columnNames_[column];
     }
 
     @Override
@@ -95,7 +100,7 @@ public class RegionsTableModel extends AbstractTableModel {
             default:
                 break;
         }
-        //fireTableDataChanged();
+        fireTableDataChanged();
     }
 
     @Override
@@ -131,7 +136,7 @@ public class RegionsTableModel extends AbstractTableModel {
         for (int i = rowIndex.length - 1; i >= 0; i--) {
             data_.remove(i);
         }
-        
+
         fireTableDataChanged();
     }
 
@@ -149,7 +154,7 @@ public class RegionsTableModel extends AbstractTableModel {
         }
     }
 
-    private void showErrorPopup(String msg) {
+    private void showErrorPopup(final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override

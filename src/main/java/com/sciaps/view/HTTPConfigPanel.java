@@ -7,6 +7,7 @@ package com.sciaps.view;
 
 import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.LIBZHttpClient;
+import com.sciaps.utils.Util;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -29,9 +30,8 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
     private final Logger logger_ = LoggerFactory.getLogger(HTTPConfigPanel.class);
 
     private FrmMain frmParent_;
-    
-    private JDialog popupDisplay_;
 
+    private JDialog popupDisplay_;
 
     /**
      * Creates new form HTTPConfigPanel
@@ -42,7 +42,7 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
         createPopupDisplay();
 
         this.getRootPane().setDefaultButton(btnSave_);
-        
+
         frmParent_ = null;
     }
 
@@ -117,7 +117,6 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
 
     private void btnSave_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSave_ActionPerformed
 
-        //System.out.println("ActionPerformed");
         String ipaddress = txtIPAddress_.getText();
         if (com.sciaps.utils.Util.validateIPAddress(ipaddress)) {
 
@@ -126,7 +125,7 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
             Constants.mHttpClient = new LIBZHttpClient("http://" + ipaddress + ":9000");
             popupDisplay_.dispose();
         } else {
-            JOptionPane.showMessageDialog(null, "Invalid IP Address Syntax", "IP Addess",  JOptionPane.ERROR_MESSAGE);
+            showErrorDialog("Invalid IP Address Syntax");
         }
     }//GEN-LAST:event_btnSave_ActionPerformed
 
@@ -165,26 +164,38 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
             if (frmParent_ != null) {
                 frmParent_.displayLibzIPAddress(ipaddress);
             }
-            
+
             logger_.info("Save LIBZ IP Address: Done");
         } catch (IOException ex) {
-            logger_.error("Save LIBZ IP Address Failed. " + ex.getMessage());
+            showErrorDialog("Save LIBZ IP Address Failed. " + ex.getMessage());
         }
     }
 
     public void setParentFrame(FrmMain frame) {
         frmParent_ = frame;
     }
-    
+
     public void showPopup() {
-        String ip = "127.0.0.1";
-        txtIPAddress_.setText(ip);
-        txtIPAddress_.setSelectionStart(0);
-        txtIPAddress_.setSelectionEnd(ip.length());
+
+        String ip = Util.getIPAddress();
+
+        if (ip != null) {
+            txtIPAddress_.setText(ip);
+            txtIPAddress_.setSelectionStart(0);
+            txtIPAddress_.setSelectionEnd(ip.length());
+        } else {
+            txtIPAddress_.setText("127.0.0.1");
+        }
+
         this.getRootPane().setDefaultButton(btnSave_);
         popupDisplay_.setVisible(true);
     }
 
+    private void showErrorDialog(String msg) {
+        logger_.error(msg);
+        JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel_;
     private javax.swing.JButton btnSave_;

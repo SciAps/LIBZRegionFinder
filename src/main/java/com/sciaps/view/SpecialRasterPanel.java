@@ -376,7 +376,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
 
     private boolean setXYZ(String str) {
         boolean isGood = true;
-        
+
         String[] tmp = str.split(",");
 
         try {
@@ -385,9 +385,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
             iStartPositionZVal_ = Integer.parseInt(tmp[2].trim());
         } catch (Exception ex) {
             isGood = false;
-            JOptionPane.showMessageDialog(null,
-                    "Invalid Start Position. " + ex.getMessage(),
-                    "Invalid Data", JOptionPane.ERROR_MESSAGE);
+            showErrorDialog("Invalid Start Position.");
         }
 
         return isGood;
@@ -395,19 +393,17 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
 
     private boolean setXY(String str) {
         boolean isGood = true;
-        
+
         String[] tmp = str.split(",");
 
         try {
-            
+
             iStopPositionXVal_ = Integer.parseInt(tmp[0].trim());
             iStopPositionYVal_ = Integer.parseInt(tmp[1].trim());
-            
+
         } catch (Exception ex) {
             isGood = false;
-            JOptionPane.showMessageDialog(null,
-                    "Invalid Stop Position." + ex.getMessage(),
-                    "Invalid Data", JOptionPane.ERROR_MESSAGE);
+            showErrorDialog("Invalid Stop Position.");
         }
 
         return isGood;
@@ -422,27 +418,23 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         iStopPositionXVal_ = 0;
         iStopPositionYVal_ = 0;
 
-
-        if ( setXYZ(txtStartPosition_.getText()) == false) {
+        if (setXYZ(txtStartPosition_.getText()) == false) {
             return false;
         }
-        
-        if( setXY(txtStopPosition_.getText()) == false) {
+
+        if (setXY(txtStopPosition_.getText()) == false) {
             return false;
         } else {
 
             if ((iStopPositionXVal_ <= iStartPositionXVal_) || (iStopPositionYVal_ <= iStartPositionYVal_)) {
 
-                JOptionPane.showMessageDialog(null,
-                        "Invalid Stop Position. It must be larger than Start Position",
-                        "Invalid Data", JOptionPane.ERROR_MESSAGE);
-
+                showErrorDialog("Invalid Stop Position. It must be larger than Start Position");
                 return false;
-            } 
+            }
         }
 
         try {
-            
+
             iLocationsVal_ = validateOneOrGreater(txtLocations_);
             iDataShotsVal_ = validateOneOrGreater(txtDataShots_);
             iArgonPreflushVal_ = validateZeroOrGreater(txtArgonPreflush_);
@@ -451,25 +443,23 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
             iIntegrationDelayVal_ = validateZeroOrGreater(txtIntegrationDelay_);
             iIntegrationPeriodVal_ = validateZeroOrGreater(txtIntegrationPeriod_);
 
-            if (iLocationsVal_ < 1 || 
-                    iDataShotsVal_ < 1 || 
-                    iArgonPreflushVal_ < 0 || 
-                    iStepSizeVal_< 0 || 
-                    iPulsePeriodVal_ < 0 || 
-                    iIntegrationDelayVal_ < 0 || 
-                    iIntegrationPeriodVal_ < 0) {
+            if (iLocationsVal_ < 1
+                    || iDataShotsVal_ < 1
+                    || iArgonPreflushVal_ < 0
+                    || iStepSizeVal_ < 0
+                    || iPulsePeriodVal_ < 0
+                    || iIntegrationDelayVal_ < 0
+                    || iIntegrationPeriodVal_ < 0) {
                 throw new NumberFormatException("");
             }
-            
+
             chkGatingVal_ = chkGating_.isSelected();
 
             chkResetStageVal_ = chkResetStage_.isSelected();
 
         } catch (NumberFormatException ex) {
             bAllValid = false;
-            JOptionPane.showMessageDialog(null,
-                    "Raster Setting Contains Invalid Data.\nOnly Positive Integer Is Accepted.",
-                    "Invalid Data", JOptionPane.ERROR_MESSAGE);
+            showErrorDialog("Raster Setting Contains Invalid Data.\nOnly Positive Integer Is Accepted.");
         }
 
         return bAllValid;
@@ -519,10 +509,15 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         } else {
             retval = null;
         }
-        
+
         return retval;
     }
 
+    private void showErrorDialog(String msg) {
+        logger_.error(msg);
+        JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chkGating_;
     private javax.swing.JCheckBox chkResetStage_;

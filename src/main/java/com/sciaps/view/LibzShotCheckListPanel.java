@@ -53,7 +53,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
         callbackListener_ = callback;
 
-        listModel_ = new DefaultListModel<>();
+        listModel_ = new DefaultListModel<CheckListShotItem>();
 
         lstOfShots_.setCellRenderer(new CheckboxListCellRenderer());
         lstOfShots_.setModel(listModel_);
@@ -69,6 +69,11 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
                     // Get index of item clicked
                     int index = list.locationToIndex(event.getPoint());
+
+                    // return if nothing selected
+                    if (index == -1) {
+                        return;
+                    }
 
                     CheckListShotItem item = (CheckListShotItem) list.getModel().getElementAt(index);
 
@@ -190,7 +195,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(btnDeleteScan_, gridBagConstraints);
 
-        btnDeleteHighlightedItems_.setText("Del Highlighted Item(s)");
+        btnDeleteHighlightedItems_.setText("Del Highlighted");
         btnDeleteHighlightedItems_.setEnabled(false);
         btnDeleteHighlightedItems_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -283,7 +288,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                         doRemoveScan(scanID);
                     }
                 } catch (NumberFormatException ex) {
-                    System.out.println("Invalid Scan #");
+                    showErrorDialog("Invalid Scan #: " + retval);
                 }
             }
         }
@@ -306,7 +311,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                 callbackListener_.doRemoveShotXYSeries(shotItem);
             }
         }
-        
+
         lstOfShots_.repaint();
     }
 
@@ -324,7 +329,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
                 boolean gotScanID = false;
                 int[] selectedList = lstOfShots_.getSelectedIndices();
-                List<Spectrum> shotDatas = new ArrayList<>();
+                List<Spectrum> shotDatas = new ArrayList<Spectrum>();
 
                 for (int i = 0; i < selectedList.length; i++) {
                     CheckListShotItem shotItem = (CheckListShotItem) listModel_.getElementAt(selectedList[i]);
@@ -354,16 +359,11 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                 newShotItem.setName(newName);
                 newShotItem.setShot(createAverage(shotDatas, newSampleRate));
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        listModel_.add(0, newShotItem);
-                        if (callbackListener_ != null) {
-                            newShotItem.setSelected(true);
-                            callbackListener_.doShowShotXYSeries(newShotItem);
-                        }
-                    }
-                });
+                listModel_.add(0, newShotItem);
+                if (callbackListener_ != null) {
+                    newShotItem.setSelected(true);
+                    callbackListener_.doShowShotXYSeries(newShotItem);
+                }
 
                 logger_.info("Create Avg from highlighted shots.... done");
             }
@@ -371,7 +371,6 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
     }
 
     public void doRemoveScan(int scanID) {
-
         logger_.info("Removing scan " + scanID + " ....");
         int index = 0;
         int i = 0;
@@ -393,7 +392,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
     public int getSampleRate() {
         int sampleRate = validateZeroOrGreater(txtSampleRate_);
         if (sampleRate < 1) {
-            JOptionPane.showMessageDialog(null, "Invalid Sample Rate value.");
+            showErrorDialog("Invalid Sample Rate value: + " + sampleRate);
         }
         return sampleRate;
     }
@@ -444,6 +443,10 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         return lstOfShots_.getSelectedIndices().length;
     }
 
+    private void showErrorDialog(String msg) {
+        logger_.error(msg);
+        JOptionPane.showMessageDialog(this, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateAvg_;
     private javax.swing.JButton btnDeleteHighlightedItems_;

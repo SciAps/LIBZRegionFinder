@@ -110,7 +110,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnDeleteHighlightedItems_">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Del Highlighted Item(s)"/>
+        <Property name="text" type="java.lang.String" value="Del Highlighted"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>

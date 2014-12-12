@@ -5,9 +5,15 @@
  */
 package com.sciaps.utils;
 
+import com.sciaps.common.Constants;
 import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.regex.Pattern;
 import javax.swing.JTextField;
@@ -89,12 +95,10 @@ public class Util {
         }
 
         double range = maxWL.getResult() - minWL.getResult();
-        //double range = maxWL.evaluate() - minWL.evaluate();
         int numSamples = (int) Math.floor(range * sampleRate);
         double[][] data = new double[2][numSamples];
         Mean avgy = new Mean();
         for (int i = 0; i < numSamples; i++) {
-            //double x = minWL.evaluate() + 1 / sampleRate;
             double x = minWL.getResult() + i*(1 / sampleRate);
             avgy.clear();
             for (Spectrum shot : shots) {
@@ -112,5 +116,32 @@ public class Util {
         RawDataSpectrum newSpectrum = new RawDataSpectrum(data);
 
         return newSpectrum;
+    }
+    
+    public static String getIPAddress() {
+        String address = null;
+        
+        try {
+            File file = new File(Constants.LIBZ_URL_FILE_NAME);
+
+            FileReader fr = new FileReader(file.getAbsoluteFile());
+            BufferedReader br = new BufferedReader(fr);
+
+            String line = br.readLine();
+            line = line.trim();
+            br.close();
+
+            // Making sure the ip address is valid
+            if (com.sciaps.utils.Util.validateIPAddress(line)) {
+                address = line;
+            }             
+            
+        } catch (FileNotFoundException ex) {
+            
+        } catch (IOException ex) {
+            
+        }
+        
+        return address;
     }
 }

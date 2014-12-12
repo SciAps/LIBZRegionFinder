@@ -1,16 +1,19 @@
 apply plugin: 'java'
 
-
-sourceCompatibility = '1.8'
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-// NetBeans will automatically add "run" and "debug" tasks relying on the
-// "mainClass" property. You may however define the property prior executing
-// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
-//
-// Note however, that you may define your own "run" and "debug" task if you
-// prefer. In this case NetBeans will not add these tasks but you may rely on
-// your own implementation.
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.sciaps.Main'
+    }
+    
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+project.ext.set("mainClass", "com.sciaps.Main")
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''
 }
