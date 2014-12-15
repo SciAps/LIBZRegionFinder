@@ -9,6 +9,7 @@ import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.LIBZHttpClient;
 import com.sciaps.utils.Util;
 import java.awt.Dimension;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,7 +29,14 @@ public final class FrmMain extends javax.swing.JFrame {
      */
     public FrmMain() {
         initComponents();
-
+      
+        try {
+            ImageIcon img = new ImageIcon("sciaps_icon.png");
+            this.setIconImage(img.getImage());
+        } catch (Exception ex) {
+            System.out.println("Can't load icon image");
+        }
+        
         httpConfigPanel_ = new HTTPConfigPanel();
         httpConfigPanel_.setParentFrame(this);
 

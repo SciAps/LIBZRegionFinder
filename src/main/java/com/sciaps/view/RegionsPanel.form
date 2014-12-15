@@ -93,7 +93,7 @@
     <Container class="javax.swing.JPanel" name="jPanel1">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="1" gridY="4" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="5" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+          <GridBagConstraints gridX="0" gridY="4" gridWidth="2" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="5" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
         </Constraint>
       </Constraints>
 
@@ -102,6 +102,7 @@
         <Component class="javax.swing.JButton" name="btnDelete_">
           <Properties>
             <Property name="text" type="java.lang.String" value="Delete"/>
+            <Property name="toolTipText" type="java.lang.String" value="Delete Selected Row(s)"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>
@@ -124,6 +125,7 @@
         <Component class="javax.swing.JButton" name="btnCalculateValue_">
           <Properties>
             <Property name="text" type="java.lang.String" value="Calculate"/>
+            <Property name="toolTipText" type="java.lang.String" value="Calculate Region Value"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>
@@ -146,6 +148,7 @@
         <Component class="javax.swing.JButton" name="btnAddMarker_">
           <Properties>
             <Property name="text" type="java.lang.String" value="Set Marker"/>
+            <Property name="toolTipText" type="java.lang.String" value="Create A Marker for Selected Region"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>
@@ -168,6 +171,7 @@
         <Component class="javax.swing.JButton" name="btnRemoveMarker_">
           <Properties>
             <Property name="text" type="java.lang.String" value="Remove Marker"/>
+            <Property name="toolTipText" type="java.lang.String" value="Remove Selected Region Marker"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>
@@ -190,6 +194,7 @@
         <Component class="javax.swing.JButton" name="btnInsertNew_">
           <Properties>
             <Property name="text" type="java.lang.String" value="Insert New"/>
+            <Property name="toolTipText" type="java.lang.String" value="Insert A New Row"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>

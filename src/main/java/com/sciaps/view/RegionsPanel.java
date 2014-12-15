@@ -98,16 +98,6 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         tableModel_.addRow(markerItem);
     }
 
-    private void removeSelectedRows() {
-        int selectedRow = tblRegions_.getSelectedRow();
-        while (selectedRow >= 0) {
-            int modelIndex = tblRegions_.convertRowIndexToModel(selectedRow);
-            tableModel_.removeRow(modelIndex);
-
-            selectedRow = tblRegions_.getSelectedRow();
-        }
-    }
-
     private void filterTable() {
         try {
             RowFilter<RegionsTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtFilterText_.getText(), 0);
@@ -203,6 +193,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         btnDelete_.setText("Delete");
+        btnDelete_.setToolTipText("Delete Selected Row(s)");
         btnDelete_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnDelete_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnDelete_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -218,6 +209,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.add(btnDelete_, gridBagConstraints);
 
         btnCalculateValue_.setText("Calculate");
+        btnCalculateValue_.setToolTipText("Calculate Region Value");
         btnCalculateValue_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnCalculateValue_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnCalculateValue_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -232,6 +224,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.add(btnCalculateValue_, gridBagConstraints);
 
         btnAddMarker_.setText("Set Marker");
+        btnAddMarker_.setToolTipText("Create A Marker for Selected Region");
         btnAddMarker_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnAddMarker_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnAddMarker_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -247,6 +240,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.add(btnAddMarker_, gridBagConstraints);
 
         btnRemoveMarker_.setText("Remove Marker");
+        btnRemoveMarker_.setToolTipText("Remove Selected Region Marker");
         btnRemoveMarker_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnRemoveMarker_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnRemoveMarker_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -262,6 +256,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.add(btnRemoveMarker_, gridBagConstraints);
 
         btnInsertNew_.setText("Insert New");
+        btnInsertNew_.setToolTipText("Insert A New Row");
         btnInsertNew_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnInsertNew_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnInsertNew_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -277,8 +272,9 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.add(btnInsertNew_, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         add(jPanel1, gridBagConstraints);
 
@@ -295,7 +291,24 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDelete_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete_ActionPerformed
-        doDelete();
+        int[] selectedRows = tblRegions_.getSelectedRows();
+        if (selectedRows.length == 0) {
+            showErrorDialog("No region selected to delete.");
+            return;
+        }
+
+        int retval = JOptionPane.showConfirmDialog(null, "Delete Selected Row(s)?");
+        if (retval != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        int[] tmpSelectedRows = new int[selectedRows.length];
+        for (int i = 0; i < tmpSelectedRows.length; i++) {
+            int modelIndex = tblRegions_.convertRowIndexToModel(selectedRows[i]);
+            tmpSelectedRows[i] = modelIndex;
+        }
+        
+        doDelete(tmpSelectedRows);
     }//GEN-LAST:event_btnDelete_ActionPerformed
 
     private void btnCalculateValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateValue_ActionPerformed
@@ -307,6 +320,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
         if (selectedRows.length == 0) {
             showErrorDialog("No region selected to set marker.");
+            return;
         }
 
         for (int i = 0; i < selectedRows.length; i++) {
@@ -319,7 +333,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         int[] selectedRows = tblRegions_.getSelectedRows();
 
         if (selectedRows.length == 0) {
-            showErrorDialog("No region selected to delete.");
+            showErrorDialog("No region selected to remove marker.");
+            return;
         }
 
         for (int i = 0; i < selectedRows.length; i++) {
@@ -345,13 +360,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         }
     }
 
-    private void doDelete() {
-        if (tblRegions_.getSelectedRowCount() > 0) {
-            int retval = JOptionPane.showConfirmDialog(null, "Delete Selected Row(s)?");
-            if (retval == JOptionPane.YES_OPTION) {
-                removeSelectedRows();
-            }
-        }
+    private void doDelete(int[] rows) {
+        tableModel_.removeRows(rows);
     }
 
     private void doCalculate() {
@@ -362,7 +372,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             } else if (numOfSelected == -1) {
                 showErrorDialog("No shot selected to do the region calculation.");
             } else {
-                showErrorDialog("Too many shots selected to do the region calculation.\nOnly 1 shot should selected.");
+                showErrorDialog("Too many shots selected to do the region calculation.\nOnly 1 shot should be selected.");
             }
         }
     }
@@ -392,7 +402,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         logger_.error(msg);
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     class TableCellDoubleTypeRenderer implements TableCellRenderer {
 
         @Override

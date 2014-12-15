@@ -18,6 +18,7 @@ import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.listener.JFreeChartMouseListener;
 import static com.sciaps.utils.Util.createAverage;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
+import java.awt.Color;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -156,6 +157,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         toggleShotList_.setText("Show");
+        toggleShotList_.setToolTipText("Show/Hide Shot List Panel");
         toggleShotList_.setMaximumSize(new java.awt.Dimension(120, 30));
         toggleShotList_.setMinimumSize(new java.awt.Dimension(120, 30));
         toggleShotList_.setPreferredSize(new java.awt.Dimension(120, 30));
@@ -181,6 +183,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
         toggleRasterSetting_.setText("Show");
+        toggleRasterSetting_.setToolTipText("Show/Hide Raster Setting Panel");
         toggleRasterSetting_.setMaximumSize(new java.awt.Dimension(120, 30));
         toggleRasterSetting_.setMinimumSize(new java.awt.Dimension(120, 30));
         toggleRasterSetting_.setPreferredSize(new java.awt.Dimension(120, 30));
@@ -203,6 +206,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
         toggleRegion_.setText("Show");
+        toggleRegion_.setToolTipText("Show/Hide Region Panel");
         toggleRegion_.setMaximumSize(new java.awt.Dimension(120, 30));
         toggleRegion_.setMinimumSize(new java.awt.Dimension(120, 30));
         toggleRegion_.setPreferredSize(new java.awt.Dimension(120, 30));
@@ -227,6 +231,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         btnScan_.setBackground(new java.awt.Color(0, 255, 51));
         btnScan_.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnScan_.setText("SCAN");
+        btnScan_.setToolTipText("Start Raster Test");
         btnScan_.setMaximumSize(new java.awt.Dimension(120, 30));
         btnScan_.setMinimumSize(new java.awt.Dimension(120, 30));
         btnScan_.setPreferredSize(new java.awt.Dimension(120, 30));

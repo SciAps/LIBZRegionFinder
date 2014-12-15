@@ -134,7 +134,7 @@ public class RegionsTableModel extends AbstractTableModel {
     public void removeRows(int[] rowIndex) {
         Arrays.sort(rowIndex);
         for (int i = rowIndex.length - 1; i >= 0; i--) {
-            data_.remove(i);
+            data_.remove(rowIndex[i]);
         }
 
         fireTableDataChanged();

@@ -34,9 +34,11 @@ public class Util {
             + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
             + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
-    private static final String POSITION_XYZ_PATTERN = "^\\s*(\\-?\\d+?)\\s*,\\s*(\\-?\\d+?)\\s*,\\s*(\\-?\\d+?)\\s*$";
+    private static final String POSITION_XYZ_PATTERN = "^\\s*(\\d+?)\\s*,\\s*(\\d+?)\\s*,\\s*(\\d+?)\\s*$";
 
-    private static final String POSITION_XY_PATTERN = "^\\s*(\\-?\\d+?)\\s*,\\s*(\\-?\\d+?)\\s*$";
+    private static final String POSITION_XY_PATTERN = "^\\s*(\\d+?)\\s*,\\s*(\\d+?)\\s*$";
+
+    private static final String POSITIVE_INT = "^\\s*(\\d+?)\\s*$";
 
     public static boolean validateIPAddress(final String ipAddress) {
 
@@ -55,36 +57,42 @@ public class Util {
         return pattern.matcher(xy).matches();
     }
 
-    public static int validateZeroOrGreater(JTextField txtField) {        
-        int val = -1;
-        try {
-            val = Integer.parseInt(txtField.getText());
-            if (val >= 0) {
-                txtField.setBackground(Color.white);
-            }
-        } catch (Exception ex) {
-            val = -1;
-            txtField.setBackground(Color.red);
+    public static int validateZeroOrGreater(JTextField txtField) {
+
+        Pattern pattern = Pattern.compile(POSITIVE_INT);
+        if (pattern.matcher(txtField.getText()).matches()) {
+            txtField.setBackground(Color.white);
+            return getStringToInt(txtField.getText());
         }
-        
-        return val;
+
+        txtField.setBackground(Color.red);
+        return -1;
     }
 
-    public static int validateOneOrGreater(JTextField txtField) {        
-        int val = -1;
-        try {
-            val = Integer.parseInt(txtField.getText());
-            if (val >= 1) {
+    public static int validateOneOrGreater(JTextField txtField) {
+
+        Pattern pattern = Pattern.compile(POSITIVE_INT);
+        if (pattern.matcher(txtField.getText()).matches()) {
+            int val = getStringToInt(txtField.getText());
+            if (val > 0) {
                 txtField.setBackground(Color.white);
+                return val;
             }
-        } catch (Exception ex) {
-            val = -1;
-            txtField.setBackground(Color.red);
         }
-        
-        return val;
+
+        txtField.setBackground(Color.red);
+        return -1;
     }
-    
+
+    private static int getStringToInt(String valStr) {
+        String val = valStr.trim();
+        try {
+            return Integer.parseInt(val);
+        } catch (Exception ex) {
+            return -1;
+        }
+    }
+
     public static Spectrum createAverage(Collection<? extends Spectrum> shots, double sampleRate) {
 
         Min minWL = new Min();
@@ -99,7 +107,7 @@ public class Util {
         double[][] data = new double[2][numSamples];
         Mean avgy = new Mean();
         for (int i = 0; i < numSamples; i++) {
-            double x = minWL.getResult() + i*(1 / sampleRate);
+            double x = minWL.getResult() + i * (1 / sampleRate);
             avgy.clear();
             for (Spectrum shot : shots) {
                 if (shot.getValidRange().containsDouble(x)) {
@@ -117,10 +125,10 @@ public class Util {
 
         return newSpectrum;
     }
-    
+
     public static String getIPAddress() {
         String address = null;
-        
+
         try {
             File file = new File(Constants.LIBZ_URL_FILE_NAME);
 
@@ -134,14 +142,14 @@ public class Util {
             // Making sure the ip address is valid
             if (com.sciaps.utils.Util.validateIPAddress(line)) {
                 address = line;
-            }             
-            
+            }
+
         } catch (FileNotFoundException ex) {
-            
+
         } catch (IOException ex) {
-            
+
         }
-        
+
         return address;
     }
 }

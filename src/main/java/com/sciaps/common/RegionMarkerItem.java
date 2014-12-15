@@ -8,6 +8,7 @@ package com.sciaps.common;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import org.jfree.chart.plot.IntervalMarker;
+import org.jfree.ui.RectangleInsets;
 
 /**
  *
@@ -105,6 +106,9 @@ public class RegionMarkerItem {
             marker_ = new IntervalMarker(
                     min_, max_, c,
                     new BasicStroke(2.0f), null, null, 1.0f);
+            marker_.setLabel(symbol_);
+            marker_.setLabelPaint(Color.green);
+            marker_.setLabelOffset(new RectangleInsets(50,10,10,20));
         }
     }
 }

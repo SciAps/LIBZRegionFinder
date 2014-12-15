@@ -22,7 +22,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,6 +143,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         add(jScrollPane1, gridBagConstraints);
 
         btnCreateAvg_.setText("Create Avg");
+        btnCreateAvg_.setToolTipText("Create An Avg of All Highlighted");
         btnCreateAvg_.setEnabled(false);
         btnCreateAvg_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,6 +158,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         add(btnCreateAvg_, gridBagConstraints);
 
         btnUncheckAll_.setText("Uncheck All");
+        btnUncheckAll_.setToolTipText("Uncheck All and Remove Graph");
         btnUncheckAll_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUncheckAll_ActionPerformed(evt);
@@ -182,6 +183,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         add(jLabel1, gridBagConstraints);
 
         btnDeleteScan_.setText("Del Scan");
+        btnDeleteScan_.setToolTipText("Delete All Shots In A Scan");
         btnDeleteScan_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteScan_ActionPerformed(evt);
@@ -196,6 +198,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         add(btnDeleteScan_, gridBagConstraints);
 
         btnDeleteHighlightedItems_.setText("Del Highlighted");
+        btnDeleteHighlightedItems_.setToolTipText("Delete All Hightlighted");
         btnDeleteHighlightedItems_.setEnabled(false);
         btnDeleteHighlightedItems_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

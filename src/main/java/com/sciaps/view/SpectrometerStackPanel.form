@@ -93,6 +93,7 @@
             <Component class="javax.swing.JToggleButton" name="toggleShotList_">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Show"/>
+                <Property name="toolTipText" type="java.lang.String" value="Show/Hide Shot List Panel"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[120, 30]"/>
                 </Property>
@@ -143,6 +144,7 @@
             <Component class="javax.swing.JToggleButton" name="toggleRasterSetting_">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Show"/>
+                <Property name="toolTipText" type="java.lang.String" value="Show/Hide Raster Setting Panel"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[120, 30]"/>
                 </Property>
@@ -193,6 +195,7 @@
             <Component class="javax.swing.JToggleButton" name="toggleRegion_">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Show"/>
+                <Property name="toolTipText" type="java.lang.String" value="Show/Hide Region Panel"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[120, 30]"/>
                 </Property>
@@ -249,6 +252,7 @@
                   <Font name="Tahoma" size="14" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="SCAN"/>
+                <Property name="toolTipText" type="java.lang.String" value="Start Raster Test"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[120, 30]"/>
                 </Property>

@@ -57,6 +57,7 @@
     <Component class="javax.swing.JButton" name="btnCreateAvg_">
       <Properties>
         <Property name="text" type="java.lang.String" value="Create Avg"/>
+        <Property name="toolTipText" type="java.lang.String" value="Create An Avg of All Highlighted"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
@@ -71,6 +72,7 @@
     <Component class="javax.swing.JButton" name="btnUncheckAll_">
       <Properties>
         <Property name="text" type="java.lang.String" value="Uncheck All"/>
+        <Property name="toolTipText" type="java.lang.String" value="Uncheck All and Remove Graph"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUncheckAll_ActionPerformed"/>
@@ -98,6 +100,7 @@
     <Component class="javax.swing.JButton" name="btnDeleteScan_">
       <Properties>
         <Property name="text" type="java.lang.String" value="Del Scan"/>
+        <Property name="toolTipText" type="java.lang.String" value="Delete All Shots In A Scan"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteScan_ActionPerformed"/>
@@ -111,6 +114,7 @@
     <Component class="javax.swing.JButton" name="btnDeleteHighlightedItems_">
       <Properties>
         <Property name="text" type="java.lang.String" value="Del Highlighted"/>
+        <Property name="toolTipText" type="java.lang.String" value="Delete All Hightlighted"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>

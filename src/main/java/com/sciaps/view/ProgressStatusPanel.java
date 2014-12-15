@@ -80,17 +80,17 @@ public class ProgressStatusPanel extends javax.swing.JPanel {
     private void createPopupDisplay() {
         popupDisplay_ = new JDialog();
         popupDisplay_.setResizable(false);
-        popupDisplay_.setUndecorated(true);
         popupDisplay_.setTitle("Raster Test In Progress ...");
         popupDisplay_.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         popupDisplay_.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                e.getWindow().dispose();
+                if (bTestInProgress_ == false)
+                    e.getWindow().dispose();
             }
         });
         popupDisplay_.add(this, java.awt.BorderLayout.CENTER);
-        popupDisplay_.setSize(new Dimension(350, 65));
+        popupDisplay_.setSize(new Dimension(350, 85));
         popupDisplay_.setLocationRelativeTo(this);
         popupDisplay_.setModal(true);
     }
@@ -113,7 +113,7 @@ public class ProgressStatusPanel extends javax.swing.JPanel {
     private void showProgress() {
         ThreadUtils.CPUThreads.execute(new Runnable() {
 
-            //@Override
+            @Override
             public void run() {
                 int i = 0;
 
