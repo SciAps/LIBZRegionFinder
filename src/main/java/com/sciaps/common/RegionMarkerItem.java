@@ -66,14 +66,14 @@ public class RegionMarkerItem {
 
     public void setMin(double min) {
         min_ = min;
-        createMarker();
         resetName();
+        createMarker();
     }
 
     public void setMax(double max) {
         max_ = max;
-        createMarker();
         resetName();
+        createMarker();
     }
 
     public double getMax() {
@@ -96,19 +96,18 @@ public class RegionMarkerItem {
         if (symbol_.isEmpty()) {
             name_ = String.format("%d-%d", Math.round(min_), Math.round(max_));
         } else {
-            name_ = String.format("%s_%d", symbol_, Math.round(min_));
+            name_ = String.format("%s-%d", symbol_, Math.round(min_));
         }
     }
 
     private void createMarker() {
-        if (min_ <= max_) {
-            final Color c = new Color(255, 0, 0, 63);
-            marker_ = new IntervalMarker(
-                    min_, max_, c,
-                    new BasicStroke(2.0f), null, null, 1.0f);
-            marker_.setLabel(symbol_);
-            marker_.setLabelPaint(Color.green);
-            marker_.setLabelOffset(new RectangleInsets(50,10,10,20));
-        }
+        final Color c = new Color(255, 0, 0, 63);
+        marker_ = new IntervalMarker(
+                min_, max_, c,
+                new BasicStroke(2.0f), null, null, 1.0f);
+        String[] tmp = name_.split("-");
+        marker_.setLabel(tmp[0]);
+        marker_.setLabelPaint(Color.green);
+        marker_.setLabelOffset(new RectangleInsets(50, 10, 10, 20));
     }
 }

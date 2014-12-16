@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellRenderer;
@@ -71,6 +72,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         sorter_ = new TableRowSorter<RegionsTableModel>(tableModel_);
         tblRegions_.setRowSorter(sorter_);
         tblRegions_.setModel(tableModel_);
+        tblRegions_.getColumnModel().getColumn(2).setCellRenderer(new TableCellDoubleTypeRenderer());
+        tblRegions_.getColumnModel().getColumn(3).setCellRenderer(new TableCellDoubleTypeRenderer());
 
         txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -307,7 +310,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             int modelIndex = tblRegions_.convertRowIndexToModel(selectedRows[i]);
             tmpSelectedRows[i] = modelIndex;
         }
-        
+
         doDelete(tmpSelectedRows);
     }//GEN-LAST:event_btnDelete_ActionPerformed
 
@@ -391,7 +394,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
                 double newX = Double.parseDouble(tmp);
                 doRemoveMarker(tableModel_.getMarker(modelRow));
                 tableModel_.setValueAt(newX, modelRow, modelCol);
-
+                
             } catch (Exception ex) {
 
             }
@@ -409,18 +412,29 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                 boolean hasFocus, int row, int column) {
             JLabel editor = new JLabel();
+            editor.setFont(table.getFont());
             editor.setOpaque(true);
             if (value != null) {
                 editor.setText(value.toString());
             }
-
+            if (isSelected) {
+                editor.setBackground(table.getSelectionBackground());
+            } else {
+                editor.setBackground(table.getBackground());
+            }
+            
+            if (hasFocus) {
+                //editor.setBackground(Color.LIGHT_GRAY);
+                editor.setBorder( LineBorder.createGrayLineBorder());
+            }
+            
             try {
-                Double.parseDouble((String) value);
-                if (isSelected) {
-                    editor.setBackground(table.getSelectionBackground());
-                } else {
-                    editor.setBackground(table.getBackground());
-                }
+                double min = Double.parseDouble((String) table.getValueAt(row, 2));
+                double max = Double.parseDouble((String) table.getValueAt(row, 3));
+
+                if (min > max) {
+                    editor.setBackground(Color.red);
+                } 
             } catch (NumberFormatException ex) {
                 editor.setBackground(Color.red);
             }

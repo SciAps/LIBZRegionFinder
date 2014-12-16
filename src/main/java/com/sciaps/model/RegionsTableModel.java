@@ -150,7 +150,7 @@ public class RegionsTableModel extends AbstractTableModel {
         double min = data_.get(rowIndex).getMin();
         double max = data_.get(rowIndex).getMax();
         if (min > max) {
-            showErrorPopup("ERROR: Min greater than Max");
+            showErrorPopup("ERROR: Min is greater than Max");
         }
     }
 
