@@ -5,6 +5,7 @@
  */
 package com.sciaps.utils;
 
+import com.sciaps.common.CheckListShotItem;
 import com.sciaps.common.Constants;
 import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
@@ -124,6 +125,20 @@ public class Util {
         RawDataSpectrum newSpectrum = new RawDataSpectrum(data);
 
         return newSpectrum;
+    }
+    
+    public static void populateXYSeriesData(CheckListShotItem shotItem) {
+
+        double[] x = shotItem.getShot().getPixelLocations();
+        double[] y = new double[x.length];
+        UnivariateFunction yfun = shotItem.getShot().getIntensityFunction();
+        for (int i = 0; i < x.length; i++) {
+            y[i] = yfun.value(x[i]);
+        }
+
+        for (int i = 0; i < x.length; i++) {
+            shotItem.getXYSeries().add(x[i], y[i]);
+        }
     }
 
     public static String getIPAddress() {

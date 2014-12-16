@@ -333,8 +333,6 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
                 StringBuilder name = new StringBuilder();
 
-                CheckListShotItem newShotItem = new CheckListShotItem();
-
                 boolean gotScanID = false;
                 int[] selectedList = lstOfShots_.getSelectedIndices();
                 List<Spectrum> shotDatas = new ArrayList<Spectrum>();
@@ -342,7 +340,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                 for (int i = 0; i < selectedList.length; i++) {
                     CheckListShotItem shotItem = (CheckListShotItem) listModel_.getElementAt(selectedList[i]);
                     if (gotScanID == false) {
-                        name.append("Scan " + shotItem.getScanID() + ": ");
+                        name.append("Scan " + shotItem.getScanID() + " Avg: ");
                         gotScanID = true;
                     }
                     name.append(shotItem.getShotID());
@@ -364,7 +362,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                 String newName = avgPanel.getAvgShotName();
                 int newSampleRate = avgPanel.getSampleRate();
 
-                newShotItem.setName(newName);
+                CheckListShotItem newShotItem = new CheckListShotItem(newName);
                 newShotItem.setShot(createAverage(shotDatas, newSampleRate));
 
                 listModel_.add(0, newShotItem);
@@ -389,9 +387,11 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         while (index != (listModel_.getSize() - 1)) {
             for (i = 0; i < listModel_.getSize(); i++) {
                 index = i;
-                CheckListShotItem shotItem = (CheckListShotItem) listModel_.getElementAt(i);
-
+                CheckListShotItem shotItem = (CheckListShotItem) listModel_.getElementAt(i);               
+                
                 if (shotItem.getScanID() == scanID) {
+                    if (callbackListener_ != null)
+                        callbackListener_.doRemoveShotXYSeries(shotItem);
                     listModel_.removeElement(shotItem);
                     i--;
                 }

@@ -21,15 +21,14 @@ public class CheckListShotItem {
     private boolean isSelected_ = false;
     private XYSeries xySeries_;
 
-    public CheckListShotItem() {
-        initializeData(0, 0);
+    public CheckListShotItem(String name) {
+        scanID_ = 0;
+        shotID_ = 0;
+        name_ = name;
+        xySeries_ = new XYSeries(name_);
     }
 
     public CheckListShotItem(int scanID, int shotID) {
-        initializeData(scanID, shotID);
-    }
-
-    private void initializeData(int scanID, int shotID) {
         scanID_ = scanID;
         shotID_ = shotID;
         name_ = "Scan " + scanID_ + ": " + shotID_;

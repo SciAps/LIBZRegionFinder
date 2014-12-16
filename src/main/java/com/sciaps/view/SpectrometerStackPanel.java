@@ -17,14 +17,16 @@ import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.listener.JFreeChartMouseListener;
 import static com.sciaps.utils.Util.createAverage;
+import static com.sciaps.utils.Util.populateXYSeriesData;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
-import java.awt.Color;
+import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +71,14 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 jFreeChartPanel_.getChartPanel(),
                 regionPanels_);
         jFreeChartPanel_.getChartPanel().addChartMouseListener(chartMouseListener_);
-
+        
+        XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        plot.setRenderer(renderer);
+        StandardXYToolTipGenerator ttG
+                = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
+        plot.getRenderer().setBaseToolTipGenerator(ttG);
+        
         shotCheckListPanel_ = new LibzShotCheckListPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
 
@@ -79,18 +88,11 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         regionContainerPanel_.setVisible(false);
 
         // ==== start of testing code
-        /*for (int i = 1; i <= 200; i++) {
-         shotCheckListPanel_.addItem(new CheckListShotItem(scanCount_, i));
-         }
-         toggleShotList_.setEnabled(true);
-         toggleRegion_.setEnabled(true);
-         //shotCheckListPanel_.doCreateScanAvg(0);
-         */
-        XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
+        /*plot = jFreeChartPanel_.getJFreeChart().getXYPlot();  
         org.jfree.chart.axis.ValueAxis rangeAxis = plot.getRangeAxis();
         org.jfree.chart.axis.ValueAxis domainAxis = plot.getDomainAxis();
         rangeAxis.setRange(0, 1000);
-        domainAxis.setRange(0, 1000);
+        domainAxis.setRange(0, 1000);*/
         // ==== end of testing code
     }
 
@@ -330,20 +332,20 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     }
 
     private void prepareForRasterTest() {
-       
+
         final int sampleRate = shotCheckListPanel_.getSampleRate();
         if (sampleRate < 1) {
             showErrorDialog("Sample Rate can not be less than 1");
             return;
         }
-        
+
         if (Constants.mHttpClient == null) {
             showErrorDialog("Can't find LIBZ IP Address.");
             return;
         }
 
         final RasterParams rasterData = specialRasterPanel_.getRasterData();
-        
+
         if (rasterData != null) {
 
             setShotListPanelVisible(true);
@@ -357,7 +359,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     startRasterTest(rasterData, sampleRate);
                 }
             });
-        } 
+        }
     }
 
     // This function is call from a in house IOThread
@@ -371,12 +373,12 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         final ProgressStatusPanel progressbar = new ProgressStatusPanel();
         SwingUtilities.invokeLater(new Runnable() {
 
-                @Override
-                public void run() {
-                    progressbar.showPopup();
-                }
-            });
-        
+            @Override
+            public void run() {
+                progressbar.showPopup();
+            }
+        });
+
         try {
 
             List<LIBZPixelSpectrum> shots = Constants.mHttpClient.rasterTest(rasterData);
@@ -402,10 +404,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 }
 
                 Spectrum avgSpectrum = createAverage(shots, sampleRate);
-                final CheckListShotItem avgShotItem = new CheckListShotItem();
-                avgShotItem.setName("Scan " + scanCount_ + ": Avg");
+                String name = "Scan " + scanCount_ + ": Avg";
+                final CheckListShotItem avgShotItem = new CheckListShotItem(name);
                 avgShotItem.setShot(avgSpectrum);
-                getSpectrumPixelXYSeries(avgShotItem);
+                populateXYSeriesData(avgShotItem);
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
@@ -434,27 +436,13 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         }
     }
 
-    private void getSpectrumPixelXYSeries(CheckListShotItem shotItem) {
-
-        double[] x = shotItem.getShot().getPixelLocations();
-        double[] y = new double[x.length];
-        UnivariateFunction yfun = shotItem.getShot().getIntensityFunction();
-        for (int i = 0; i < x.length; i++) {
-            y[i] = yfun.value(x[i]);
-        }
-
-        for (int i = 0; i < x.length; i++) {
-            shotItem.getXYSeries().add(x[i], y[i]);
-        }
-    }
-
     public void getRegionTextFromUser() {
         boolean iValide = true;
         StringBuilder errText = new StringBuilder();
 
         String retval = JOptionPane.showInputDialog(null,
                 "Enter region string:",
-                "Fe371.76-472.16,480.85-481.15,Co257.88-258.12,324.4-325,Ni341.05-341.7,359.05-359.6,334.67-335.15,394.1-394.7");
+                "Fe371.76-372.16,480.85-481.15,Co257.88-258.12,324.4-325,Ni341.05-341.7,359.05-359.6,334.67-335.15,394.1-394.7");
 
         if (retval != null && !retval.isEmpty()) {
             String[] regions = retval.split(",");
@@ -497,9 +485,9 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     @Override
     public void doShowShotXYSeries(com.sciaps.common.CheckListShotItem item) {
         logger_.info("Displaying selected shot");
-        
+
         if (item.getXYSeries().isEmpty()) {
-            getSpectrumPixelXYSeries(item);
+            populateXYSeriesData(item);
         }
 
         try {
