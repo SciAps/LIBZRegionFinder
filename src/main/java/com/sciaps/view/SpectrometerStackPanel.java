@@ -16,11 +16,13 @@ import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.listener.JFreeChartMouseListener;
+import com.sciaps.utils.CustomDialogUtils;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.populateXYSeriesData;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
 import java.text.DecimalFormat;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
@@ -370,12 +372,16 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         // Reset the bounds incase it is zoomed in/out
         jFreeChartPanel_.getChartPanel().restoreAutoBounds();
-        final ProgressStatusPanel progressbar = new ProgressStatusPanel();
+        ProgressStatusPanel progressbar = new ProgressStatusPanel();
+        final JDialog progressDialog = CustomDialogUtils.createDialog(null, 
+                "Raster Test In Progress", progressbar, 
+                CustomDialogUtils.DEFAULT_OPTION);
+        progressDialog.setSize(400,100);
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                progressbar.showPopup();
+                progressDialog.setVisible(true);
             }
         });
 
@@ -429,7 +435,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
             errMsg.append(ex.getMessage());
         }
 
-        progressbar.closePopup();
+        progressDialog.dispose();
 
         if (errMsg.length() != 0) {
             showErrorDialog(errMsg.toString());

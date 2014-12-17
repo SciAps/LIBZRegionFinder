@@ -5,14 +5,6 @@
  */
 package com.sciaps.view;
 
-import com.sciaps.common.ThreadUtils;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.logging.Level;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,18 +15,10 @@ import org.slf4j.LoggerFactory;
 public class ProgressStatusPanel extends javax.swing.JPanel {
 
     private final Logger logger_ = LoggerFactory.getLogger(ProgressStatusPanel.class);
-    private volatile boolean bTestInProgress_;
-    private int stepValue_;
-    private JDialog popupDisplay_;
-
-    /**
-     * Creates new form HTTPConfigPanel
-     */
+    
     public ProgressStatusPanel() {
         initComponents();
-        bTestInProgress_ = false;
-        stepValue_ = 1;
-        createPopupDisplay();
+        progressbar_.setIndeterminate(true);
     }
 
     /**
@@ -50,12 +34,11 @@ public class ProgressStatusPanel extends javax.swing.JPanel {
         progressbar_ = new javax.swing.JProgressBar();
         jLabel4 = new javax.swing.JLabel();
 
-        setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -76,78 +59,6 @@ public class ProgressStatusPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jLabel4, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void createPopupDisplay() {
-        popupDisplay_ = new JDialog();
-        popupDisplay_.setResizable(false);
-        popupDisplay_.setTitle("Raster Test In Progress ...");
-        popupDisplay_.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        popupDisplay_.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                if (bTestInProgress_ == false)
-                    e.getWindow().dispose();
-            }
-        });
-        popupDisplay_.add(this, java.awt.BorderLayout.CENTER);
-        popupDisplay_.setSize(new Dimension(350, 85));
-        popupDisplay_.setLocationRelativeTo(this);
-        popupDisplay_.setModal(true);
-    }
-
-    public void showPopup() {
-        bTestInProgress_ = true;
-        showProgress();
-        popupDisplay_.setVisible(true);
-    }
-
-    public void closePopup() {
-        bTestInProgress_ = false;
-        popupDisplay_.dispose();
-    }
-
-    public void setSteppingValue(int val) {
-        stepValue_ = val;
-    }
-
-    private void showProgress() {
-        ThreadUtils.CPUThreads.execute(new Runnable() {
-
-            @Override
-            public void run() {
-                int i = 0;
-
-                while (bTestInProgress_) {
-                    System.out.println(i);
-                    final int val = i;
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressbar_.setValue(val);
-                        }
-                    });
-
-                    try {
-                        Thread.sleep(1000);
-
-                        if (i < 85) {
-                            i = i + stepValue_;
-                        }
-
-                    } catch (InterruptedException ex) {
-                        //logger_.error("Thread sleep failed");
-                    }
-                }
-                popupDisplay_.dispose();
-            }
-        });
-        
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(ProgressStatusPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel4;
