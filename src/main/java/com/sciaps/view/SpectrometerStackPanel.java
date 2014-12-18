@@ -48,6 +48,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private final RegionsPanel regionPanels_;
     private final LibzShotCheckListPanel shotCheckListPanel_;
     private final SpecialRasterPanel specialRasterPanel_;
+    private final PlotRangeSetterPanel plotRangeSetterPanel_;
     private int scanCount_ = 0;
 
     /**
@@ -66,7 +67,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jFreeChartPanel_ = new JFreeChartWrapperPanel();
         jFreeChartPanel_.populateSpectrumChartWithAbstractXYDataset(
                 xySeriesCollection_, "Spectro Meter Stack", "Wave Length", "Intensity");
-        displayPanel_.add(jFreeChartPanel_);
+        charDisplayPanel_.add(jFreeChartPanel_);
 
         chartMouseListener_ = new JFreeChartMouseListener(
                 jFreeChartPanel_.getJFreeChart(),
@@ -81,6 +82,9 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
         plot.getRenderer().setBaseToolTipGenerator(ttG);
 
+        plotRangeSetterPanel_ = new PlotRangeSetterPanel(plot);
+        chartRangeControlPanel_.add(plotRangeSetterPanel_);
+
         shotCheckListPanel_ = new LibzShotCheckListPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
 
@@ -90,11 +94,18 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         regionContainerPanel_.setVisible(false);
 
         // ==== start of testing code
-        /*plot = jFreeChartPanel_.getJFreeChart().getXYPlot();  
-         org.jfree.chart.axis.ValueAxis rangeAxis = plot.getRangeAxis();
-         org.jfree.chart.axis.ValueAxis domainAxis = plot.getDomainAxis();
-         rangeAxis.setRange(0, 1000);
-         domainAxis.setRange(0, 1000);*/
+        /*CheckListShotItem item = new CheckListShotItem("Test1");
+        item.getXYSeries().add(200, 200);
+        item.getXYSeries().add(450, 300);
+        item.getXYSeries().add(900, 1);
+        shotCheckListPanel_.addItem(item);
+        
+        CheckListShotItem item2 = new CheckListShotItem("Test2");
+        item2.getXYSeries().add(200, 20);
+        item2.getXYSeries().add(400, 300);
+        item2.getXYSeries().add(900, 900);
+        shotCheckListPanel_.addItem(item2);
+        */
         // ==== end of testing code
     }
 
@@ -108,7 +119,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        displayPanel_ = new javax.swing.JPanel();
         regionContainerPanel_ = new javax.swing.JPanel();
         controlPanel_ = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -126,19 +136,12 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jLabel5 = new javax.swing.JLabel();
         rasterSettingPanel_ = new javax.swing.JPanel();
         shotListContainerPanel_ = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        charDisplayPanel_ = new javax.swing.JPanel();
+        chartRangeControlPanel_ = new javax.swing.JPanel();
 
         setName(""); // NOI18N
         setLayout(new java.awt.GridBagLayout());
-
-        displayPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        displayPanel_.setLayout(new java.awt.BorderLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        add(displayPanel_, gridBagConstraints);
 
         regionContainerPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         regionContainerPanel_.setLayout(new java.awt.BorderLayout());
@@ -280,6 +283,34 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(shotListContainerPanel_, gridBagConstraints);
+
+        jPanel5.setLayout(new java.awt.GridBagLayout());
+
+        charDisplayPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        charDisplayPanel_.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel5.add(charDisplayPanel_, gridBagConstraints);
+
+        chartRangeControlPanel_.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        jPanel5.add(chartRangeControlPanel_, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jPanel5, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnScan_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScan_ActionPerformed
@@ -534,8 +565,9 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnScan_;
+    private javax.swing.JPanel charDisplayPanel_;
+    private javax.swing.JPanel chartRangeControlPanel_;
     private javax.swing.JPanel controlPanel_;
-    private javax.swing.JPanel displayPanel_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -545,6 +577,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel rasterSettingPanel_;
     private javax.swing.JPanel regionContainerPanel_;
     private javax.swing.JPanel shotListContainerPanel_;

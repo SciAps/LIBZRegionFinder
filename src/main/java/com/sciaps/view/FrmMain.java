@@ -31,12 +31,7 @@ public final class FrmMain extends javax.swing.JFrame {
     public FrmMain() {
         initComponents();
 
-        try {
-            ImageIcon img = new ImageIcon("sciaps_icon.png");
-            this.setIconImage(img.getImage());
-        } catch (Exception ex) {
-            System.out.println("Can't load icon image");
-        }
+        this.setIconImage((new ImageIcon("./images/sciaps_icon.png").getImage()));
 
         spectrometerStackPanel_ = new SpectrometerStackPanel();
         setDisplayPanel(spectrometerStackPanel_);
