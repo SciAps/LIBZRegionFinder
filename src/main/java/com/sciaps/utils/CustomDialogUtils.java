@@ -24,8 +24,9 @@ public class CustomDialogUtils {
     public static final int DEFAULT_OPTION = -1;
     public static final int OK_OPTION = 0;
     public static final int OK_CANCEL_OPTION = 1;
+    public static final int NONE_OPTION = 2;
 
-    public interface CustomDialogCallbackPanel {
+    public interface CustomDialogCallback {
 
         boolean getDialogCloseConfirmation();
     }
@@ -33,7 +34,6 @@ public class CustomDialogUtils {
     public static JDialog createDialog(JFrame frame, String title, final JPanel customPanel, int optionType) {
         final JDialog dialog = new JDialog(frame, title, true);
         dialog.setResizable(false);
-        dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         JPanel container = new JPanel();
         container.setLayout(new java.awt.GridBagLayout());
@@ -66,6 +66,7 @@ public class CustomDialogUtils {
                     }
                 });
                 controlOptionPanel.add(btnCancel);
+            // it is design to not have a break in here, so the OK button can added
             case OK_OPTION:
 
                 JButton btnOK = new JButton("OK");
@@ -73,15 +74,36 @@ public class CustomDialogUtils {
                 btnOK.addActionListener(new java.awt.event.ActionListener() {
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        if (customPanel instanceof CustomDialogCallbackPanel) {
-                            CustomDialogCallbackPanel custom = (CustomDialogCallbackPanel) customPanel;
+                        if (customPanel instanceof CustomDialogCallback) {
+                            CustomDialogCallback custom = (CustomDialogCallback) customPanel;
                             if (custom.getDialogCloseConfirmation()) {
                                 dialog.dispose();
                             }
                         }
                     }
                 });
+                dialog.getRootPane().setDefaultButton(btnOK);
                 controlOptionPanel.add(btnOK);
+
+                // Because the previous case statement has not break point, 
+                // this check is required so to avoid having two listeners that 
+                // checking on two different things
+                if (optionType == OK_OPTION) {
+                    dialog.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            if (customPanel instanceof CustomDialogCallback) {
+                                CustomDialogCallback custom = (CustomDialogCallback) customPanel;
+                                if (custom.getDialogCloseConfirmation()) {
+                                    dialog.dispose();
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+            case NONE_OPTION:
+                dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 break;
             default:
 

@@ -5,13 +5,9 @@
  */
 package com.sciaps.view;
 
+import com.sciaps.utils.CustomDialogUtils.CustomDialogCallback;
 import static com.sciaps.utils.Util.validateZeroOrGreater;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,23 +16,19 @@ import org.slf4j.LoggerFactory;
  *
  * @author jchen
  */
-public class AverageShotsSettingPanel extends javax.swing.JPanel {
+public class AverageShotsSettingPanel extends javax.swing.JPanel implements CustomDialogCallback {
 
     private final Logger logger_ = LoggerFactory.getLogger(AverageShotsSettingPanel.class);
     private int sampleRate_;
     private String avgShotName_;
-
-    private JDialog popupDisplay_;
 
     /**
      * Creates new form HTTPConfigPanel
      */
     public AverageShotsSettingPanel() {
         initComponents();
-        sampleRate_ = -1;
-        avgShotName_ = "";
-
-        createPopupDisplay();
+        sampleRate_ = 30;
+        avgShotName_ = "No Name";
     }
 
     /**
@@ -50,7 +42,6 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel1 = new javax.swing.JLabel();
-        btnOK_ = new javax.swing.JButton();
         txtName_ = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtSampleRate_ = new javax.swing.JTextField();
@@ -66,23 +57,6 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         add(jLabel1, gridBagConstraints);
 
-        btnOK_.setText("OK");
-        btnOK_.setMaximumSize(new java.awt.Dimension(77, 23));
-        btnOK_.setMinimumSize(new java.awt.Dimension(77, 23));
-        btnOK_.setPreferredSize(new java.awt.Dimension(77, 23));
-        btnOK_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOK_ActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
-        add(btnOK_, gridBagConstraints);
-
         txtName_.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtName_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -93,6 +67,7 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 4);
         add(txtName_, gridBagConstraints);
 
@@ -124,7 +99,7 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         jLabel3.setBackground(new java.awt.Color(204, 204, 204));
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Raster Setting");
+        jLabel3.setText("Shot Average Setting");
         jLabel3.setFocusable(false);
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel3.setOpaque(true);
@@ -137,14 +112,6 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 6, 0);
         add(jLabel3, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnOK_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOK_ActionPerformed
-
-        if (validateData() && popupDisplay_ != null) {
-            popupDisplay_.dispose();
-        }
-
-    }//GEN-LAST:event_btnOK_ActionPerformed
 
     private void txtSampleRate_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSampleRate_KeyReleased
         validateZeroOrGreater(txtSampleRate_);
@@ -159,33 +126,18 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_txtName_KeyReleased
 
-    private void createPopupDisplay() {
-        popupDisplay_ = new JDialog();
-        popupDisplay_.setResizable(false);
-        popupDisplay_.setTitle("Create Average Shots Setting");
-        popupDisplay_.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        popupDisplay_.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                e.getWindow().dispose();
-            }
-        });
-        popupDisplay_.add(this, java.awt.BorderLayout.CENTER);
-        popupDisplay_.setSize(new Dimension(300, 200));
-        popupDisplay_.setLocationRelativeTo(this);
-        popupDisplay_.setModal(true);
-    }
-
     private boolean validateData() {
         boolean allGood = true;
 
         try {
             sampleRate_ = validateZeroOrGreater(txtSampleRate_);
             if (sampleRate_ < 1) {
+                allGood = false;
                 showErrorDialog("Sample rate must be greater than 0");
             }
             avgShotName_ = txtName_.getText();
             if (avgShotName_.isEmpty()) {
+                allGood = false;
                 showErrorDialog("Name field can not be blank.");
             }
         } catch (NumberFormatException ex) {
@@ -193,11 +145,6 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
         }
 
         return allGood;
-    }
-
-    public void showPopup() {
-        this.getRootPane().setDefaultButton(btnOK_);
-        popupDisplay_.setVisible(true);
     }
 
     public void setAvgShotName(String name) {
@@ -224,11 +171,15 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnOK_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField txtName_;
     private javax.swing.JTextField txtSampleRate_;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public boolean getDialogCloseConfirmation() {
+        return validateData();
+    }
 }

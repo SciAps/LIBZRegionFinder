@@ -7,10 +7,12 @@ package com.sciaps.view;
 
 import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.LIBZHttpClient;
+import com.sciaps.utils.CustomDialogUtils;
 import com.sciaps.utils.Util;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.jfree.ui.RefineryUtilities;
@@ -22,23 +24,19 @@ import org.jfree.ui.RefineryUtilities;
 public final class FrmMain extends javax.swing.JFrame {
 
     SpectrometerStackPanel spectrometerStackPanel_;
-    HTTPConfigPanel httpConfigPanel_;
 
     /**
      * Creates new form frmMain
      */
     public FrmMain() {
         initComponents();
-      
+
         try {
             ImageIcon img = new ImageIcon("sciaps_icon.png");
             this.setIconImage(img.getImage());
         } catch (Exception ex) {
             System.out.println("Can't load icon image");
         }
-        
-        httpConfigPanel_ = new HTTPConfigPanel();
-        httpConfigPanel_.setParentFrame(this);
 
         spectrometerStackPanel_ = new SpectrometerStackPanel();
         setDisplayPanel(spectrometerStackPanel_);
@@ -128,7 +126,7 @@ public final class FrmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuFileExitActionPerformed
 
     private void mnuConfigSetLibzIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuConfigSetLibzIPActionPerformed
-        httpConfigPanel_.showPopup();
+        doShowIPAddressDisplay();
     }//GEN-LAST:event_mnuConfigSetLibzIPActionPerformed
 
     private void mnuFileExportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExportCSV_ActionPerformed
@@ -197,6 +195,16 @@ public final class FrmMain extends javax.swing.JFrame {
         });
     }
 
+    private void doShowIPAddressDisplay() {
+        HTTPConfigPanel httpConfigPanel;
+        httpConfigPanel = new HTTPConfigPanel();
+        httpConfigPanel.setParentFrame(this);
+        JDialog dialog = CustomDialogUtils.createDialog(this, "LIBZ IP Address",
+                httpConfigPanel, CustomDialogUtils.OK_CANCEL_OPTION);
+        dialog.setSize(300, 150);
+        dialog.setVisible(true);
+    }
+
     private void readIPAddress() {
 
         String address = Util.getIPAddress();
@@ -204,7 +212,7 @@ public final class FrmMain extends javax.swing.JFrame {
             Constants.mHttpClient = new LIBZHttpClient("http://" + address + ":9000");
             displayLibzIPAddress(address);
         } else {
-            httpConfigPanel_.showPopup();
+            doShowIPAddressDisplay();
         }
     }
 

@@ -7,16 +7,12 @@ package com.sciaps.view;
 
 import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.LIBZHttpClient;
+import com.sciaps.utils.CustomDialogUtils.CustomDialogCallback;
 import com.sciaps.utils.Util;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +21,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author jchen
  */
-public class HTTPConfigPanel extends javax.swing.JPanel {
+public class HTTPConfigPanel extends javax.swing.JPanel implements CustomDialogCallback {
 
     private final Logger logger_ = LoggerFactory.getLogger(HTTPConfigPanel.class);
 
     private FrmMain frmParent_;
-
-    private JDialog popupDisplay_;
 
     /**
      * Creates new form HTTPConfigPanel
@@ -39,9 +33,7 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
     public HTTPConfigPanel() {
         initComponents();
 
-        createPopupDisplay();
-
-        this.getRootPane().setDefaultButton(btnSave_);
+        initializeDisplay();
 
         frmParent_ = null;
     }
@@ -57,93 +49,56 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel1 = new javax.swing.JLabel();
-        btnSave_ = new javax.swing.JButton();
-        btnCancel_ = new javax.swing.JButton();
         txtIPAddress_ = new javax.swing.JTextField();
 
         setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setText("Enter IP Address of LIBZ (example: 10.98.100.80)");
+        jLabel1.setText("Enter LIBZ IP Address (example: 10.98.100.80)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 5);
         add(jLabel1, gridBagConstraints);
-
-        btnSave_.setText("SAVE");
-        btnSave_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSave_ActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(btnSave_, gridBagConstraints);
-
-        btnCancel_.setText("CANCEL");
-        btnCancel_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancel_ActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(btnCancel_, gridBagConstraints);
 
         txtIPAddress_.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         txtIPAddress_.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(txtIPAddress_, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCancel_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancel_ActionPerformed
-        popupDisplay_.dispose();
-    }//GEN-LAST:event_btnCancel_ActionPerformed
+    private void initializeDisplay() {
 
-    private void btnSave_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSave_ActionPerformed
+        String ip = Util.getIPAddress();
 
+        if (ip != null) {
+            txtIPAddress_.setText(ip);
+            txtIPAddress_.setSelectionStart(0);
+            txtIPAddress_.setSelectionEnd(ip.length());
+        } else {
+            txtIPAddress_.setText("127.0.0.1");
+        }
+
+    }
+
+    private boolean doSave() {
         String ipaddress = txtIPAddress_.getText();
         if (com.sciaps.utils.Util.validateIPAddress(ipaddress)) {
 
             saveIPAddress(ipaddress);
 
             Constants.mHttpClient = new LIBZHttpClient("http://" + ipaddress + ":9000");
-            popupDisplay_.dispose();
+            return true;
         } else {
             showErrorDialog("Invalid IP Address Syntax");
+            return false;
         }
-    }//GEN-LAST:event_btnSave_ActionPerformed
-
-    private void createPopupDisplay() {
-        popupDisplay_ = new JDialog();
-        popupDisplay_.setResizable(false);
-        popupDisplay_.setTitle("LIBZ Connection Setting");
-        popupDisplay_.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        popupDisplay_.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                e.getWindow().dispose();
-            }
-        });
-        popupDisplay_.add(this, java.awt.BorderLayout.CENTER);
-        popupDisplay_.setSize(new Dimension(300, 150));
-        popupDisplay_.setLocationRelativeTo(this);
-        popupDisplay_.setModal(true);
     }
 
     private void saveIPAddress(String ipaddress) {
@@ -175,31 +130,18 @@ public class HTTPConfigPanel extends javax.swing.JPanel {
         frmParent_ = frame;
     }
 
-    public void showPopup() {
-
-        String ip = Util.getIPAddress();
-
-        if (ip != null) {
-            txtIPAddress_.setText(ip);
-            txtIPAddress_.setSelectionStart(0);
-            txtIPAddress_.setSelectionEnd(ip.length());
-        } else {
-            txtIPAddress_.setText("127.0.0.1");
-        }
-
-        this.getRootPane().setDefaultButton(btnSave_);
-        popupDisplay_.setVisible(true);
-    }
-
     private void showErrorDialog(String msg) {
         logger_.error(msg);
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancel_;
-    private javax.swing.JButton btnSave_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField txtIPAddress_;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public boolean getDialogCloseConfirmation() {
+        return doSave();
+    }
 }

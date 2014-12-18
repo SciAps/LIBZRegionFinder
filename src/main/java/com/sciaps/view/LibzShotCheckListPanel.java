@@ -8,6 +8,7 @@ package com.sciaps.view;
 import com.sciaps.common.CheckListShotItem;
 import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.spectrum.Spectrum;
+import com.sciaps.utils.CustomDialogUtils;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.validateOneOrGreater;
 import static com.sciaps.utils.Util.validateZeroOrGreater;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
@@ -277,7 +279,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
             showErrorDialog("List is Empty. Nothing to remove.");
             return;
         }
-        
+
         while (allgood == false) {
 
             String retval = JOptionPane.showInputDialog(null,
@@ -357,7 +359,12 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                 } else {
                     avgPanel.setSampleRate(30);
                 }
-                avgPanel.showPopup();
+
+                JDialog dialog = CustomDialogUtils.createDialog(null,
+                        "Shot Average Setting", avgPanel,
+                        CustomDialogUtils.OK_OPTION);
+                dialog.setSize(400, 180);
+                dialog.setVisible(true);
 
                 String newName = avgPanel.getAvgShotName();
                 int newSampleRate = avgPanel.getSampleRate();
@@ -378,20 +385,22 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
     public void doRemoveScan(int scanID) {
         logger_.info("Removing scan " + scanID + " ....");
-        
-        if (listModel_.getSize() == 0)
+
+        if (listModel_.getSize() == 0) {
             return;
-        
+        }
+
         int index = 0;
         int i = 0;
         while (index != (listModel_.getSize() - 1)) {
             for (i = 0; i < listModel_.getSize(); i++) {
                 index = i;
-                CheckListShotItem shotItem = (CheckListShotItem) listModel_.getElementAt(i);               
-                
+                CheckListShotItem shotItem = (CheckListShotItem) listModel_.getElementAt(i);
+
                 if (shotItem.getScanID() == scanID) {
-                    if (callbackListener_ != null)
+                    if (callbackListener_ != null) {
                         callbackListener_.doRemoveShotXYSeries(shotItem);
+                    }
                     listModel_.removeElement(shotItem);
                     i--;
                 }

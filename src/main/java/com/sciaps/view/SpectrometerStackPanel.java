@@ -73,14 +73,14 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 jFreeChartPanel_.getChartPanel(),
                 regionPanels_);
         jFreeChartPanel_.getChartPanel().addChartMouseListener(chartMouseListener_);
-        
+
         XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         plot.setRenderer(renderer);
         StandardXYToolTipGenerator ttG
                 = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
         plot.getRenderer().setBaseToolTipGenerator(ttG);
-        
+
         shotCheckListPanel_ = new LibzShotCheckListPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
 
@@ -91,10 +91,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         // ==== start of testing code
         /*plot = jFreeChartPanel_.getJFreeChart().getXYPlot();  
-        org.jfree.chart.axis.ValueAxis rangeAxis = plot.getRangeAxis();
-        org.jfree.chart.axis.ValueAxis domainAxis = plot.getDomainAxis();
-        rangeAxis.setRange(0, 1000);
-        domainAxis.setRange(0, 1000);*/
+         org.jfree.chart.axis.ValueAxis rangeAxis = plot.getRangeAxis();
+         org.jfree.chart.axis.ValueAxis domainAxis = plot.getDomainAxis();
+         rangeAxis.setRange(0, 1000);
+         domainAxis.setRange(0, 1000);*/
         // ==== end of testing code
     }
 
@@ -373,10 +373,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         // Reset the bounds incase it is zoomed in/out
         jFreeChartPanel_.getChartPanel().restoreAutoBounds();
         ProgressStatusPanel progressbar = new ProgressStatusPanel();
-        final JDialog progressDialog = CustomDialogUtils.createDialog(null, 
-                "Raster Test In Progress", progressbar, 
-                CustomDialogUtils.DEFAULT_OPTION);
-        progressDialog.setSize(400,100);
+        final JDialog progressDialog = CustomDialogUtils.createDialog(null,
+                "Raster Test In Progress", progressbar,
+                CustomDialogUtils.NONE_OPTION);
+        progressDialog.setSize(400, 100);
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -427,11 +427,11 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 logger_.info("Raster test completed.");
 
             } else {
-                errMsg.append("Raster test failed, no returned data from Libz unit.");
+                errMsg.append("Raster test failed, no data returned from Libz unit.");
             }
 
         } catch (Exception ex) {
-            errMsg.append("Raster test failed ");
+            errMsg.append("Raster test failed: ");
             errMsg.append(ex.getMessage());
         }
 
