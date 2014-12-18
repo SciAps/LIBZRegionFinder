@@ -394,7 +394,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
                 double newX = Double.parseDouble(tmp);
                 doRemoveMarker(tableModel_.getMarker(modelRow));
                 tableModel_.setValueAt(newX, modelRow, modelCol);
-                
+                tblRegions_.setRowSelectionInterval(selectedRow, selectedRow);
+                tblRegions_.setColumnSelectionInterval(selectedCol, selectedCol);
             } catch (Exception ex) {
 
             }
