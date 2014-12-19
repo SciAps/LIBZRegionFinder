@@ -20,6 +20,7 @@ import com.sciaps.utils.CustomDialogUtils;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.populateXYSeriesData;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.JDialog;
@@ -66,7 +67,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         xySeriesCollection_ = new XYSeriesCollection();
         jFreeChartPanel_ = new JFreeChartWrapperPanel();
         jFreeChartPanel_.populateSpectrumChartWithAbstractXYDataset(
-                xySeriesCollection_, "Spectro Meter Stack", "Wave Length", "Intensity");
+                xySeriesCollection_, "Spectrometer", "Wave Length", "Intensity");
         charDisplayPanel_.add(jFreeChartPanel_);
 
         chartMouseListener_ = new JFreeChartMouseListener(
@@ -82,6 +83,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
         plot.getRenderer().setBaseToolTipGenerator(ttG);
 
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setDomainPannable(true);
+        plot.setRangePannable(true);
+
         plotRangeSetterPanel_ = new PlotRangeSetterPanel(plot);
         chartRangeControlPanel_.add(plotRangeSetterPanel_);
 
@@ -95,17 +100,17 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         // ==== start of testing code
         /*CheckListShotItem item = new CheckListShotItem("Test1");
-        item.getXYSeries().add(200, 200);
-        item.getXYSeries().add(450, 300);
-        item.getXYSeries().add(900, 1);
-        shotCheckListPanel_.addItem(item);
+         item.getXYSeries().add(200, 200);
+         item.getXYSeries().add(450, 300);
+         item.getXYSeries().add(900, 1);
+         shotCheckListPanel_.addItem(item);
         
-        CheckListShotItem item2 = new CheckListShotItem("Test2");
-        item2.getXYSeries().add(200, 20);
-        item2.getXYSeries().add(400, 300);
-        item2.getXYSeries().add(900, 900);
-        shotCheckListPanel_.addItem(item2);
-        */
+         CheckListShotItem item2 = new CheckListShotItem("Test2");
+         item2.getXYSeries().add(200, 20);
+         item2.getXYSeries().add(400, 300);
+         item2.getXYSeries().add(900, 900);
+         shotCheckListPanel_.addItem(item2);
+         */
         // ==== end of testing code
     }
 
@@ -358,10 +363,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         } else {
             toggleShotList_.setText("Show");
         }
-    }
-
-    public void showSpecialRasterDisplay() {
-        specialRasterPanel_.showPopup();
     }
 
     private void prepareForRasterTest() {

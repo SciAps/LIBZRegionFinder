@@ -5,6 +5,9 @@
  */
 package com.sciaps.view;
 
+import static com.sciaps.common.Constants.REGION_MARKER_COL;
+import static com.sciaps.common.Constants.REGION_MAX_COL;
+import static com.sciaps.common.Constants.REGION_MIN_COL;
 import com.sciaps.common.RegionMarkerItem;
 import com.sciaps.listener.JFreeChartMouseListener.JFreeChartMouseListenerCallback;
 import com.sciaps.model.RegionsTableModel;
@@ -42,14 +45,12 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
     }
 
     private final Logger logger_ = LoggerFactory.getLogger(RegionsPanel.class);
-    private RegionsPanelCallback callback_;
     private RegionsTableModel tableModel_;
     private TableRowSorter<RegionsTableModel> sorter_;
 
     public RegionsPanel() {
         initComponents();
 
-        callback_ = null;
         initializePanel();
     }
 
@@ -61,19 +62,18 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
     public RegionsPanel(RegionsPanelCallback callback) {
         initComponents();
 
-        callback_ = callback;
+        tableModel_ = new RegionsTableModel(callback);
         initializePanel();
     }
 
     private void initializePanel() {
 
-        tableModel_ = new RegionsTableModel();
-
         sorter_ = new TableRowSorter<RegionsTableModel>(tableModel_);
         tblRegions_.setRowSorter(sorter_);
         tblRegions_.setModel(tableModel_);
-        tblRegions_.getColumnModel().getColumn(2).setCellRenderer(new TableCellDoubleTypeRenderer());
-        tblRegions_.getColumnModel().getColumn(3).setCellRenderer(new TableCellDoubleTypeRenderer());
+
+        tblRegions_.getColumnModel().getColumn(REGION_MIN_COL).setCellRenderer(new TableCellDoubleTypeRenderer());
+        tblRegions_.getColumnModel().getColumn(REGION_MAX_COL).setCellRenderer(new TableCellDoubleTypeRenderer());
 
         txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -93,17 +93,13 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         });
     }
 
-    public void addCallbackListener(RegionsPanelCallback callback) {
-        callback_ = callback;
-    }
-
     public void addRow(RegionMarkerItem markerItem) {
         tableModel_.addRow(markerItem);
     }
 
     private void filterTable() {
         try {
-            RowFilter<RegionsTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtFilterText_.getText(), 0);
+            RowFilter<RegionsTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtFilterText_.getText(), 1);
             sorter_.setRowFilter(rowFilter);
         } catch (java.util.regex.PatternSyntaxException ex) {
             logger_.error(ex.getMessage());
@@ -311,14 +307,27 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             tmpSelectedRows[i] = modelIndex;
         }
 
-        doDelete(tmpSelectedRows);
+        tableModel_.removeRows(tmpSelectedRows);
     }//GEN-LAST:event_btnDelete_ActionPerformed
 
     private void btnCalculateValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateValue_ActionPerformed
-        doCalculate();
+        tableModel_.doCalculate();
     }//GEN-LAST:event_btnCalculateValue_ActionPerformed
 
     private void btnAddMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMarker_ActionPerformed
+        doAddRemoveMarker(true);
+    }//GEN-LAST:event_btnAddMarker_ActionPerformed
+
+    private void btnRemoveMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveMarker_ActionPerformed
+        doAddRemoveMarker(false);
+    }//GEN-LAST:event_btnRemoveMarker_ActionPerformed
+
+    private void btnInsertNew_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertNew_ActionPerformed
+        RegionMarkerItem item = new RegionMarkerItem();
+        tableModel_.addRow(item);
+    }//GEN-LAST:event_btnInsertNew_ActionPerformed
+
+    private void doAddRemoveMarker(boolean val) {
         int[] selectedRows = tblRegions_.getSelectedRows();
 
         if (selectedRows.length == 0) {
@@ -328,55 +337,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
         for (int i = 0; i < selectedRows.length; i++) {
             int modelIndex = tblRegions_.convertRowIndexToModel(selectedRows[i]);
-            doSetMarker(tableModel_.getMarker(modelIndex));
-        }
-    }//GEN-LAST:event_btnAddMarker_ActionPerformed
-
-    private void btnRemoveMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveMarker_ActionPerformed
-        int[] selectedRows = tblRegions_.getSelectedRows();
-
-        if (selectedRows.length == 0) {
-            showErrorDialog("No region selected to remove marker.");
-            return;
-        }
-
-        for (int i = 0; i < selectedRows.length; i++) {
-            int modelIndex = tblRegions_.convertRowIndexToModel(selectedRows[i]);
-            doRemoveMarker(tableModel_.getMarker(modelIndex));
-        }
-    }//GEN-LAST:event_btnRemoveMarker_ActionPerformed
-
-    private void btnInsertNew_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertNew_ActionPerformed
-        RegionMarkerItem item = new RegionMarkerItem();
-        tableModel_.addRow(item);
-    }//GEN-LAST:event_btnInsertNew_ActionPerformed
-
-    private void doSetMarker(IntervalMarker marker) {
-        if (callback_ != null) {
-            callback_.addRegionMarker(marker);
-        }
-    }
-
-    private void doRemoveMarker(IntervalMarker marker) {
-        if (callback_ != null) {
-            callback_.removeRegionMarker(marker);
-        }
-    }
-
-    private void doDelete(int[] rows) {
-        tableModel_.removeRows(rows);
-    }
-
-    private void doCalculate() {
-        if (callback_ != null) {
-            int numOfSelected = callback_.getNumberOfSelectedShots();
-            if (numOfSelected == 1) {
-                //TODO
-            } else if (numOfSelected == -1) {
-                showErrorDialog("No shot selected to do the region calculation.");
-            } else {
-                showErrorDialog("Too many shots selected to do the region calculation.\nOnly 1 shot should be selected.");
-            }
+            tableModel_.setValueAt(val, modelIndex, REGION_MARKER_COL);
         }
     }
 
@@ -384,7 +345,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
     public void jFreeChartOnClicked(double x, double y) {
         int selectedRow = tblRegions_.getSelectedRow();
         int selectedCol = tblRegions_.getSelectedColumn();
-        if (selectedRow > -1 && (selectedCol == 2 || selectedCol == 3)) {
+        if (selectedRow > -1 && (selectedCol == REGION_MIN_COL || selectedCol == REGION_MAX_COL)) {
             int modelRow = tblRegions_.convertRowIndexToModel(selectedRow);
             int modelCol = tblRegions_.convertColumnIndexToModel(selectedCol);
 
@@ -392,7 +353,6 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             String tmp = formatter.format(x);
             try {
                 double newX = Double.parseDouble(tmp);
-                doRemoveMarker(tableModel_.getMarker(modelRow));
                 tableModel_.setValueAt(newX, modelRow, modelCol);
                 tblRegions_.setRowSelectionInterval(selectedRow, selectedRow);
                 tblRegions_.setColumnSelectionInterval(selectedCol, selectedCol);
@@ -423,19 +383,19 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             } else {
                 editor.setBackground(table.getBackground());
             }
-            
+
             if (hasFocus) {
                 //editor.setBackground(Color.LIGHT_GRAY);
-                editor.setBorder( LineBorder.createGrayLineBorder());
+                editor.setBorder(LineBorder.createGrayLineBorder());
             }
-            
+
             try {
-                double min = Double.parseDouble((String) table.getValueAt(row, 2));
-                double max = Double.parseDouble((String) table.getValueAt(row, 3));
+                double min = Double.parseDouble((String) table.getValueAt(row, REGION_MIN_COL));
+                double max = Double.parseDouble((String) table.getValueAt(row, REGION_MAX_COL));
 
                 if (min > max) {
                     editor.setBackground(Color.red);
-                } 
+                }
             } catch (NumberFormatException ex) {
                 editor.setBackground(Color.red);
             }

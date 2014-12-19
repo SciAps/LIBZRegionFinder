@@ -1,6 +1,7 @@
 package com.sciaps.model;
 
 import com.sciaps.common.RegionMarkerItem;
+import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,10 +22,12 @@ import org.jfree.chart.plot.IntervalMarker;
 public class RegionsTableModel extends AbstractTableModel {
 
     private final List<RegionMarkerItem> data_;
-    String[] columnNames_ = {"Name", "Symbol", "Min", "Max", "Value"};
+    String[] columnNames_ = {"Marker On", "Name", "Symbol", "Min", "Max", "Value"};
+    private RegionsPanelCallback callback_;
 
-    public RegionsTableModel() {
+    public RegionsTableModel(RegionsPanelCallback callback) {
         data_ = new ArrayList<RegionMarkerItem>();
+        callback_ = callback;
     }
 
     @Override
@@ -46,14 +49,16 @@ public class RegionsTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return data_.get(rowIndex).getName();
+                return data_.get(rowIndex).getIsMarkerShown();
             case 1:
-                return data_.get(rowIndex).getSymbol();
+                return data_.get(rowIndex).getName();
             case 2:
-                return String.valueOf(data_.get(rowIndex).getMin());
+                return data_.get(rowIndex).getSymbol();
             case 3:
-                return String.valueOf(data_.get(rowIndex).getMax());
+                return String.valueOf(data_.get(rowIndex).getMin());
             case 4:
+                return String.valueOf(data_.get(rowIndex).getMax());
+            case 5:
                 return String.valueOf(data_.get(rowIndex).getValue());
             default:
                 return null;
@@ -63,38 +68,73 @@ public class RegionsTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
+        boolean isMarkerShown = data_.get(rowIndex).getIsMarkerShown();
+
         switch (columnIndex) {
             case 0:
-                data_.get(rowIndex).setName((String) aValue);
+                boolean val = (Boolean) aValue;
+                if (val) {
+                    addMarker(rowIndex);
+                } else {
+                    removeMarker(rowIndex);
+                }
+
+                data_.get(rowIndex).setIsMarkerShown(val);
                 break;
             case 1:
-                data_.get(rowIndex).setSymbol((String) aValue);
+                data_.get(rowIndex).setName((String) aValue);
                 break;
             case 2:
-                try {
-                    double newVal = Double.parseDouble(aValue.toString());
-                    data_.get(rowIndex).setMin(newVal);
-                    checkMinAndMax(rowIndex);
 
-                } catch (NumberFormatException ex) {
-                    showErrorPopup("Invalid Min Value: " + (String) aValue);
+                if (isMarkerShown) {
+                    removeMarker(rowIndex);
+                }
+                data_.get(rowIndex).setSymbol((String) aValue);
+
+                if (isMarkerShown) {
+                    addMarker(rowIndex);
                 }
                 break;
             case 3:
                 try {
                     double newVal = Double.parseDouble(aValue.toString());
-                    data_.get(rowIndex).setMax(newVal);
-                    checkMinAndMax(rowIndex);
+                    if (isMarkerShown) {
+                        removeMarker(rowIndex);
+                    }
+
+                    data_.get(rowIndex).setMin(newVal);
+
+                    if (isMarkerShown && checkMinAndMax(rowIndex)) {
+                        addMarker(rowIndex);
+                    }
+
                 } catch (NumberFormatException ex) {
-                    showErrorPopup("Invalid Max Value: " + (String) aValue);
+                    showErrorDialog("Invalid Min Value: " + (String) aValue);
                 }
                 break;
             case 4:
                 try {
                     double newVal = Double.parseDouble(aValue.toString());
+                    if (isMarkerShown) {
+                        removeMarker(rowIndex);
+                    }
+
+                    data_.get(rowIndex).setMax(newVal);
+
+                    if (isMarkerShown && checkMinAndMax(rowIndex)) {
+                        addMarker(rowIndex);
+                    }
+
+                } catch (NumberFormatException ex) {
+                    showErrorDialog("Invalid Max Value: " + (String) aValue);
+                }
+                break;
+            case 5:
+                try {
+                    double newVal = Double.parseDouble(aValue.toString());
                     data_.get(rowIndex).setValue(newVal);
                 } catch (NumberFormatException ex) {
-                    showErrorPopup("Invalid Calculated Value: " + (String) aValue);
+                    showErrorDialog("Invalid Calculated Value: " + (String) aValue);
                 }
                 break;
             default:
@@ -104,17 +144,29 @@ public class RegionsTableModel extends AbstractTableModel {
     }
 
     @Override
+    public Class getColumnClass(int column) {
+        switch (column) {
+            case 0:
+                return Boolean.class;
+            default:
+                return String.class;
+        }
+    }
+
+    @Override
     public boolean isCellEditable(int RowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return false;
-            case 1:
                 return true;
+            case 1:
+                return false;
             case 2:
                 return true;
             case 3:
                 return true;
             case 4:
+                return true;
+            case 5:
                 return false;
             default:
                 return true;
@@ -127,6 +179,10 @@ public class RegionsTableModel extends AbstractTableModel {
     }
 
     public void removeRow(int rowIndex) {
+        if (data_.get(rowIndex).getIsMarkerShown()) {
+            removeMarker(rowIndex);
+        }
+
         data_.remove(rowIndex);
         fireTableDataChanged();
     }
@@ -134,6 +190,10 @@ public class RegionsTableModel extends AbstractTableModel {
     public void removeRows(int[] rowIndex) {
         Arrays.sort(rowIndex);
         for (int i = rowIndex.length - 1; i >= 0; i--) {
+            if (data_.get(rowIndex[i]).getIsMarkerShown()) {
+                removeMarker(rowIndex[i]);
+            }
+
             data_.remove(rowIndex[i]);
         }
 
@@ -145,16 +205,50 @@ public class RegionsTableModel extends AbstractTableModel {
         return data_.get(rowIndex).getMarker();
     }
 
-    private void checkMinAndMax(int rowIndex) {
+    private boolean checkMinAndMax(int rowIndex) {
 
+        boolean retval = true;
         double min = data_.get(rowIndex).getMin();
         double max = data_.get(rowIndex).getMax();
         if (min > max) {
-            showErrorPopup("ERROR: Min is greater than Max");
+            showErrorDialog("ERROR: Min is greater than Max");
+            retval = false;
+        }
+
+        return retval;
+    }
+
+    public void removeMarker(int rowIndex) {
+        if (callback_ != null) {
+            data_.get(rowIndex).setIsMarkerShown(false);
+            callback_.removeRegionMarker(data_.get(rowIndex).getMarker());
         }
     }
 
-    private void showErrorPopup(final String msg) {
+    public void addMarker(int rowIndex) {
+        if (callback_ != null) {
+            if (data_.get(rowIndex).getIsMarkerShown() == false) {
+                callback_.addRegionMarker(data_.get(rowIndex).getMarker());
+                data_.get(rowIndex).setIsMarkerShown(true);
+            }
+        }
+    }
+
+    public void doCalculate() {
+        if (callback_ != null) {
+            int numOfSelected = callback_.getNumberOfSelectedShots();
+
+            if (numOfSelected == 1) {
+                //TODO
+            } else if (numOfSelected == 0) {
+                showErrorDialog("No shot selected to do the region calculation.");
+            } else {
+                showErrorDialog("Too many shots selected to do the region calculation.\nOnly 1 shot should be selected.");
+            }
+        }
+    }
+
+    private void showErrorDialog(final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override

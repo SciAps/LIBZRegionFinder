@@ -23,8 +23,9 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
     private final int UP = 2;
     private final int DOWN = 3;
 
-    ValueAxis rangeAxis_;
-    ValueAxis domainAxis_;
+    private XYPlot plot_;
+    private ValueAxis rangeAxis_;
+    private ValueAxis domainAxis_;
     boolean mousePressed_;
 
     /**
@@ -35,6 +36,7 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
     public PlotRangeSetterPanel(XYPlot plot) {
         initComponents();
 
+        plot_ = plot;
         rangeAxis_ = plot.getRangeAxis();
         domainAxis_ = plot.getDomainAxis();
 
@@ -61,6 +63,9 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
         btnAutoRange_ = new javax.swing.JButton();
         btnUp_ = new javax.swing.JButton();
         btnDown_ = new javax.swing.JButton();
+        chkDomainGridline_ = new javax.swing.JCheckBox();
+        chkRangeGridline_ = new javax.swing.JCheckBox();
+        chkAutoRange_ = new javax.swing.JCheckBox();
 
         btnLeft_.setToolTipText("Shift left");
         btnLeft_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -153,6 +158,33 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
             }
         });
         add(btnDown_);
+
+        chkDomainGridline_.setSelected(true);
+        chkDomainGridline_.setText("Domain Gridline");
+        chkDomainGridline_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkDomainGridline_ActionPerformed(evt);
+            }
+        });
+        add(chkDomainGridline_);
+
+        chkRangeGridline_.setSelected(true);
+        chkRangeGridline_.setText("Range Gridline");
+        chkRangeGridline_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkRangeGridline_ActionPerformed(evt);
+            }
+        });
+        add(chkRangeGridline_);
+
+        chkAutoRange_.setSelected(true);
+        chkAutoRange_.setText("Auto Range");
+        chkAutoRange_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkAutoRange_ActionPerformed(evt);
+            }
+        });
+        add(chkAutoRange_);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLeft_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeft_ActionPerformed
@@ -212,6 +244,24 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
         domainAxis_.setAutoRange(true);
         rangeAxis_.setAutoRange(true);
     }//GEN-LAST:event_btnAutoRange_ActionPerformed
+
+    private void chkDomainGridline_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkDomainGridline_ActionPerformed
+        plot_.setDomainGridlinesVisible(chkDomainGridline_.isSelected());
+    }//GEN-LAST:event_chkDomainGridline_ActionPerformed
+
+    private void chkRangeGridline_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkRangeGridline_ActionPerformed
+        plot_.setRangeGridlinesVisible(chkRangeGridline_.isSelected());
+    }//GEN-LAST:event_chkRangeGridline_ActionPerformed
+
+    private void chkAutoRange_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAutoRange_ActionPerformed
+        boolean val = chkAutoRange_.isSelected();
+        btnAutoRange_.setVisible(!val);
+
+        Range range = new Range(domainAxis_.getLowerBound(), domainAxis_.getUpperBound());
+        domainAxis_.setAutoRange(false);
+        domainAxis_.setAutoRangeMinimumSize(domainAxis_.getLowerBound());
+
+    }//GEN-LAST:event_chkAutoRange_ActionPerformed
 
     private void doMousePressedAction(final int action) {
 
@@ -316,5 +366,8 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnLeft_;
     private javax.swing.JButton btnRight_;
     private javax.swing.JButton btnUp_;
+    private javax.swing.JCheckBox chkAutoRange_;
+    private javax.swing.JCheckBox chkDomainGridline_;
+    private javax.swing.JCheckBox chkRangeGridline_;
     // End of variables declaration//GEN-END:variables
 }

@@ -71,7 +71,7 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel implements Cust
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 4);
         add(txtName_, gridBagConstraints);
 
-        jLabel2.setText("Enter Sample Rate:");
+        jLabel2.setText("Enter Sample Rate Per Nanometer:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

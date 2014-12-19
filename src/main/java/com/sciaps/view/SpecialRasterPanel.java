@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -27,7 +28,6 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
 
     private final Logger logger_ = LoggerFactory.getLogger(SpecialRasterPanel.class);
 
-    private JDialog popupDisplay_;
     private int iLocationsVal_ = 0;
     private int iDataShotsVal_ = 0;
     private int iArgonPreflushVal_ = 0;
@@ -48,8 +48,10 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
      */
     public SpecialRasterPanel() {
         initComponents();
-
-        createPopupDisplay();
+        
+        btnDataShotHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnArgonPrefushHelp_.setIcon(new ImageIcon("./images/help.png"));
+        
     }
 
     /**
@@ -83,12 +85,16 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         txtStepSize_ = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        btnArgonPrefushHelp_ = new javax.swing.JButton();
+        btnDataShotHelp_ = new javax.swing.JButton();
+        lblHelp_ = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(260, 380));
         setRequestFocusEnabled(false);
         setLayout(new java.awt.GridBagLayout());
 
         txtDataShots_.setText("5");
+        txtDataShots_.setToolTipText("Shots per location");
         txtDataShots_.setMinimumSize(new java.awt.Dimension(100, 25));
         txtDataShots_.setPreferredSize(new java.awt.Dimension(100, 25));
         txtDataShots_.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -100,10 +106,11 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtDataShots_, gridBagConstraints);
 
         txtArgonPreflush_.setText("0");
+        txtArgonPreflush_.setToolTipText("0 turns off argon");
         txtArgonPreflush_.setMinimumSize(new java.awt.Dimension(100, 25));
         txtArgonPreflush_.setPreferredSize(new java.awt.Dimension(100, 25));
         txtArgonPreflush_.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -115,7 +122,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtArgonPreflush_, gridBagConstraints);
 
         txtIntegrationDelay_.setText("0");
@@ -130,7 +137,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtIntegrationDelay_, gridBagConstraints);
 
         txtLocations_.setText("1");
@@ -194,7 +201,6 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(chkResetStage_, gridBagConstraints);
 
@@ -210,7 +216,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtPulsePeriod_, gridBagConstraints);
 
         jLabel8.setText("Pulse Period");
@@ -233,7 +239,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 1);
         add(txtStopPosition_, gridBagConstraints);
 
         txtStartPosition_.setText("60,60,80");
@@ -248,7 +254,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 8;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtStartPosition_, gridBagConstraints);
 
         txtIntegrationPeriod_.setText("0");
@@ -263,7 +269,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 7;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtIntegrationPeriod_, gridBagConstraints);
 
         jLabel9.setText("Stop Position X,Y");
@@ -310,7 +316,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtStepSize_, gridBagConstraints);
 
         jLabel2.setBackground(new java.awt.Color(204, 204, 204));
@@ -323,11 +329,56 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 6, 0);
         add(jLabel2, gridBagConstraints);
+
+        btnArgonPrefushHelp_.setToolTipText("0 turns off argon");
+        btnArgonPrefushHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnArgonPrefushHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnArgonPrefushHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnArgonPrefushHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnArgonPrefushHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnArgonPrefushHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnArgonPrefushHelp_, gridBagConstraints);
+
+        btnDataShotHelp_.setToolTipText("Shots per location");
+        btnDataShotHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnDataShotHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnDataShotHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnDataShotHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnDataShotHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDataShotHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnDataShotHelp_, gridBagConstraints);
+
+        lblHelp_.setForeground(new java.awt.Color(0, 51, 255));
+        lblHelp_.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 13;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+        add(lblHelp_, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtLocations_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLocations_KeyReleased
@@ -373,6 +424,14 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
             txtStopPosition_.setBackground(Color.red);
         }
     }//GEN-LAST:event_txtStopPosition_KeyReleased
+
+    private void btnDataShotHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataShotHelp_ActionPerformed
+        lblHelp_.setText("Data shot: shots per location");
+    }//GEN-LAST:event_btnDataShotHelp_ActionPerformed
+
+    private void btnArgonPrefushHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnArgonPrefushHelp_ActionPerformed
+        lblHelp_.setText("Argon Preflush: 0 turns off argon");
+    }//GEN-LAST:event_btnArgonPrefushHelp_ActionPerformed
 
     private boolean setXYZ(String str) {
         boolean isGood = true;
@@ -465,29 +524,6 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         return bAllValid;
     }
 
-    private void createPopupDisplay() {
-        popupDisplay_ = new JDialog();
-        popupDisplay_.setResizable(false);
-        popupDisplay_.setTitle("Special Raster");
-        popupDisplay_.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        popupDisplay_.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-
-                if (validateAll() == true) {
-                    e.getWindow().dispose();
-                }
-            }
-        });
-        popupDisplay_.add(this, java.awt.BorderLayout.CENTER);
-        popupDisplay_.setSize(new Dimension(300, 400));
-        popupDisplay_.setLocationRelativeTo(this);
-    }
-
-    public void showPopup() {
-        popupDisplay_.setVisible(true);
-    }
-
     public RasterParams getRasterData() {
 
         RasterParams retval = new RasterParams();
@@ -519,6 +555,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnArgonPrefushHelp_;
+    private javax.swing.JButton btnDataShotHelp_;
     private javax.swing.JCheckBox chkGating_;
     private javax.swing.JCheckBox chkResetStage_;
     private javax.swing.JLabel jLabel1;
@@ -531,6 +569,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel lblHelp_;
     private javax.swing.JTextField txtArgonPreflush_;
     private javax.swing.JTextField txtDataShots_;
     private javax.swing.JTextField txtIntegrationDelay_;

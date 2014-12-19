@@ -22,6 +22,7 @@ public class RegionMarkerItem {
     private double min_;
     private double max_;
     private double value_;
+    private boolean isMarkerShown_;
 
     public RegionMarkerItem() {
         name_ = "";
@@ -29,7 +30,7 @@ public class RegionMarkerItem {
         min_ = 0;
         max_ = 0;
         value_ = 0;
-
+        isMarkerShown_ = false;
         createMarker();
     }
 
@@ -58,6 +59,7 @@ public class RegionMarkerItem {
     public void setSymbol(String symbol) {
         symbol_ = symbol;
         resetName();
+        createMarker();
     }
 
     public double getMin() {
@@ -90,6 +92,14 @@ public class RegionMarkerItem {
 
     public IntervalMarker getMarker() {
         return marker_;
+    }
+
+    public boolean getIsMarkerShown() {
+        return isMarkerShown_;
+    }
+
+    public void setIsMarkerShown(boolean val) {
+        isMarkerShown_ = val;
     }
 
     private void resetName() {
