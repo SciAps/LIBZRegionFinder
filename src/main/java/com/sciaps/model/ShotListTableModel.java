@@ -1,0 +1,194 @@
+package com.sciaps.model;
+
+import com.sciaps.common.CheckListShotItem;
+import com.sciaps.view.LibzShotCheckListPanel.LibzShotItemClickListenerCallback;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.table.AbstractTableModel;
+import org.jfree.data.xy.XYSeries;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+/**
+ *
+ * @author jchen
+ */
+public class ShotListTableModel extends AbstractTableModel {
+
+    private final List<CheckListShotItem> data_;
+    private final String[] columnNames_ = {"Show", "Shot"};
+    private final LibzShotItemClickListenerCallback callback_;
+
+    public ShotListTableModel(LibzShotItemClickListenerCallback callback) {
+        data_ = new ArrayList<CheckListShotItem>();
+        callback_ = callback;
+    }
+
+    @Override
+    public int getRowCount() {
+        return data_.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames_.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return columnNames_[column];
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return data_.get(rowIndex).isSelected();
+            case 1:
+                return data_.get(rowIndex).getName();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+
+        switch (columnIndex) {
+            case 0:
+                boolean val = (Boolean) aValue;
+                if (val) {
+                    showSeries(rowIndex);
+                } else {
+                    hideSeries(rowIndex);
+                }
+
+                data_.get(rowIndex).setSelected(val);
+                break;
+            case 1:
+                data_.get(rowIndex).setName((String) aValue);
+                break;
+            default:
+                break;
+        }
+        fireTableDataChanged();
+    }
+
+    @Override
+    public Class getColumnClass(int column) {
+        switch (column) {
+            case 0:
+                return Boolean.class;
+            default:
+                return String.class;
+        }
+    }
+
+    @Override
+    public boolean isCellEditable(int RowIndex, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return true;
+            case 1:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    public void addRow(int index, CheckListShotItem shotItem) {
+        data_.add(index, shotItem);
+        fireTableDataChanged();
+    }
+
+    public void addRow(CheckListShotItem shotItem) {
+        data_.add(shotItem);
+        fireTableDataChanged();
+    }
+
+    public void removeRow(int rowIndex) {
+        if (data_.get(rowIndex).isSelected()) {
+            hideSeries(rowIndex);
+        }
+
+        data_.remove(rowIndex);
+        fireTableDataChanged();
+    }
+
+    public void removeRows(int[] rowIndex) {
+        if (rowIndex == null || rowIndex.length == 0)
+            return;
+        
+        Arrays.sort(rowIndex);
+        for (int i = rowIndex.length - 1; i >= 0; i--) {
+            if (data_.get(rowIndex[i]).isSelected()) {
+                hideSeries(rowIndex[i]);
+            }
+
+            data_.remove(rowIndex[i]);
+        }
+
+        fireTableDataChanged();
+    }
+
+    public void removeAllRows() {
+        for (int index = data_.size() - 1; index >= 0; index--) {
+            removeRow(index);
+        }
+    }
+
+    public CheckListShotItem getRow(int rowIndex) {
+        return data_.get(rowIndex);
+    }
+
+    public XYSeries getXYSeries(int rowIndex) {
+
+        return data_.get(rowIndex).getXYSeries();
+    }
+
+    public void hideSeries(int rowIndex) {
+        data_.get(rowIndex).setSelected(false);
+        if (callback_ != null) {
+            callback_.doRemoveShotXYSeries(data_.get(rowIndex));
+        }
+    }
+
+    public void hideSeries(int[] rowIndex) {
+        for (int i = 0; i < rowIndex.length; i++) {
+            hideSeries(i);
+        }
+
+        fireTableDataChanged();
+    }
+    
+    public void showSeries(int rowIndex) {
+        if (callback_ != null) {
+            if (data_.get(rowIndex).isSelected() == false) {
+                callback_.doShowShotXYSeries(data_.get(rowIndex));
+                data_.get(rowIndex).setSelected(true);
+            }
+        }
+    }
+
+    public void showSeries(int[] rowIndex) {
+        for (int i = 0; i < rowIndex.length; i++) {
+            showSeries(i);
+        }
+
+        fireTableDataChanged();
+    }
+    
+    public void deleteScan(int scanID) {
+        for (int index = data_.size() - 1; index >= 0; index--) {
+            if (data_.get(index).getScanID() == scanID) {
+                removeRow(index);
+            }
+        }
+    }
+}
