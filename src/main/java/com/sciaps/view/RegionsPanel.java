@@ -199,7 +199,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         btnDelete_.setText("Delete");
-        btnDelete_.setToolTipText("Delete Selected Row(s)");
+        btnDelete_.setToolTipText("Delete Selected Region(s)");
         btnDelete_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnDelete_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnDelete_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -229,8 +229,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.gridy = 1;
         jPanel1.add(btnCalculateValue_, gridBagConstraints);
 
-        btnAddMarker_.setText("Set Marker");
-        btnAddMarker_.setToolTipText("Create A Marker for Selected Region");
+        btnAddMarker_.setText("Set Marker(s)");
+        btnAddMarker_.setToolTipText("Set A Marker for Selected Region(s)");
         btnAddMarker_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnAddMarker_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnAddMarker_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -245,8 +245,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         jPanel1.add(btnAddMarker_, gridBagConstraints);
 
-        btnRemoveMarker_.setText("Remove Marker");
-        btnRemoveMarker_.setToolTipText("Remove Selected Region Marker");
+        btnRemoveMarker_.setText("Remove Marker(s)");
+        btnRemoveMarker_.setToolTipText("Remove Selected Region Marker(s)");
         btnRemoveMarker_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnRemoveMarker_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnRemoveMarker_.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -262,7 +262,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jPanel1.add(btnRemoveMarker_, gridBagConstraints);
 
         btnInsertNew_.setText("Insert New");
-        btnInsertNew_.setToolTipText("Insert A New Row");
+        btnInsertNew_.setToolTipText("Insert A New Region");
         btnInsertNew_.setMaximumSize(new java.awt.Dimension(150, 23));
         btnInsertNew_.setMinimumSize(new java.awt.Dimension(150, 23));
         btnInsertNew_.setPreferredSize(new java.awt.Dimension(150, 23));

@@ -5,8 +5,9 @@
  */
 package com.sciaps.utils;
 
-import com.sciaps.common.CheckListShotItem;
+import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.Constants;
+import com.sciaps.common.MinMaxObj;
 import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
 import java.awt.Color;
@@ -22,6 +23,7 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Max;
 import org.apache.commons.math3.stat.descriptive.rank.Min;
+import org.jfree.data.xy.XYSeries;
 
 /**
  *
@@ -127,7 +129,7 @@ public class Util {
         return newSpectrum;
     }
     
-    public static void populateXYSeriesData(CheckListShotItem shotItem) {
+    public static void populateXYSeriesData(SpectrumShotItem shotItem) {
 
         double[] x = shotItem.getShot().getPixelLocations();
         double[] y = new double[x.length];
@@ -166,5 +168,27 @@ public class Util {
         }
 
         return address;
+    }
+    
+    public static void getMinMax(MinMaxObj minMaxObj, XYSeries series, double start, double end) {
+       
+        boolean inRange = false;
+            for (int i = 0; i < series.getItemCount(); i++) {
+                double x = series.getX(i).doubleValue();
+                
+                if (x >= start && x <= end) {
+                    inRange = true;
+                    double y = series.getY(i).doubleValue();
+                    if (y < minMaxObj.min_) 
+                        minMaxObj.min_ = y;
+                    
+                    if (y > minMaxObj.max_)
+                        minMaxObj.max_ = y;
+                } else {
+                    if (inRange) 
+                        break;
+                }
+            }
+            
     }
 }

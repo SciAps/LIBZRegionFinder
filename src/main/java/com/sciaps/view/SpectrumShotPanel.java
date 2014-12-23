@@ -5,7 +5,7 @@
  */
 package com.sciaps.view;
 
-import com.sciaps.common.CheckListShotItem;
+import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
@@ -24,18 +24,18 @@ import org.slf4j.LoggerFactory;
  *
  * @author jchen
  */
-public class LibzShotCheckListPanel extends javax.swing.JPanel {
+public class SpectrumShotPanel extends javax.swing.JPanel {
 
-    public interface LibzShotItemClickListenerCallback {
+    public interface SpectrumShotPanelCallback {
 
-        void doShowShotXYSeries(CheckListShotItem item);
+        void doShowShotXYSeries(SpectrumShotItem item);
 
-        void doHideShotXYSeries(CheckListShotItem item);
-        
-        void doDeleteShotXYSeries(CheckListShotItem item);
+        void doHideShotXYSeries(SpectrumShotItem item);
+
+        void doDeleteShotXYSeries(SpectrumShotItem item);
     }
 
-    private final Logger logger_ = LoggerFactory.getLogger(LibzShotCheckListPanel.class);
+    private final Logger logger_ = LoggerFactory.getLogger(SpectrumShotPanel.class);
     private final ShotListTableModel shotListTableModel_;
 
     /**
@@ -43,7 +43,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
      *
      * @param callback
      */
-    public LibzShotCheckListPanel(LibzShotItemClickListenerCallback callback) {
+    public SpectrumShotPanel(SpectrumShotPanelCallback callback) {
         initComponents();
 
         shotListTableModel_ = new ShotListTableModel(callback);
@@ -229,7 +229,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
         int[] selectedRows = tblShots_.getSelectedRows();
         if (selectedRows.length == 0) {
-            showErrorDialog("No region selected to create average.");
+            showErrorDialog("No shot selected to create average.");
             return;
         }
         doCreateAvg();
@@ -256,31 +256,30 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnShowShotl_ActionPerformed
 
     private int[] getSelectedRows() {
-        
+
         if (tblShots_.getSelectedRowCount() == 0) {
             showErrorDialog("Nothing is selected.");
             return null;
         }
-        
+
         int[] selectedRows = tblShots_.getSelectedRows();
         int[] tmpSelectedRows = new int[selectedRows.length];
         for (int i = 0; i < tmpSelectedRows.length; i++) {
             int modelIndex = tblShots_.convertRowIndexToModel(selectedRows[i]);
             tmpSelectedRows[i] = modelIndex;
         }
-        
+
         return tmpSelectedRows;
     }
-    
+
     private void doShowShots() {
         shotListTableModel_.showSeries(getSelectedRows());
     }
-    
-    
+
     private void doHideShots() {
         shotListTableModel_.hideSeries(getSelectedRows());
     }
-    
+
     private void doDeleteScan() {
         boolean allgood = false;
 
@@ -314,12 +313,12 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
     }
 
     private void doDelete() {
-        
+
         if (tblShots_.getSelectedRowCount() == 0) {
             showErrorDialog("Nothing is selected.");
             return;
         }
-        
+
         int retval = JOptionPane.showConfirmDialog(null, "Delete Selected Row(s)?");
         if (retval != JOptionPane.YES_OPTION) {
             return;
@@ -344,9 +343,9 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
 
                 for (int i = 0; i < selectedList.length; i++) {
                     int modelIndex = tblShots_.convertRowIndexToModel(selectedList[i]);
-                    CheckListShotItem shotItem = (CheckListShotItem) shotListTableModel_.getRow(modelIndex);
+                    SpectrumShotItem shotItem = (SpectrumShotItem) shotListTableModel_.getRow(modelIndex);
                     if (gotScanID == false) {
-                        name.append("Scan " + shotItem.getScanID() + " Avg: ");
+                        name.append("Scan ").append(shotItem.getScanID()).append(" Avg: ");
                         gotScanID = true;
                     }
                     name.append(shotItem.getShotID());
@@ -373,7 +372,7 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
                 String newName = avgPanel.getAvgShotName();
                 int newSampleRate = avgPanel.getSampleRate();
 
-                CheckListShotItem newShotItem = new CheckListShotItem(newName);
+                SpectrumShotItem newShotItem = new SpectrumShotItem(newName);
                 newShotItem.setShot(createAverage(shotDatas, newSampleRate));
 
                 shotListTableModel_.addRow(0, newShotItem);
@@ -392,11 +391,11 @@ public class LibzShotCheckListPanel extends javax.swing.JPanel {
         return sampleRate;
     }
 
-    public void addItem(int index, CheckListShotItem item) {
+    public void addItem(int index, SpectrumShotItem item) {
         shotListTableModel_.addRow(index, item);
     }
 
-    public void addItem(CheckListShotItem item) {
+    public void addItem(SpectrumShotItem item) {
         shotListTableModel_.addRow(item);
     }
 

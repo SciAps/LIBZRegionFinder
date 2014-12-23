@@ -6,7 +6,9 @@
 package com.sciaps.view;
 
 import com.sciaps.common.ThreadUtils;
+import java.awt.Color;
 import javax.swing.ImageIcon;
+import javax.swing.JColorChooser;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -16,7 +18,7 @@ import org.jfree.data.Range;
  *
  * @author jchen
  */
-public class PlotRangeSetterPanel extends javax.swing.JPanel {
+public class PlotConfigPanel extends javax.swing.JPanel {
 
     private final int LEFT = 0;
     private final int RIGHT = 1;
@@ -33,7 +35,7 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
      *
      * @param plot
      */
-    public PlotRangeSetterPanel(XYPlot plot) {
+    public PlotConfigPanel(XYPlot plot) {
         initComponents();
 
         plot_ = plot;
@@ -60,7 +62,7 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
 
         chkDomainGridline_ = new javax.swing.JCheckBox();
         chkRangeGridline_ = new javax.swing.JCheckBox();
-        chkAutoRange_ = new javax.swing.JCheckBox();
+        btnDown_1 = new javax.swing.JButton();
         btnLeft_ = new javax.swing.JButton();
         btnRight_ = new javax.swing.JButton();
         btnAutoRange_ = new javax.swing.JButton();
@@ -85,14 +87,18 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
         });
         add(chkRangeGridline_);
 
-        chkAutoRange_.setSelected(true);
-        chkAutoRange_.setText("Auto Range");
-        chkAutoRange_.addActionListener(new java.awt.event.ActionListener() {
+        btnDown_1.setText("BG Color");
+        btnDown_1.setToolTipText("Shift down");
+        btnDown_1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnDown_1.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnDown_1.setMinimumSize(new java.awt.Dimension(35, 35));
+        btnDown_1.setPreferredSize(new java.awt.Dimension(60, 20));
+        btnDown_1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkAutoRange_ActionPerformed(evt);
+                btnDown_1ActionPerformed(evt);
             }
         });
-        add(chkAutoRange_);
+        add(btnDown_1);
 
         btnLeft_.setToolTipText("Shift left");
         btnLeft_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -253,14 +259,11 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
         plot_.setRangeGridlinesVisible(chkRangeGridline_.isSelected());
     }//GEN-LAST:event_chkRangeGridline_ActionPerformed
 
-    private void chkAutoRange_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkAutoRange_ActionPerformed
-        boolean val = chkAutoRange_.isSelected();
-        btnAutoRange_.setEnabled(val);
-
-        domainAxis_.setAutoRange(val);
-        rangeAxis_.setAutoRange(val);
-
-    }//GEN-LAST:event_chkAutoRange_ActionPerformed
+    private void btnDown_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDown_1ActionPerformed
+        Color backgroundColor = JColorChooser.showDialog(null,
+                "Choose chart background color", Color.white);
+        plot_.setBackgroundPaint(backgroundColor);
+    }//GEN-LAST:event_btnDown_1ActionPerformed
 
     private void doMousePressedAction(final int action) {
 
@@ -293,7 +296,7 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
                     });
 
                     try {
-                        Thread.sleep(300);
+                        Thread.sleep(100);
                     } catch (InterruptedException ex) {
                         mousePressed_ = false;
                     }
@@ -306,7 +309,7 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
     private Range createDomainRange(final int action) {
         double lowerBound = domainAxis_.getRange().getLowerBound();
         double upperBound = domainAxis_.getRange().getUpperBound();
-        int shiftValue = (int) Math.floor((upperBound - lowerBound) * .1) + 1;
+        double shiftValue = Math.ceil((upperBound - lowerBound) * .1);
 
         if (action == LEFT) {
             return (new Range(lowerBound - shiftValue, upperBound - shiftValue));
@@ -320,7 +323,7 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
     private Range createRangeRange(final int action) {
         double lowerBound = rangeAxis_.getRange().getLowerBound();
         double upperBound = rangeAxis_.getRange().getUpperBound();
-        int shiftValue = (int) Math.floor((upperBound - lowerBound) * .1) + 1;
+        double shiftValue = Math.floor((upperBound - lowerBound) * .1);
 
         if (action == DOWN) {
             return (new Range(lowerBound - shiftValue, upperBound - shiftValue));
@@ -362,10 +365,10 @@ public class PlotRangeSetterPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAutoRange_;
     private javax.swing.JButton btnDown_;
+    private javax.swing.JButton btnDown_1;
     private javax.swing.JButton btnLeft_;
     private javax.swing.JButton btnRight_;
     private javax.swing.JButton btnUp_;
-    private javax.swing.JCheckBox chkAutoRange_;
     private javax.swing.JCheckBox chkDomainGridline_;
     private javax.swing.JCheckBox chkRangeGridline_;
     // End of variables declaration//GEN-END:variables

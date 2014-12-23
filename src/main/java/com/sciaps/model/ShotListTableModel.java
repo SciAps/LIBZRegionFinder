@@ -1,7 +1,7 @@
 package com.sciaps.model;
 
-import com.sciaps.common.CheckListShotItem;
-import com.sciaps.view.LibzShotCheckListPanel.LibzShotItemClickListenerCallback;
+import com.sciaps.common.SpectrumShotItem;
+import com.sciaps.view.SpectrumShotPanel.SpectrumShotPanelCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,12 +19,12 @@ import org.jfree.data.xy.XYSeries;
  */
 public class ShotListTableModel extends AbstractTableModel {
 
-    private final List<CheckListShotItem> data_;
+    private final List<SpectrumShotItem> data_;
     private final String[] columnNames_ = {"Show", "Shot"};
-    private final LibzShotItemClickListenerCallback callback_;
+    private final SpectrumShotPanelCallback callback_;
 
-    public ShotListTableModel(LibzShotItemClickListenerCallback callback) {
-        data_ = new ArrayList<CheckListShotItem>();
+    public ShotListTableModel(SpectrumShotPanelCallback callback) {
+        data_ = new ArrayList<SpectrumShotItem>();
         callback_ = callback;
     }
 
@@ -100,12 +100,12 @@ public class ShotListTableModel extends AbstractTableModel {
         }
     }
 
-    public void addRow(int index, CheckListShotItem shotItem) {
+    public void addRow(int index, SpectrumShotItem shotItem) {
         data_.add(index, shotItem);
         fireTableDataChanged();
     }
 
-    public void addRow(CheckListShotItem shotItem) {
+    public void addRow(SpectrumShotItem shotItem) {
         data_.add(shotItem);
         fireTableDataChanged();
     }
@@ -141,7 +141,7 @@ public class ShotListTableModel extends AbstractTableModel {
         }
     }
 
-    public CheckListShotItem getRow(int rowIndex) {
+    public SpectrumShotItem getRow(int rowIndex) {
         return data_.get(rowIndex);
     }
 
@@ -159,7 +159,7 @@ public class ShotListTableModel extends AbstractTableModel {
 
     public void hideSeries(int[] rowIndex) {
         for (int i = 0; i < rowIndex.length; i++) {
-            hideSeries(i);
+            hideSeries(rowIndex[i]);
         }
 
         fireTableDataChanged();
@@ -176,7 +176,7 @@ public class ShotListTableModel extends AbstractTableModel {
 
     public void showSeries(int[] rowIndex) {
         for (int i = 0; i < rowIndex.length; i++) {
-            showSeries(i);
+            showSeries(rowIndex[i]);
         }
 
         fireTableDataChanged();

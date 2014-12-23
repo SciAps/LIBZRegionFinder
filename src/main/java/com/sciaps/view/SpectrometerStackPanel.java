@@ -5,10 +5,11 @@
  */
 package com.sciaps.view;
 
-import com.sciaps.common.CheckListShotItem;
+import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.Constants;
+import com.sciaps.common.MinMaxObj;
 import com.sciaps.common.RegionMarkerItem;
-import com.sciaps.view.LibzShotCheckListPanel.LibzShotItemClickListenerCallback;
+import com.sciaps.view.SpectrumShotPanel.SpectrumShotPanelCallback;
 import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.data.Region;
 import com.sciaps.common.spectrum.LIBZPixelSpectrum;
@@ -17,6 +18,7 @@ import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.listener.JFreeChartMouseListener;
 import com.sciaps.utils.CustomDialogUtils;
+import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.populateXYSeriesData;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
@@ -27,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -36,6 +39,7 @@ import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,17 +49,18 @@ import org.slf4j.LoggerFactory;
  * @author jchen
  */
 public class SpectrometerStackPanel extends javax.swing.JPanel
-        implements RegionsPanelCallback, LibzShotItemClickListenerCallback {
+        implements RegionsPanelCallback, SpectrumShotPanelCallback {
 
     private final Logger logger_ = LoggerFactory.getLogger(SpectrometerStackPanel.class);
 
     private final XYSeriesCollection xySeriesCollection_;
     private final JFreeChartWrapperPanel jFreeChartPanel_;
+    private final XYPlot plot_;
     private final JFreeChartMouseListener chartMouseListener_;
     private final RegionsPanel regionPanels_;
-    private final LibzShotCheckListPanel shotCheckListPanel_;
+    private final SpectrumShotPanel shotCheckListPanel_;
     private final SpecialRasterPanel specialRasterPanel_;
-    private final PlotRangeSetterPanel plotRangeSetterPanel_;
+    private final PlotConfigPanel plotRangeSetterPanel_;
     private int scanCount_ = 0;
 
     /**
@@ -73,7 +78,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         xySeriesCollection_ = new XYSeriesCollection();
         jFreeChartPanel_ = new JFreeChartWrapperPanel();
         jFreeChartPanel_.populateSpectrumChartWithAbstractXYDataset(
-                xySeriesCollection_, "Spectrometer", "Wave Length", "Intensity");
+                xySeriesCollection_, "Spectrum", "Wave Length(nm)", "Intensity");
         charDisplayPanel_.add(jFreeChartPanel_);
 
         chartMouseListener_ = new JFreeChartMouseListener(
@@ -82,22 +87,22 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 regionPanels_);
         jFreeChartPanel_.getChartPanel().addChartMouseListener(chartMouseListener_);
 
-        XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
+        plot_ = jFreeChartPanel_.getJFreeChart().getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
         StandardXYToolTipGenerator ttG
                 = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
         renderer.setBaseToolTipGenerator(ttG);
 
-        plot.setRenderer(renderer);
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setDomainPannable(true);
-        plot.setRangePannable(true);
+        plot_.setRenderer(renderer);
+        plot_.setBackgroundPaint(Color.WHITE);
+        plot_.setDomainPannable(true);
+        plot_.setRangePannable(true);
 
-        plotRangeSetterPanel_ = new PlotRangeSetterPanel(plot);
+        plotRangeSetterPanel_ = new PlotConfigPanel(plot_);
         chartRangeControlPanel_.add(plotRangeSetterPanel_);
 
-        shotCheckListPanel_ = new LibzShotCheckListPanel(this);
+        shotCheckListPanel_ = new SpectrumShotPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
 
         // disable them by default
@@ -106,24 +111,23 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         regionContainerPanel_.setVisible(false);
 
         // ==== start of testing code
-        CheckListShotItem item = new CheckListShotItem("Test1");
-        item.getXYSeries().add(200, 200);
-        item.getXYSeries().add(450, 300);
-        item.getXYSeries().add(900, 1);
-        shotCheckListPanel_.addItem(item);
+        /*CheckListShotItem item = new CheckListShotItem("Test1");
+         item.getXYSeries().add(200, 200);
+         item.getXYSeries().add(450, 300);
+         item.getXYSeries().add(900, 1);
+         shotCheckListPanel_.addItem(item);
 
-        CheckListShotItem item2 = new CheckListShotItem("Test2");
-        item2.getXYSeries().add(200, 20);
-        item2.getXYSeries().add(400, 300);
-        item2.getXYSeries().add(900, 900);
-        shotCheckListPanel_.addItem(item2);
+         CheckListShotItem item2 = new CheckListShotItem("Test2");
+         item2.getXYSeries().add(200, 20);
+         item2.getXYSeries().add(400, 300);
+         item2.getXYSeries().add(900, 900);
+         shotCheckListPanel_.addItem(item2);
 
-        CheckListShotItem item3 = new CheckListShotItem("Test3");
-        item3.getXYSeries().add(250, 20);
-        item3.getXYSeries().add(450, 300);
-        item3.getXYSeries().add(950, 900);
-        shotCheckListPanel_.addItem(item3);
-
+         CheckListShotItem item3 = new CheckListShotItem("Test3");
+         item3.getXYSeries().add(250, 20);
+         item3.getXYSeries().add(450, 300);
+         item3.getXYSeries().add(950, 900);
+         shotCheckListPanel_.addItem(item3);*/
         // ==== end of testing code
     }
 
@@ -415,8 +419,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         StringBuilder errMsg = new StringBuilder();
 
-        // Reset the bounds incase it is zoomed in/out
-        jFreeChartPanel_.getChartPanel().restoreAutoBounds();
         ProgressStatusPanel progressbar = new ProgressStatusPanel();
         final JDialog progressDialog = CustomDialogUtils.createDialog(null,
                 "Raster Test In Progress", progressbar,
@@ -441,7 +443,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 int shotCount = 1;
                 for (LIBZPixelSpectrum shot : shots) {
 
-                    final CheckListShotItem item = new CheckListShotItem(scanCount_, shotCount);
+                    final SpectrumShotItem item = new SpectrumShotItem(scanCount_, shotCount);
                     item.setShot(shot);
 
                     SwingUtilities.invokeLater(new Runnable() {
@@ -456,7 +458,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
                 Spectrum avgSpectrum = createAverage(shots, sampleRate);
                 String name = "Scan " + scanCount_ + ": Avg";
-                final CheckListShotItem avgShotItem = new CheckListShotItem(name);
+                final SpectrumShotItem avgShotItem = new SpectrumShotItem(name);
                 avgShotItem.setShot(avgSpectrum);
                 populateXYSeriesData(avgShotItem);
 
@@ -558,7 +560,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                         regionPanels_.addRow(markerItem);
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     errText.append(region);
                     errText.append(" ");
                     iValide = false;
@@ -573,7 +574,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void doShowShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+    public void doShowShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
         logger_.info("Displaying selected shot");
 
         if (item.getXYSeries().isEmpty()) {
@@ -581,14 +582,11 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         }
 
         try {
-
             int index = xySeriesCollection_.indexOf(item.getXYSeries());
-
             if (index < 0) {
                 xySeriesCollection_.addSeries(item.getXYSeries());
             } else {
-                XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
-                plot.getRenderer().setSeriesVisible(index, true);
+                plot_.getRenderer().setSeriesVisible(index, true);
             }
         } catch (Exception ex) {
             logger_.error("Failed to show XYSeries: " + ex.getMessage());
@@ -596,12 +594,11 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void doHideShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+    public void doHideShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
         try {
             int index = xySeriesCollection_.indexOf(item.getXYSeries());
             if (index >= 0) {
-                XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
-                plot.getRenderer().setSeriesVisible(index, false);
+                plot_.getRenderer().setSeriesVisible(index, false);
             }
         } catch (Exception ex) {
             logger_.error("Failed to hide XYSeries: " + ex.getMessage());
@@ -609,7 +606,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void doDeleteShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+    public void doDeleteShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
         try {
             xySeriesCollection_.removeSeries(item.getXYSeries());
         } catch (Exception ex) {
@@ -619,12 +616,35 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
     @Override
     public void addRegionMarker(IntervalMarker marker) {
-        jFreeChartPanel_.getJFreeChart().getXYPlot().addDomainMarker(marker);
+        plot_.addDomainMarker(marker);
+        plot_.getDomainAxis().setLowerBound(marker.getStartValue() - 1);
+        plot_.getDomainAxis().setUpperBound(marker.getEndValue() + 1);
+
+        if (xySeriesCollection_.getSeriesCount() > 0) {
+
+            List<XYSeries> series = new ArrayList<XYSeries>();
+
+            for (int i = 0; i < xySeriesCollection_.getSeriesCount(); i++) {
+                if (plot_.getRenderer().isSeriesVisible(i)) {
+                    series.add(xySeriesCollection_.getSeries(i));
+                }
+            }
+
+            if (series.size() > 0) {
+                MinMaxObj minMaxObj = new MinMaxObj(series.get(0).getMaxY(), series.get(0).getMinY());
+                for (XYSeries serie : series) {
+                    Util.getMinMax(minMaxObj, serie, marker.getStartValue(), marker.getEndValue());
+                }
+
+                plot_.getRangeAxis().setLowerBound(minMaxObj.min_ - 3);
+                plot_.getRangeAxis().setUpperBound(minMaxObj.max_ + 3);
+            }
+        }
     }
 
     @Override
     public void removeRegionMarker(IntervalMarker marker) {
-        jFreeChartPanel_.getJFreeChart().getXYPlot().removeDomainMarker(marker);
+        plot_.removeDomainMarker(marker);
     }
 
     @Override

@@ -102,7 +102,7 @@
         <Component class="javax.swing.JButton" name="btnDelete_">
           <Properties>
             <Property name="text" type="java.lang.String" value="Delete"/>
-            <Property name="toolTipText" type="java.lang.String" value="Delete Selected Row(s)"/>
+            <Property name="toolTipText" type="java.lang.String" value="Delete Selected Region(s)"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>
@@ -147,8 +147,8 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnAddMarker_">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Set Marker"/>
-            <Property name="toolTipText" type="java.lang.String" value="Create A Marker for Selected Region"/>
+            <Property name="text" type="java.lang.String" value="Set Marker(s)"/>
+            <Property name="toolTipText" type="java.lang.String" value="Set A Marker for Selected Region(s)"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>
@@ -170,8 +170,8 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnRemoveMarker_">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Remove Marker"/>
-            <Property name="toolTipText" type="java.lang.String" value="Remove Selected Region Marker"/>
+            <Property name="text" type="java.lang.String" value="Remove Marker(s)"/>
+            <Property name="toolTipText" type="java.lang.String" value="Remove Selected Region Marker(s)"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>
@@ -194,7 +194,7 @@
         <Component class="javax.swing.JButton" name="btnInsertNew_">
           <Properties>
             <Property name="text" type="java.lang.String" value="Insert New"/>
-            <Property name="toolTipText" type="java.lang.String" value="Insert A New Row"/>
+            <Property name="toolTipText" type="java.lang.String" value="Insert A New Region"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 23]"/>
             </Property>

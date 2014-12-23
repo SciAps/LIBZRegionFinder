@@ -111,13 +111,14 @@ public class RegionMarkerItem {
     }
 
     private void createMarker() {
-        final Color c = new Color(255, 0, 0, 63);
+        final Color c = new Color(8, 255, 8, 63);
         marker_ = new IntervalMarker(
                 min_, max_, c,
                 new BasicStroke(2.0f), null, null, 1.0f);
         String[] tmp = name_.split("-");
         marker_.setLabel(tmp[0]);
-        marker_.setLabelPaint(Color.green);
+        marker_.setLabelPaint(Color.blue);
+        marker_.setLabelFont(new java.awt.Font("Tahoma", 1, 14));
         marker_.setLabelOffset(new RectangleInsets(50, 10, 10, 20));
     }
 }

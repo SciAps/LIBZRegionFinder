@@ -204,8 +204,8 @@ public final class FrmMain extends javax.swing.JFrame {
     }
 
     private void doShowIPAddressDisplay() {
-        HTTPConfigPanel httpConfigPanel;
-        httpConfigPanel = new HTTPConfigPanel();
+        LibzIPPanel httpConfigPanel;
+        httpConfigPanel = new LibzIPPanel();
         httpConfigPanel.setParentFrame(this);
         JDialog dialog = CustomDialogUtils.createDialog(this, "LIBZ IP Address",
                 httpConfigPanel, CustomDialogUtils.OK_CANCEL_OPTION);

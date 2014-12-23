@@ -12,23 +12,27 @@ import org.jfree.data.xy.XYSeries;
  *
  * @author jchen
  */
-public class CheckListShotItem {
+public class SpectrumShotItem {
 
     private int scanID_;
     private int shotID_;
     private String name_;
     private Spectrum shot_;
     private boolean isSelected_ = false;
-    private XYSeries xySeries_;
+    private final XYSeries xySeries_;
 
-    public CheckListShotItem(String name) {
+    /**
+     *
+     * @param name
+     */
+    public SpectrumShotItem(String name) {
         scanID_ = 0;
         shotID_ = 0;
         name_ = name;
         xySeries_ = new XYSeries(name_);
     }
 
-    public CheckListShotItem(int scanID, int shotID) {
+    public SpectrumShotItem(int scanID, int shotID) {
         scanID_ = scanID;
         shotID_ = shotID;
         name_ = "Scan " + scanID_ + ": " + shotID_;

@@ -21,16 +21,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author jchen
  */
-public class HTTPConfigPanel extends javax.swing.JPanel implements CustomDialogCallback {
+public class LibzIPPanel extends javax.swing.JPanel implements CustomDialogCallback {
 
-    private final Logger logger_ = LoggerFactory.getLogger(HTTPConfigPanel.class);
+    private final Logger logger_ = LoggerFactory.getLogger(LibzIPPanel.class);
 
     private FrmMain frmParent_;
 
     /**
      * Creates new form HTTPConfigPanel
      */
-    public HTTPConfigPanel() {
+    public LibzIPPanel() {
         initComponents();
 
         initializeDisplay();
