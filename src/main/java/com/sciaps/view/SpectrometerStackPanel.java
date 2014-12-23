@@ -21,9 +21,15 @@ import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.populateXYSeriesData;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
@@ -78,11 +84,12 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        plot.setRenderer(renderer);
+
         StandardXYToolTipGenerator ttG
                 = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
-        plot.getRenderer().setBaseToolTipGenerator(ttG);
+        renderer.setBaseToolTipGenerator(ttG);
 
+        plot.setRenderer(renderer);
         plot.setBackgroundPaint(Color.WHITE);
         plot.setDomainPannable(true);
         plot.setRangePannable(true);
@@ -99,18 +106,24 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         regionContainerPanel_.setVisible(false);
 
         // ==== start of testing code
-        /*CheckListShotItem item = new CheckListShotItem("Test1");
-         item.getXYSeries().add(200, 200);
-         item.getXYSeries().add(450, 300);
-         item.getXYSeries().add(900, 1);
-         shotCheckListPanel_.addItem(item);
-        
-         CheckListShotItem item2 = new CheckListShotItem("Test2");
-         item2.getXYSeries().add(200, 20);
-         item2.getXYSeries().add(400, 300);
-         item2.getXYSeries().add(900, 900);
-         shotCheckListPanel_.addItem(item2);
-         */
+        CheckListShotItem item = new CheckListShotItem("Test1");
+        item.getXYSeries().add(200, 200);
+        item.getXYSeries().add(450, 300);
+        item.getXYSeries().add(900, 1);
+        shotCheckListPanel_.addItem(item);
+
+        CheckListShotItem item2 = new CheckListShotItem("Test2");
+        item2.getXYSeries().add(200, 20);
+        item2.getXYSeries().add(400, 300);
+        item2.getXYSeries().add(900, 900);
+        shotCheckListPanel_.addItem(item2);
+
+        CheckListShotItem item3 = new CheckListShotItem("Test3");
+        item3.getXYSeries().add(250, 20);
+        item3.getXYSeries().add(450, 300);
+        item3.getXYSeries().add(950, 900);
+        shotCheckListPanel_.addItem(item3);
+
         // ==== end of testing code
     }
 
@@ -474,16 +487,55 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         }
     }
 
+    public void getRegionTextFile() {
+
+        JFileChooser fileChooser = new JFileChooser();
+        int retval = fileChooser.showOpenDialog(null);
+
+        if (retval == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            try {
+                FileReader fr = new FileReader(file.getAbsoluteFile());
+                BufferedReader br = new BufferedReader(fr);
+
+                StringBuilder text = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                }
+
+                br.close();
+
+                createRegionItem(text.toString());
+
+            } catch (FileNotFoundException ex) {
+                showErrorDialog(ex.getMessage());
+            } catch (IOException ex) {
+                showErrorDialog(ex.getMessage());
+            }
+
+        }
+
+    }
+
     public void getRegionTextFromUser() {
+
+        String retval = JOptionPane.showInputDialog(null,
+                "Enter region string (ex. Fe371.76-372.16,Co257.88-258.12):",
+                "");
+
+        if (retval != null && !retval.isEmpty()) {
+            createRegionItem(retval);
+        }
+    }
+
+    private void createRegionItem(String regionStr) {
         boolean iValide = true;
         StringBuilder errText = new StringBuilder();
 
-        String retval = JOptionPane.showInputDialog(null,
-                "Enter region string:",
-                "Fe371.76-372.16,480.85-481.15,Co257.88-258.12,324.4-325,Ni341.05-341.7,359.05-359.6,334.67-335.15,394.1-394.7");
-
-        if (retval != null && !retval.isEmpty()) {
-            String[] regions = retval.split(",");
+        if (regionStr != null && !regionStr.isEmpty()) {
+            String[] regions = regionStr.split(",");
 
             for (String region : regions) {
 
@@ -529,18 +581,39 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         }
 
         try {
-            xySeriesCollection_.addSeries(item.getXYSeries());
+
+            int index = xySeriesCollection_.indexOf(item.getXYSeries());
+
+            if (index < 0) {
+                xySeriesCollection_.addSeries(item.getXYSeries());
+            } else {
+                XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
+                plot.getRenderer().setSeriesVisible(index, true);
+            }
         } catch (Exception ex) {
-            logger_.error("Failed to Add XYSeries: " + ex.getMessage());
+            logger_.error("Failed to show XYSeries: " + ex.getMessage());
         }
     }
 
     @Override
-    public void doRemoveShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+    public void doHideShotXYSeries(com.sciaps.common.CheckListShotItem item) {
+        try {
+            int index = xySeriesCollection_.indexOf(item.getXYSeries());
+            if (index >= 0) {
+                XYPlot plot = jFreeChartPanel_.getJFreeChart().getXYPlot();
+                plot.getRenderer().setSeriesVisible(index, false);
+            }
+        } catch (Exception ex) {
+            logger_.error("Failed to hide XYSeries: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void doDeleteShotXYSeries(com.sciaps.common.CheckListShotItem item) {
         try {
             xySeriesCollection_.removeSeries(item.getXYSeries());
         } catch (Exception ex) {
-            logger_.error("Failed to remove XYSeries: " + ex.getMessage());
+            logger_.error("Failed to delete XYSeries: " + ex.getMessage());
         }
     }
 

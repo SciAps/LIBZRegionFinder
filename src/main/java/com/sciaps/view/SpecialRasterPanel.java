@@ -50,7 +50,13 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         initComponents();
         
         btnDataShotHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnArgonPrefushHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnArgonPreflushHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnStepSizeHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnPulsePeriodHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnIntegrationDelayHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnIntegrationPeriodHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnStartPositionHelp_.setIcon(new ImageIcon("./images/help.png"));
+        btnStopPositionHelp_.setIcon(new ImageIcon("./images/help.png"));
         
     }
 
@@ -85,9 +91,15 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         txtStepSize_ = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        btnArgonPrefushHelp_ = new javax.swing.JButton();
+        btnArgonPreflushHelp_ = new javax.swing.JButton();
         btnDataShotHelp_ = new javax.swing.JButton();
         lblHelp_ = new javax.swing.JLabel();
+        btnStartPositionHelp_ = new javax.swing.JButton();
+        btnIntegrationPeriodHelp_ = new javax.swing.JButton();
+        btnIntegrationDelayHelp_ = new javax.swing.JButton();
+        btnPulsePeriodHelp_ = new javax.swing.JButton();
+        btnStepSizeHelp_ = new javax.swing.JButton();
+        btnStopPositionHelp_ = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(260, 380));
         setRequestFocusEnabled(false);
@@ -335,21 +347,21 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 6, 0);
         add(jLabel2, gridBagConstraints);
 
-        btnArgonPrefushHelp_.setToolTipText("0 turns off argon");
-        btnArgonPrefushHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnArgonPrefushHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
-        btnArgonPrefushHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
-        btnArgonPrefushHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
-        btnArgonPrefushHelp_.addActionListener(new java.awt.event.ActionListener() {
+        btnArgonPreflushHelp_.setToolTipText("0 turns off argon");
+        btnArgonPreflushHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnArgonPreflushHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnArgonPreflushHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnArgonPreflushHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnArgonPreflushHelp_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnArgonPrefushHelp_ActionPerformed(evt);
+                btnArgonPreflushHelp_ActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
-        add(btnArgonPrefushHelp_, gridBagConstraints);
+        add(btnArgonPreflushHelp_, gridBagConstraints);
 
         btnDataShotHelp_.setToolTipText("Shots per location");
         btnDataShotHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -379,6 +391,102 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         add(lblHelp_, gridBagConstraints);
+
+        btnStartPositionHelp_.setToolTipText("");
+        btnStartPositionHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnStartPositionHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnStartPositionHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnStartPositionHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnStartPositionHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStartPositionHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnStartPositionHelp_, gridBagConstraints);
+
+        btnIntegrationPeriodHelp_.setToolTipText("");
+        btnIntegrationPeriodHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnIntegrationPeriodHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnIntegrationPeriodHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnIntegrationPeriodHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnIntegrationPeriodHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIntegrationPeriodHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnIntegrationPeriodHelp_, gridBagConstraints);
+
+        btnIntegrationDelayHelp_.setToolTipText("");
+        btnIntegrationDelayHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnIntegrationDelayHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnIntegrationDelayHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnIntegrationDelayHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnIntegrationDelayHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIntegrationDelayHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnIntegrationDelayHelp_, gridBagConstraints);
+
+        btnPulsePeriodHelp_.setToolTipText("");
+        btnPulsePeriodHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnPulsePeriodHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnPulsePeriodHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnPulsePeriodHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnPulsePeriodHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPulsePeriodHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnPulsePeriodHelp_, gridBagConstraints);
+
+        btnStepSizeHelp_.setToolTipText("");
+        btnStepSizeHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnStepSizeHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnStepSizeHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnStepSizeHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnStepSizeHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStepSizeHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnStepSizeHelp_, gridBagConstraints);
+
+        btnStopPositionHelp_.setToolTipText("");
+        btnStopPositionHelp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnStopPositionHelp_.setMaximumSize(new java.awt.Dimension(25, 25));
+        btnStopPositionHelp_.setMinimumSize(new java.awt.Dimension(25, 25));
+        btnStopPositionHelp_.setPreferredSize(new java.awt.Dimension(25, 25));
+        btnStopPositionHelp_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStopPositionHelp_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
+        add(btnStopPositionHelp_, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtLocations_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLocations_KeyReleased
@@ -426,13 +534,45 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_txtStopPosition_KeyReleased
 
     private void btnDataShotHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDataShotHelp_ActionPerformed
-        lblHelp_.setText("Data shot: shots per location");
+        showHint("Data shot: shots per location");
     }//GEN-LAST:event_btnDataShotHelp_ActionPerformed
 
-    private void btnArgonPrefushHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnArgonPrefushHelp_ActionPerformed
-        lblHelp_.setText("Argon Preflush: 0 turns off argon");
-    }//GEN-LAST:event_btnArgonPrefushHelp_ActionPerformed
+    private void btnArgonPreflushHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnArgonPreflushHelp_ActionPerformed
+        showHint("Argon Preflush: 0 turns off argon");
+    }//GEN-LAST:event_btnArgonPreflushHelp_ActionPerformed
 
+    private void btnStartPositionHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartPositionHelp_ActionPerformed
+        showHint("Start Position");
+    }//GEN-LAST:event_btnStartPositionHelp_ActionPerformed
+
+    private void btnIntegrationPeriodHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIntegrationPeriodHelp_ActionPerformed
+        showHint("Integration Period");
+    }//GEN-LAST:event_btnIntegrationPeriodHelp_ActionPerformed
+
+    private void btnIntegrationDelayHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIntegrationDelayHelp_ActionPerformed
+        showHint("Integration Delay");
+    }//GEN-LAST:event_btnIntegrationDelayHelp_ActionPerformed
+
+    private void btnPulsePeriodHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPulsePeriodHelp_ActionPerformed
+        showHint("Pulse Period");
+    }//GEN-LAST:event_btnPulsePeriodHelp_ActionPerformed
+
+    private void btnStepSizeHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStepSizeHelp_ActionPerformed
+        showHint("Step Size");
+    }//GEN-LAST:event_btnStepSizeHelp_ActionPerformed
+
+    private void btnStopPositionHelp_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopPositionHelp_ActionPerformed
+        showHint("Stop Position");
+    }//GEN-LAST:event_btnStopPositionHelp_ActionPerformed
+
+    private void showHint(String hint) {
+        
+        if (lblHelp_.getText().compareTo(hint) != 0) {
+            lblHelp_.setText(hint);
+        } else {
+           lblHelp_.setText("");
+        }
+    }
     private boolean setXYZ(String str) {
         boolean isGood = true;
 
@@ -555,8 +695,14 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnArgonPrefushHelp_;
+    private javax.swing.JButton btnArgonPreflushHelp_;
     private javax.swing.JButton btnDataShotHelp_;
+    private javax.swing.JButton btnIntegrationDelayHelp_;
+    private javax.swing.JButton btnIntegrationPeriodHelp_;
+    private javax.swing.JButton btnPulsePeriodHelp_;
+    private javax.swing.JButton btnStartPositionHelp_;
+    private javax.swing.JButton btnStepSizeHelp_;
+    private javax.swing.JButton btnStopPositionHelp_;
     private javax.swing.JCheckBox chkGating_;
     private javax.swing.JCheckBox chkResetStage_;
     private javax.swing.JLabel jLabel1;

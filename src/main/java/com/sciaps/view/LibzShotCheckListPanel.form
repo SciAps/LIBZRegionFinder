@@ -27,59 +27,31 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
   <SubComponents>
-    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
-      <AuxValues>
-        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-      </AuxValues>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="1.0"/>
-        </Constraint>
-      </Constraints>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JList" name="lstOfShots_">
-          <Properties>
-            <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-              <StringArray count="5">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-                <StringItem index="4" value="Item 5"/>
-              </StringArray>
-            </Property>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Component class="javax.swing.JButton" name="btnCreateAvg_">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Create Avg"/>
+        <Property name="text" type="java.lang.String" value="Create Shot Avg"/>
         <Property name="toolTipText" type="java.lang.String" value="Create An Avg of All Highlighted"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateAvg_ActionPerformed"/>
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="8" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+          <GridBagConstraints gridX="0" gridY="9" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JButton" name="btnUncheckAll_">
+    <Component class="javax.swing.JButton" name="btnHideShot_">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Uncheck All"/>
-        <Property name="toolTipText" type="java.lang.String" value="Uncheck All and Remove Graph"/>
+        <Property name="text" type="java.lang.String" value="Hide Shot(s)"/>
+        <Property name="toolTipText" type="java.lang.String" value="Hide Shot Series"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUncheckAll_ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnHideShot_ActionPerformed"/>
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="5" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.5" weightY="0.0"/>
+          <GridBagConstraints gridX="0" gridY="7" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.5" weightY="0.0"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -99,7 +71,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnDeleteScan_">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Del Scan"/>
+        <Property name="text" type="java.lang.String" value="Delete Scan"/>
         <Property name="toolTipText" type="java.lang.String" value="Delete All Shots In A Scan"/>
       </Properties>
       <Events>
@@ -107,22 +79,21 @@
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="6" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.5" weightY="0.0"/>
+          <GridBagConstraints gridX="0" gridY="5" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.5" weightY="0.0"/>
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JButton" name="btnDeleteHighlightedItems_">
+    <Component class="javax.swing.JButton" name="btnDelete_">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Del Highlighted"/>
-        <Property name="toolTipText" type="java.lang.String" value="Delete All Hightlighted"/>
-        <Property name="enabled" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value="Delete Shot(s)"/>
+        <Property name="toolTipText" type="java.lang.String" value="Delete Shot(s)"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteHighlightedItems_ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDelete_ActionPerformed"/>
       </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
-          <GridBagConstraints gridX="0" gridY="7" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.5" weightY="0.0"/>
+          <GridBagConstraints gridX="0" gridY="8" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.5" weightY="0.0"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -170,6 +141,46 @@
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="1" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+        </Constraint>
+      </Constraints>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="0" gridY="4" gridWidth="1" gridHeight="1" fill="1" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="1.0" weightY="1.0"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTable" name="tblShots_">
+          <Properties>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+              <Table columnCount="4" rowCount="4">
+                <Column editable="true" title="Title 1" type="java.lang.Object"/>
+                <Column editable="true" title="Title 2" type="java.lang.Object"/>
+                <Column editable="true" title="Title 3" type="java.lang.Object"/>
+                <Column editable="true" title="Title 4" type="java.lang.Object"/>
+              </Table>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JButton" name="btnShowShotl_">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Shot(s)"/>
+        <Property name="toolTipText" type="java.lang.String" value="Show Shot Series"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnShowShotl_ActionPerformed"/>
+      </Events>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="0" gridY="6" gridWidth="1" gridHeight="1" fill="2" ipadX="0" ipadY="0" insetsTop="5" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.5" weightY="0.0"/>
         </Constraint>
       </Constraints>
     </Component>

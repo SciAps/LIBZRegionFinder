@@ -16,6 +16,33 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
   <SubComponents>
+    <Component class="javax.swing.JCheckBox" name="chkDomainGridline_">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Domain Gridline"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDomainGridline_ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkRangeGridline_">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Range Gridline"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkRangeGridline_ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkAutoRange_">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Auto Range"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkAutoRange_ActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JButton" name="btnLeft_">
       <Properties>
         <Property name="toolTipText" type="java.lang.String" value="Shift left"/>
@@ -122,33 +149,6 @@
         <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnDown_MousePressed"/>
         <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnDown_MouseReleased"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDown_ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="chkDomainGridline_">
-      <Properties>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Domain Gridline"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDomainGridline_ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="chkRangeGridline_">
-      <Properties>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Range Gridline"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkRangeGridline_ActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="chkAutoRange_">
-      <Properties>
-        <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Auto Range"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkAutoRange_ActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

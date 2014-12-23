@@ -74,7 +74,14 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
         tblRegions_.getColumnModel().getColumn(REGION_MIN_COL).setCellRenderer(new TableCellDoubleTypeRenderer());
         tblRegions_.getColumnModel().getColumn(REGION_MAX_COL).setCellRenderer(new TableCellDoubleTypeRenderer());
-
+        
+        tblRegions_.getColumnModel().getColumn(0).setPreferredWidth(45);
+        tblRegions_.getColumnModel().getColumn(0).setMinWidth(45);
+        tblRegions_.getColumnModel().getColumn(0).setMaxWidth(45);
+        tblRegions_.getColumnModel().getColumn(0).setResizable(false);
+        
+        tblRegions_.getTableHeader().setReorderingAllowed(false);
+        
         txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -392,7 +399,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             try {
                 double min = Double.parseDouble((String) table.getValueAt(row, REGION_MIN_COL));
                 double max = Double.parseDouble((String) table.getValueAt(row, REGION_MAX_COL));
-
+               
                 if (min > max) {
                     editor.setBackground(Color.red);
                 }

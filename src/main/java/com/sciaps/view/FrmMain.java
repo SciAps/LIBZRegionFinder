@@ -58,6 +58,7 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuFile = new javax.swing.JMenu();
         mnuFileExportCSV_ = new javax.swing.JMenuItem();
         mnuFileLoadRegions_ = new javax.swing.JMenuItem();
+        mnuFileLoadRegionsFile_ = new javax.swing.JMenuItem();
         mnuFileExit = new javax.swing.JMenuItem();
         mnuConfig = new javax.swing.JMenu();
         mnuConfigSetLibzIP = new javax.swing.JMenuItem();
@@ -87,6 +88,14 @@ public final class FrmMain extends javax.swing.JFrame {
             }
         });
         mnuFile.add(mnuFileLoadRegions_);
+
+        mnuFileLoadRegionsFile_.setText("Load Region File");
+        mnuFileLoadRegionsFile_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileLoadRegionsFile_ActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuFileLoadRegionsFile_);
 
         mnuFileExit.setText("Exit");
         mnuFileExit.addActionListener(new java.awt.event.ActionListener() {
@@ -131,6 +140,10 @@ public final class FrmMain extends javax.swing.JFrame {
     private void mnuFileLoadRegions_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegions_ActionPerformed
         spectrometerStackPanel_.getRegionTextFromUser();
     }//GEN-LAST:event_mnuFileLoadRegions_ActionPerformed
+
+    private void mnuFileLoadRegionsFile_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegionsFile_ActionPerformed
+        spectrometerStackPanel_.getRegionTextFile();
+    }//GEN-LAST:event_mnuFileLoadRegionsFile_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -218,6 +231,7 @@ public final class FrmMain extends javax.swing.JFrame {
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuFileExit;
     private javax.swing.JMenuItem mnuFileExportCSV_;
+    private javax.swing.JMenuItem mnuFileLoadRegionsFile_;
     private javax.swing.JMenuItem mnuFileLoadRegions_;
     private javax.swing.JMenuBar mnuMainBar;
     // End of variables declaration//GEN-END:variables

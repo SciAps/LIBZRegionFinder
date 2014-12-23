@@ -5,8 +5,6 @@ import com.sciaps.view.LibzShotCheckListPanel.LibzShotItemClickListenerCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.jfree.data.xy.XYSeries;
 
@@ -155,7 +153,7 @@ public class ShotListTableModel extends AbstractTableModel {
     public void hideSeries(int rowIndex) {
         data_.get(rowIndex).setSelected(false);
         if (callback_ != null) {
-            callback_.doRemoveShotXYSeries(data_.get(rowIndex));
+            callback_.doHideShotXYSeries(data_.get(rowIndex));
         }
     }
 

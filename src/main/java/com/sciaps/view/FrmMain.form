@@ -31,6 +31,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileLoadRegions_ActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="mnuFileLoadRegionsFile_">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Load Region File"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileLoadRegionsFile_ActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mnuFileExit">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Exit"/>

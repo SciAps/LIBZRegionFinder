@@ -22,7 +22,7 @@ import org.jfree.chart.plot.IntervalMarker;
 public class RegionsTableModel extends AbstractTableModel {
 
     private final List<RegionMarkerItem> data_;
-    String[] columnNames_ = {"Marker On", "Name", "Symbol", "Min", "Max", "Value"};
+    String[] columnNames_ = {"Show", "Name", "Symbol", "Min", "Max", "Value"};
     private RegionsPanelCallback callback_;
 
     public RegionsTableModel(RegionsPanelCallback callback) {
