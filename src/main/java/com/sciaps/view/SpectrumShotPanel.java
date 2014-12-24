@@ -10,6 +10,7 @@ import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
 import com.sciaps.utils.CustomDialogUtils;
+import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.validateOneOrGreater;
 import static com.sciaps.utils.Util.validateZeroOrGreater;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -349,7 +351,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
                         gotScanID = true;
                     }
                     name.append(shotItem.getShotID());
-                    name.append(",");
+                    name.append("_");
 
                     shotDatas.add(shotItem.getShot());
                 }
@@ -372,7 +374,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
                 String newName = avgPanel.getAvgShotName();
                 int newSampleRate = avgPanel.getSampleRate();
 
-                SpectrumShotItem newShotItem = new SpectrumShotItem(newName);
+                SpectrumShotItem newShotItem = new SpectrumShotItem(newName.replace(",", "_"));
                 newShotItem.setShot(createAverage(shotDatas, newSampleRate));
 
                 shotListTableModel_.addRow(0, newShotItem);
@@ -401,6 +403,49 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
     public int getNumberOfSelectedItem() {
         return tblShots_.getSelectedRowCount();
+    }
+
+    public void exportCSV() {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (shotListTableModel_.getRowCount() > 0) {
+                    StringBuilder strBuilder = new StringBuilder();
+                    for (int i = 0; i < shotListTableModel_.getRowCount() - 1; i++) {
+                        strBuilder.append(shotListTableModel_.getRow(i).toString()).append("\n");
+                    }
+
+                    // add the last shot
+                    strBuilder.append(shotListTableModel_.getRow(shotListTableModel_.getRowCount() - 1).toString());
+                    
+                    Util.saveCSVFile(strBuilder);
+                } else {
+                    showErrorDialog("No data to save.");
+                }
+            }
+        });
+    }
+
+    public void importCSV() {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                ArrayList<SpectrumShotItem> shotItems = Util.readCSVFile();
+                for (final SpectrumShotItem item : shotItems) {
+
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            addItem(item);
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     private void showErrorDialog(String msg) {

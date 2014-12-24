@@ -8,17 +8,26 @@ package com.sciaps.utils;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.Constants;
 import com.sciaps.common.MinMaxObj;
+import com.sciaps.common.ShotSpectrum;
 import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
+import com.sciaps.view.ProgressStatusPanel;
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import org.apache.commons.lang.math.DoubleRange;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Max;
@@ -128,7 +137,7 @@ public class Util {
 
         return newSpectrum;
     }
-    
+
     public static void populateXYSeriesData(SpectrumShotItem shotItem) {
 
         double[] x = shotItem.getShot().getPixelLocations();
@@ -169,26 +178,143 @@ public class Util {
 
         return address;
     }
-    
+
     public static void getMinMax(MinMaxObj minMaxObj, XYSeries series, double start, double end) {
-       
+
         boolean inRange = false;
-            for (int i = 0; i < series.getItemCount(); i++) {
-                double x = series.getX(i).doubleValue();
-                
-                if (x >= start && x <= end) {
-                    inRange = true;
-                    double y = series.getY(i).doubleValue();
-                    if (y < minMaxObj.min_) 
-                        minMaxObj.min_ = y;
-                    
-                    if (y > minMaxObj.max_)
-                        minMaxObj.max_ = y;
-                } else {
-                    if (inRange) 
-                        break;
+        for (int i = 0; i < series.getItemCount(); i++) {
+            double x = series.getX(i).doubleValue();
+
+            if (x >= start && x <= end) {
+                inRange = true;
+                double y = series.getY(i).doubleValue();
+                if (y < minMaxObj.min_) {
+                    minMaxObj.min_ = y;
+                }
+
+                if (y > minMaxObj.max_) {
+                    minMaxObj.max_ = y;
+                }
+            } else {
+                if (inRange) {
+                    break;
                 }
             }
-            
+        }
+
+    }
+
+    public static void saveCSVFile(StringBuilder strBuilder) {
+        JFileChooser chooser = new JFileChooser();
+
+        int retrival = chooser.showSaveDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+
+            ProgressStatusPanel progressbar = new ProgressStatusPanel();
+            final JDialog progressDialog = CustomDialogUtils.createDialog(null,
+                    "Exporting CSV file", progressbar,
+                    CustomDialogUtils.NONE_OPTION);
+            progressDialog.setSize(400, 100);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    progressDialog.setVisible(true);
+                }
+            });
+
+            try {
+                String fileName = chooser.getSelectedFile().toString();
+                if (!fileName.endsWith(".csv") && !fileName.endsWith(".CSV")) {
+                    fileName = fileName + ".csv";
+                }
+                FileWriter fw = new FileWriter(fileName);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(strBuilder.toString());
+                bw.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println(ex.getMessage());
+            }
+
+            progressDialog.dispose();
+        }
+    }
+
+    public static ArrayList<SpectrumShotItem> readCSVFile() {
+        ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
+
+        JFileChooser chooser = new JFileChooser();
+
+        int retrival = chooser.showOpenDialog(null);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
+
+            ProgressStatusPanel progressbar = new ProgressStatusPanel();
+            final JDialog progressDialog = CustomDialogUtils.createDialog(null,
+                    "Importing CSV file", progressbar,
+                    CustomDialogUtils.NONE_OPTION);
+            progressDialog.setSize(400, 100);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    progressDialog.setVisible(true);
+                }
+            });
+
+            try {
+                FileReader fr = new FileReader(chooser.getSelectedFile());
+                BufferedReader br = new BufferedReader(fr);
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    shotItems.add(packSpectrumShotItem(line));
+                }
+                br.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Exception: " + ex.getMessage());
+            }
+
+            progressDialog.dispose();
+        }
+
+        return shotItems;
+    }
+
+    private static SpectrumShotItem packSpectrumShotItem(String line) {
+       
+        String[] items = line.split(",");
+        
+        int offset = 0;
+        String name = items[offset];
+        int scanID = Integer.parseInt(items[++offset]);
+        int shotID = Integer.parseInt(items[++offset]);
+        
+        double rangeX = Double.parseDouble(items[++offset]);
+        double rangeY = Double.parseDouble(items[++offset]);
+        DoubleRange doubleRange = new DoubleRange(rangeX, rangeY);
+        
+        int xLength = Integer.parseInt(items[++offset]);
+        double[] x = new double[xLength];
+        for (int i = 0; i < xLength; i++) {
+            String val = items[++offset];
+            x[i] = Double.parseDouble(val);
+        }
+        
+        int yLenght = Integer.parseInt(items[++offset]);
+        double[] y = new double[yLenght];
+        for (int i = 0; i < yLenght; i++) {
+            String val = items[++offset];
+            y[i] = Double.parseDouble(val);
+        }
+        
+        ShotSpectrum shotSpectrum = new ShotSpectrum(x,y,doubleRange);
+        SpectrumShotItem shotInfo = new SpectrumShotItem(name);
+        shotInfo.setScanID(scanID);
+        shotInfo.setShotID(shotID);
+        shotInfo.setShot(shotSpectrum);
+        
+        return shotInfo;
     }
 }

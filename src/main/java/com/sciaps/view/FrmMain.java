@@ -57,6 +57,7 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuMainBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
         mnuFileExportCSV_ = new javax.swing.JMenuItem();
+        mnuFileImportCSV_ = new javax.swing.JMenuItem();
         mnuFileLoadRegions_ = new javax.swing.JMenuItem();
         mnuFileLoadRegionsFile_ = new javax.swing.JMenuItem();
         mnuFileExit = new javax.swing.JMenuItem();
@@ -80,6 +81,14 @@ public final class FrmMain extends javax.swing.JFrame {
             }
         });
         mnuFile.add(mnuFileExportCSV_);
+
+        mnuFileImportCSV_.setText("Import CSV");
+        mnuFileImportCSV_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileImportCSV_ActionPerformed(evt);
+            }
+        });
+        mnuFile.add(mnuFileImportCSV_);
 
         mnuFileLoadRegions_.setText("Load Region Text");
         mnuFileLoadRegions_.addActionListener(new java.awt.event.ActionListener() {
@@ -134,7 +143,7 @@ public final class FrmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuConfigSetLibzIPActionPerformed
 
     private void mnuFileExportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExportCSV_ActionPerformed
-        JOptionPane.showMessageDialog(this, "This function is not yet supported");
+        spectrometerStackPanel_.exportCSV();
     }//GEN-LAST:event_mnuFileExportCSV_ActionPerformed
 
     private void mnuFileLoadRegions_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegions_ActionPerformed
@@ -144,6 +153,10 @@ public final class FrmMain extends javax.swing.JFrame {
     private void mnuFileLoadRegionsFile_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegionsFile_ActionPerformed
         spectrometerStackPanel_.getRegionTextFile();
     }//GEN-LAST:event_mnuFileLoadRegionsFile_ActionPerformed
+
+    private void mnuFileImportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileImportCSV_ActionPerformed
+        spectrometerStackPanel_.importCSV();
+    }//GEN-LAST:event_mnuFileImportCSV_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,6 +244,7 @@ public final class FrmMain extends javax.swing.JFrame {
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuFileExit;
     private javax.swing.JMenuItem mnuFileExportCSV_;
+    private javax.swing.JMenuItem mnuFileImportCSV_;
     private javax.swing.JMenuItem mnuFileLoadRegionsFile_;
     private javax.swing.JMenuItem mnuFileLoadRegions_;
     private javax.swing.JMenuBar mnuMainBar;

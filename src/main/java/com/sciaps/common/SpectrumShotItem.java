@@ -5,7 +5,9 @@
  */
 package com.sciaps.common;
 
+import com.sciaps.common.spectrum.LIBZPixelSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
+import com.sciaps.utils.Util;
 import org.jfree.data.xy.XYSeries;
 
 /**
@@ -49,7 +51,30 @@ public class SpectrumShotItem {
 
     @Override
     public String toString() {
-        return name_;
+        StringBuilder str = new StringBuilder();
+        str.append(name_).append(",");
+        str.append(scanID_).append(",");
+        str.append(shotID_).append(",");
+
+        str.append(shot_.getValidRange().getMinimumDouble()).append(",");
+        str.append(shot_.getValidRange().getMaximumDouble()).append(",");
+       
+        double[] x = shot_.getPixelLocations();
+        str.append(x.length).append(",");
+        for (int i = 0; i < x.length; i++) {
+            str.append(x[i]).append(",");
+        }
+                
+        if (xySeries_.isEmpty()) {
+            Util.populateXYSeriesData(this);
+        }
+        str.append(xySeries_.getItemCount()).append(",");
+        for (int i = 0; i < xySeries_.getItemCount() -1; i++) {
+            str.append(xySeries_.getY(i)).append(",");
+        }
+        str.append(xySeries_.getY(xySeries_.getItemCount() -1));
+        
+        return str.toString();
     }
 
     public void setName(String name) {

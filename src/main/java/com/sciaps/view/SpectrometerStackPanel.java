@@ -652,6 +652,14 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         return shotCheckListPanel_.getNumberOfSelectedItem();
     }
 
+    public void exportCSV() {
+        shotCheckListPanel_.exportCSV();
+    }
+    
+    public void importCSV() {
+        shotCheckListPanel_.importCSV();
+    }
+
     private void showErrorDialog(String msg) {
         logger_.error(msg);
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);

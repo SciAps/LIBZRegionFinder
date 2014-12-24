@@ -169,7 +169,7 @@ public class ShotListTableModel extends AbstractTableModel {
         if (callback_ != null) {
             if (data_.get(rowIndex).isSelected() == false) {
                 callback_.doShowShotXYSeries(data_.get(rowIndex));
-                data_.get(rowIndex).setSelected(true);
+                data_.get(rowIndex).setSelected(true);          
             }
         }
     }
