@@ -5,6 +5,7 @@
  */
 package com.sciaps.view;
 
+import com.sciaps.common.Constants;
 import static com.sciaps.common.Constants.REGION_MARKER_COL;
 import static com.sciaps.common.Constants.REGION_MAX_COL;
 import static com.sciaps.common.Constants.REGION_MIN_COL;
@@ -23,7 +24,10 @@ import javax.swing.RowFilter;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
 import org.jfree.chart.plot.IntervalMarker;
 import org.slf4j.Logger;
@@ -41,7 +45,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
         void removeRegionMarker(IntervalMarker marker);
 
-        int getNumberOfSelectedShots();
+        double getIntensityOfLine(int type, double waveLength, double regionWidth);
     }
 
     private final Logger logger_ = LoggerFactory.getLogger(RegionsPanel.class);
@@ -74,14 +78,29 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
         tblRegions_.getColumnModel().getColumn(REGION_MIN_COL).setCellRenderer(new TableCellDoubleTypeRenderer());
         tblRegions_.getColumnModel().getColumn(REGION_MAX_COL).setCellRenderer(new TableCellDoubleTypeRenderer());
-        
+
         tblRegions_.getColumnModel().getColumn(0).setPreferredWidth(45);
         tblRegions_.getColumnModel().getColumn(0).setMinWidth(45);
         tblRegions_.getColumnModel().getColumn(0).setMaxWidth(45);
         tblRegions_.getColumnModel().getColumn(0).setResizable(false);
-        
+
+        tblRegions_.getColumnModel().getColumn(2).setPreferredWidth(50);
+        tblRegions_.getColumnModel().getColumn(2).setMinWidth(50);
+        tblRegions_.getColumnModel().getColumn(2).setMaxWidth(50);
+        tblRegions_.getColumnModel().getColumn(2).setResizable(false);
+
+        tblRegions_.getColumnModel().getColumn(3).setPreferredWidth(50);
+        tblRegions_.getColumnModel().getColumn(3).setMinWidth(50);
+        tblRegions_.getColumnModel().getColumn(3).setMaxWidth(50);
+        tblRegions_.getColumnModel().getColumn(3).setResizable(false);
+
+        tblRegions_.getColumnModel().getColumn(4).setPreferredWidth(50);
+        tblRegions_.getColumnModel().getColumn(4).setMinWidth(50);
+        tblRegions_.getColumnModel().getColumn(4).setMaxWidth(50);
+        tblRegions_.getColumnModel().getColumn(4).setResizable(false);
+
         tblRegions_.getTableHeader().setReorderingAllowed(false);
-        
+
         txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent e) {
@@ -130,11 +149,10 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnDelete_ = new javax.swing.JButton();
-        btnCalculateLorentzianValue_ = new javax.swing.JButton();
         btnAddMarker_ = new javax.swing.JButton();
         btnRemoveMarker_ = new javax.swing.JButton();
         btnInsertNew_ = new javax.swing.JButton();
-        btnCalculatePeekValue_ = new javax.swing.JButton();
+        cmboCalculate_ = new javax.swing.JComboBox();
         jLabel3 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(350, 759));
@@ -215,21 +233,6 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel1.add(btnDelete_, gridBagConstraints);
 
-        btnCalculateLorentzianValue_.setText("Cal. w/Lorentzian Inten.");
-        btnCalculateLorentzianValue_.setToolTipText("Calculate Region Value");
-        btnCalculateLorentzianValue_.setMaximumSize(new java.awt.Dimension(150, 23));
-        btnCalculateLorentzianValue_.setMinimumSize(new java.awt.Dimension(150, 23));
-        btnCalculateLorentzianValue_.setPreferredSize(new java.awt.Dimension(150, 23));
-        btnCalculateLorentzianValue_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCalculateLorentzianValue_ActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel1.add(btnCalculateLorentzianValue_, gridBagConstraints);
-
         btnAddMarker_.setText("Set Marker(s)");
         btnAddMarker_.setToolTipText("Set A Marker for Selected Region(s)");
         btnAddMarker_.setMaximumSize(new java.awt.Dimension(150, 23));
@@ -242,8 +245,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        gridBagConstraints.gridy = 1;
         jPanel1.add(btnAddMarker_, gridBagConstraints);
 
         btnRemoveMarker_.setText("Remove Marker(s)");
@@ -258,8 +260,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        gridBagConstraints.gridy = 1;
         jPanel1.add(btnRemoveMarker_, gridBagConstraints);
 
         btnInsertNew_.setText("Insert New");
@@ -278,20 +279,19 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel1.add(btnInsertNew_, gridBagConstraints);
 
-        btnCalculatePeekValue_.setText("Cal. w/Peek Inten.");
-        btnCalculatePeekValue_.setToolTipText("Calculate Region Value");
-        btnCalculatePeekValue_.setMaximumSize(new java.awt.Dimension(150, 23));
-        btnCalculatePeekValue_.setMinimumSize(new java.awt.Dimension(150, 23));
-        btnCalculatePeekValue_.setPreferredSize(new java.awt.Dimension(150, 23));
-        btnCalculatePeekValue_.addActionListener(new java.awt.event.ActionListener() {
+        cmboCalculate_.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "~ Select Intensity Calculation Type ~", "Use Peek Intensity", "Use Lorentzian Intensity" }));
+        cmboCalculate_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCalculatePeekValue_ActionPerformed(evt);
+                cmboCalculate_ActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        jPanel1.add(btnCalculatePeekValue_, gridBagConstraints);
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        jPanel1.add(cmboCalculate_, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -333,10 +333,6 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         tableModel_.removeRows(tmpSelectedRows);
     }//GEN-LAST:event_btnDelete_ActionPerformed
 
-    private void btnCalculateLorentzianValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateLorentzianValue_ActionPerformed
-        tableModel_.doCalculateLorentzian();
-    }//GEN-LAST:event_btnCalculateLorentzianValue_ActionPerformed
-
     private void btnAddMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMarker_ActionPerformed
         doAddRemoveMarker(true);
     }//GEN-LAST:event_btnAddMarker_ActionPerformed
@@ -350,9 +346,32 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         tableModel_.addRow(item);
     }//GEN-LAST:event_btnInsertNew_ActionPerformed
 
-    private void btnCalculatePeekValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculatePeekValue_ActionPerformed
+    private void cmboCalculate_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmboCalculate_ActionPerformed
+
+        if (tblRegions_.getRowCount() == 0) {
+            return;
+        }
         
-    }//GEN-LAST:event_btnCalculatePeekValue_ActionPerformed
+        String header = "";
+        switch (cmboCalculate_.getSelectedIndex()) {
+            case Constants.PEEK_INTENSITY_FUNC:
+                header = "Peek Val.";
+                break;
+            case Constants.LORENTZIAN_INTENSITY_FUNC:
+                header = "Lorent. Val.";
+                break;
+            default:
+                return;
+        }
+
+        tableModel_.doCalculate(cmboCalculate_.getSelectedIndex());
+
+        JTableHeader th = tblRegions_.getTableHeader();
+        TableColumnModel tcm = th.getColumnModel();
+        TableColumn tc = tcm.getColumn(Constants.REGION_VAL_COL);
+        tc.setHeaderValue(header);
+        th.repaint();
+    }//GEN-LAST:event_cmboCalculate_ActionPerformed
 
     private void doAddRemoveMarker(boolean val) {
         int[] selectedRows = tblRegions_.getSelectedRows();
@@ -419,7 +438,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             try {
                 double min = Double.parseDouble((String) table.getValueAt(row, REGION_MIN_COL));
                 double max = Double.parseDouble((String) table.getValueAt(row, REGION_MAX_COL));
-               
+
                 if (min > max) {
                     editor.setBackground(Color.red);
                 }
@@ -432,11 +451,10 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddMarker_;
-    private javax.swing.JButton btnCalculateLorentzianValue_;
-    private javax.swing.JButton btnCalculatePeekValue_;
     private javax.swing.JButton btnDelete_;
     private javax.swing.JButton btnInsertNew_;
     private javax.swing.JButton btnRemoveMarker_;
+    private javax.swing.JComboBox cmboCalculate_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

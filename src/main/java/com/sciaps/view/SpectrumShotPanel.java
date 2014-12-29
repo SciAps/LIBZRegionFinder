@@ -5,8 +5,11 @@
  */
 package com.sciaps.view;
 
+import com.sciaps.common.Constants;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.ThreadUtils;
+import com.sciaps.common.algorithms.LorentzianIntensityValue;
+import com.sciaps.common.algorithms.PeekIntensityIntergral;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
 import com.sciaps.utils.CustomDialogUtils;
@@ -401,8 +404,35 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         shotListTableModel_.addRow(item);
     }
 
-    public int getNumberOfSelectedItem() {
-        return tblShots_.getSelectedRowCount();
+    public double getIntensityOfLine(int type, double waveLength, double regionWidth) {
+        double retval = -1;
+        int numOfSelected = tblShots_.getSelectedRowCount();
+
+        if (numOfSelected == 1) {
+            int selectedIndex = tblShots_.getSelectedRow();
+            int modelIndex = tblShots_.convertRowIndexToModel(selectedIndex);
+
+            SpectrumShotItem shotItem = shotListTableModel_.getRow(modelIndex);
+
+            switch (type) {
+                case Constants.PEEK_INTENSITY_FUNC:
+                    PeekIntensityIntergral peekIntenVal = new PeekIntensityIntergral();
+                    retval = peekIntenVal.getIntensityOfLine(shotItem.getShot().getIntensityFunction(), waveLength, regionWidth);
+                    break;
+                case Constants.LORENTZIAN_INTENSITY_FUNC:
+                    LorentzianIntensityValue lorentzianIntenVal = new LorentzianIntensityValue();
+                    retval = lorentzianIntenVal.getIntensityOfLine(shotItem.getShot().getIntensityFunction(), waveLength, regionWidth);
+                    break;
+                default:
+
+            }
+        } else if (numOfSelected == 0) {
+            showErrorDialog("No shot selected to do the region calculation.");
+        } else {
+            showErrorDialog("Too many shots selected to do the region calculation.\nOnly 1 shot should be selected.");
+        }
+
+        return retval;
     }
 
     public void exportCSV() {
@@ -419,7 +449,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
                     // add the last shot
                     strBuilder.append(shotListTableModel_.getRow(shotListTableModel_.getRowCount() - 1).toString());
-                    
+
                     Util.saveCSVFile(strBuilder);
                 } else {
                     showErrorDialog("No data to save.");

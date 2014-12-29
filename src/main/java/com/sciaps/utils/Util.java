@@ -26,7 +26,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import org.apache.commons.lang.math.DoubleRange;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Max;
@@ -244,6 +244,7 @@ public class Util {
         ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
 
         JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv", "CSV"));
 
         int retrival = chooser.showOpenDialog(null);
         if (retrival == JFileChooser.APPROVE_OPTION) {
@@ -282,34 +283,34 @@ public class Util {
     }
 
     private static SpectrumShotItem packSpectrumShotItem(String line) {
-       
+
         String[] items = line.split(",");
-        
+
         int offset = 0;
         String name = items[offset];
         int scanID = Integer.parseInt(items[++offset]);
         int shotID = Integer.parseInt(items[++offset]);
-               
+
         int xLength = Integer.parseInt(items[++offset]);
         double[] x = new double[xLength];
         for (int i = 0; i < xLength; i++) {
             String val = items[++offset];
             x[i] = Double.parseDouble(val);
         }
-        
+
         int yLenght = Integer.parseInt(items[++offset]);
         double[] y = new double[yLenght];
         for (int i = 0; i < yLenght; i++) {
             String val = items[++offset];
             y[i] = Double.parseDouble(val);
         }
-        
+
         RawDataSpectrum data = new RawDataSpectrum(new double[][]{x, y});
         SpectrumShotItem shotInfo = new SpectrumShotItem(name);
         shotInfo.setScanID(scanID);
         shotInfo.setShotID(shotID);
         shotInfo.setShot(data);
-        
+
         return shotInfo;
     }
 }

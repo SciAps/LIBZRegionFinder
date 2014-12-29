@@ -35,6 +35,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.XYPlot;
@@ -89,7 +90,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         plot_ = jFreeChartPanel_.getJFreeChart().getXYPlot();
         XYSplineRenderer renderer = new XYSplineRenderer(5);
-        
 
         StandardXYToolTipGenerator ttG
                 = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
@@ -110,26 +110,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         shotListContainerPanel_.setVisible(false);
         rasterSettingPanel_.setVisible(false);
         regionContainerPanel_.setVisible(false);
-
-        // ==== start of testing code
-        /*CheckListShotItem item = new CheckListShotItem("Test1");
-         item.getXYSeries().add(200, 200);
-         item.getXYSeries().add(450, 300);
-         item.getXYSeries().add(900, 1);
-         shotCheckListPanel_.addItem(item);
-
-         CheckListShotItem item2 = new CheckListShotItem("Test2");
-         item2.getXYSeries().add(200, 20);
-         item2.getXYSeries().add(400, 300);
-         item2.getXYSeries().add(900, 900);
-         shotCheckListPanel_.addItem(item2);
-
-         CheckListShotItem item3 = new CheckListShotItem("Test3");
-         item3.getXYSeries().add(250, 20);
-         item3.getXYSeries().add(450, 300);
-         item3.getXYSeries().add(950, 900);
-         shotCheckListPanel_.addItem(item3);*/
-        // ==== end of testing code
     }
 
     /**
@@ -493,6 +473,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public void getRegionTextFile() {
 
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt", "TXT"));
         int retval = fileChooser.showOpenDialog(null);
 
         if (retval == JFileChooser.APPROVE_OPTION) {
@@ -649,14 +630,14 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     }
 
     @Override
-    public int getNumberOfSelectedShots() {
-        return shotCheckListPanel_.getNumberOfSelectedItem();
+    public double getIntensityOfLine(int type, double wavelength, double regionwidth) {
+        return shotCheckListPanel_.getIntensityOfLine(type, wavelength, regionwidth);
     }
 
     public void exportCSV() {
         shotCheckListPanel_.exportCSV();
     }
-    
+
     public void importCSV() {
         shotCheckListPanel_.importCSV();
         setShotListPanelVisible(true);

@@ -10,12 +10,7 @@ import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.validateOneOrGreater;
 import static com.sciaps.utils.Util.validateZeroOrGreater;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,14 +44,15 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     public SpecialRasterPanel() {
         initComponents();
         
-        btnDataShotHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnArgonPreflushHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnStepSizeHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnPulsePeriodHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnIntegrationDelayHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnIntegrationPeriodHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnStartPositionHelp_.setIcon(new ImageIcon("./images/help.png"));
-        btnStopPositionHelp_.setIcon(new ImageIcon("./images/help.png"));
+        ImageIcon icon = createImageIcon("/images/help.png");
+        btnDataShotHelp_.setIcon(icon);
+        btnArgonPreflushHelp_.setIcon(icon);
+        btnStepSizeHelp_.setIcon(icon);
+        btnPulsePeriodHelp_.setIcon(icon);
+        btnIntegrationDelayHelp_.setIcon(icon);
+        btnIntegrationPeriodHelp_.setIcon(icon);
+        btnStartPositionHelp_.setIcon(icon);
+        btnStopPositionHelp_.setIcon(icon);
         
     }
 
@@ -692,6 +688,16 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     private void showErrorDialog(String msg) {
         logger_.error(msg);
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private ImageIcon createImageIcon(String path) {
+        
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);         
+        }
+        
+        return null;
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

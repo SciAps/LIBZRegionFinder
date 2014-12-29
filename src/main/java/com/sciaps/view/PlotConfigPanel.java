@@ -42,11 +42,11 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         rangeAxis_ = plot.getRangeAxis();
         domainAxis_ = plot.getDomainAxis();
 
-        btnLeft_.setIcon(new ImageIcon("./images/left.png"));
-        btnRight_.setIcon(new ImageIcon("./images/right.png"));
-        btnAutoRange_.setIcon(new ImageIcon("./images/center.png"));
-        btnUp_.setIcon(new ImageIcon("./images/up.png"));
-        btnDown_.setIcon(new ImageIcon("./images/down.png"));
+        btnLeft_.setIcon(createImageIcon("/images/left.png"));
+        btnRight_.setIcon(createImageIcon("/images/right.png"));
+        btnAutoRange_.setIcon(createImageIcon("/images/center.png"));
+        btnUp_.setIcon(createImageIcon("/images/up.png"));
+        btnDown_.setIcon(createImageIcon("/images/down.png"));
 
         mousePressed_ = false;
     }
@@ -360,6 +360,16 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         if (range != null) {
             rangeAxis_.setRange(range);
         }
+    }
+
+    private ImageIcon createImageIcon(String path) {
+
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        }
+
+        return null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -14,7 +14,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import org.jfree.ui.RefineryUtilities;
 
 /**
@@ -31,7 +30,7 @@ public final class FrmMain extends javax.swing.JFrame {
     public FrmMain() {
         initComponents();
 
-        this.setIconImage((new ImageIcon("./images/sciaps_icon.png").getImage()));
+        setSciapsIcon();
 
         spectrometerStackPanel_ = new SpectrometerStackPanel();
         setDisplayPanel(spectrometerStackPanel_);
@@ -237,6 +236,14 @@ public final class FrmMain extends javax.swing.JFrame {
         }
     }
 
+    private void setSciapsIcon() {
+
+        java.net.URL imgURL = getClass().getResource("/images/sciaps_icon.png");
+        if (imgURL != null) {
+            ImageIcon icon = new ImageIcon(imgURL);
+            this.setIconImage(icon.getImage());
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel displayPanel_;
     private javax.swing.JMenu mnuConfig;

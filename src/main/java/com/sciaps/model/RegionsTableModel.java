@@ -2,6 +2,7 @@ package com.sciaps.model;
 
 import com.sciaps.common.RegionMarkerItem;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -234,17 +235,28 @@ public class RegionsTableModel extends AbstractTableModel {
         }
     }
 
-    public void doCalculateLorentzian() {
+    public void doCalculate(int type) {
         if (callback_ != null) {
-            int numOfSelected = callback_.getNumberOfSelectedShots();
+            double retval;
+            double waveLength;
+            double regionWidth;
 
-            if (numOfSelected == 1) {
-                //TODO
-            } else if (numOfSelected == 0) {
-                showErrorDialog("No shot selected to do the region calculation.");
-            } else {
-                showErrorDialog("Too many shots selected to do the region calculation.\nOnly 1 shot should be selected.");
+            for (RegionMarkerItem markerItem : data_) {
+                waveLength = (markerItem.getMax() - markerItem.getMin()) / 2;
+                regionWidth = markerItem.getMax() - markerItem.getMin();
+                retval = callback_.getIntensityOfLine(type, waveLength, regionWidth);
+
+                // The -1 value identicate no shot is selected to do the calculation. 
+                // Therefore, break out of this for loop
+                if (retval == -1) {
+                    break;
+                }
+
+                retval = (new BigDecimal(retval)).setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+                markerItem.setValue(retval);
             }
+
+            fireTableDataChanged();
         }
     }
 
