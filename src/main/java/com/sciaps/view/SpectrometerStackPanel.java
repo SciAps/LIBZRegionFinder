@@ -38,7 +38,7 @@ import javax.swing.SwingUtilities;
 import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
@@ -88,7 +88,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jFreeChartPanel_.getChartPanel().addChartMouseListener(chartMouseListener_);
 
         plot_ = jFreeChartPanel_.getJFreeChart().getXYPlot();
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        XYSplineRenderer renderer = new XYSplineRenderer(5);
+        
 
         StandardXYToolTipGenerator ttG
                 = new StandardXYToolTipGenerator("{1}, {2}", new DecimalFormat("#0.00"), new DecimalFormat("#0.00"));
@@ -658,6 +659,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     
     public void importCSV() {
         shotCheckListPanel_.importCSV();
+        setShotListPanelVisible(true);
     }
 
     private void showErrorDialog(String msg) {

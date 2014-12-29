@@ -5,7 +5,6 @@
  */
 package com.sciaps.common;
 
-import com.sciaps.common.spectrum.LIBZPixelSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.utils.Util;
 import org.jfree.data.xy.XYSeries;
@@ -55,9 +54,6 @@ public class SpectrumShotItem {
         str.append(name_).append(",");
         str.append(scanID_).append(",");
         str.append(shotID_).append(",");
-
-        str.append(shot_.getValidRange().getMinimumDouble()).append(",");
-        str.append(shot_.getValidRange().getMaximumDouble()).append(",");
        
         double[] x = shot_.getPixelLocations();
         str.append(x.length).append(",");

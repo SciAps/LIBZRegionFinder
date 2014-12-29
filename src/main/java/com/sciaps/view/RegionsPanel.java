@@ -130,10 +130,11 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnDelete_ = new javax.swing.JButton();
-        btnCalculateValue_ = new javax.swing.JButton();
+        btnCalculateLorentzianValue_ = new javax.swing.JButton();
         btnAddMarker_ = new javax.swing.JButton();
         btnRemoveMarker_ = new javax.swing.JButton();
         btnInsertNew_ = new javax.swing.JButton();
+        btnCalculatePeekValue_ = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(350, 759));
@@ -214,20 +215,20 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel1.add(btnDelete_, gridBagConstraints);
 
-        btnCalculateValue_.setText("Calculate");
-        btnCalculateValue_.setToolTipText("Calculate Region Value");
-        btnCalculateValue_.setMaximumSize(new java.awt.Dimension(150, 23));
-        btnCalculateValue_.setMinimumSize(new java.awt.Dimension(150, 23));
-        btnCalculateValue_.setPreferredSize(new java.awt.Dimension(150, 23));
-        btnCalculateValue_.addActionListener(new java.awt.event.ActionListener() {
+        btnCalculateLorentzianValue_.setText("Cal. w/Lorentzian Inten.");
+        btnCalculateLorentzianValue_.setToolTipText("Calculate Region Value");
+        btnCalculateLorentzianValue_.setMaximumSize(new java.awt.Dimension(150, 23));
+        btnCalculateLorentzianValue_.setMinimumSize(new java.awt.Dimension(150, 23));
+        btnCalculateLorentzianValue_.setPreferredSize(new java.awt.Dimension(150, 23));
+        btnCalculateLorentzianValue_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCalculateValue_ActionPerformed(evt);
+                btnCalculateLorentzianValue_ActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        jPanel1.add(btnCalculateValue_, gridBagConstraints);
+        jPanel1.add(btnCalculateLorentzianValue_, gridBagConstraints);
 
         btnAddMarker_.setText("Set Marker(s)");
         btnAddMarker_.setToolTipText("Set A Marker for Selected Region(s)");
@@ -277,6 +278,21 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel1.add(btnInsertNew_, gridBagConstraints);
 
+        btnCalculatePeekValue_.setText("Cal. w/Peek Inten.");
+        btnCalculatePeekValue_.setToolTipText("Calculate Region Value");
+        btnCalculatePeekValue_.setMaximumSize(new java.awt.Dimension(150, 23));
+        btnCalculatePeekValue_.setMinimumSize(new java.awt.Dimension(150, 23));
+        btnCalculatePeekValue_.setPreferredSize(new java.awt.Dimension(150, 23));
+        btnCalculatePeekValue_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCalculatePeekValue_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel1.add(btnCalculatePeekValue_, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
@@ -317,9 +333,9 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         tableModel_.removeRows(tmpSelectedRows);
     }//GEN-LAST:event_btnDelete_ActionPerformed
 
-    private void btnCalculateValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateValue_ActionPerformed
-        tableModel_.doCalculate();
-    }//GEN-LAST:event_btnCalculateValue_ActionPerformed
+    private void btnCalculateLorentzianValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateLorentzianValue_ActionPerformed
+        tableModel_.doCalculateLorentzian();
+    }//GEN-LAST:event_btnCalculateLorentzianValue_ActionPerformed
 
     private void btnAddMarker_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMarker_ActionPerformed
         doAddRemoveMarker(true);
@@ -333,6 +349,10 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         RegionMarkerItem item = new RegionMarkerItem();
         tableModel_.addRow(item);
     }//GEN-LAST:event_btnInsertNew_ActionPerformed
+
+    private void btnCalculatePeekValue_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculatePeekValue_ActionPerformed
+        
+    }//GEN-LAST:event_btnCalculatePeekValue_ActionPerformed
 
     private void doAddRemoveMarker(boolean val) {
         int[] selectedRows = tblRegions_.getSelectedRows();
@@ -412,7 +432,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddMarker_;
-    private javax.swing.JButton btnCalculateValue_;
+    private javax.swing.JButton btnCalculateLorentzianValue_;
+    private javax.swing.JButton btnCalculatePeekValue_;
     private javax.swing.JButton btnDelete_;
     private javax.swing.JButton btnInsertNew_;
     private javax.swing.JButton btnRemoveMarker_;

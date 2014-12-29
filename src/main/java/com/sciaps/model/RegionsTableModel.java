@@ -234,7 +234,7 @@ public class RegionsTableModel extends AbstractTableModel {
         }
     }
 
-    public void doCalculate() {
+    public void doCalculateLorentzian() {
         if (callback_ != null) {
             int numOfSelected = callback_.getNumberOfSelectedShots();
 

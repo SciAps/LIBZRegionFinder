@@ -8,7 +8,6 @@ package com.sciaps.utils;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.Constants;
 import com.sciaps.common.MinMaxObj;
-import com.sciaps.common.ShotSpectrum;
 import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.view.ProgressStatusPanel;
@@ -290,11 +289,7 @@ public class Util {
         String name = items[offset];
         int scanID = Integer.parseInt(items[++offset]);
         int shotID = Integer.parseInt(items[++offset]);
-        
-        double rangeX = Double.parseDouble(items[++offset]);
-        double rangeY = Double.parseDouble(items[++offset]);
-        DoubleRange doubleRange = new DoubleRange(rangeX, rangeY);
-        
+               
         int xLength = Integer.parseInt(items[++offset]);
         double[] x = new double[xLength];
         for (int i = 0; i < xLength; i++) {
@@ -309,11 +304,11 @@ public class Util {
             y[i] = Double.parseDouble(val);
         }
         
-        ShotSpectrum shotSpectrum = new ShotSpectrum(x,y,doubleRange);
+        RawDataSpectrum data = new RawDataSpectrum(new double[][]{x, y});
         SpectrumShotItem shotInfo = new SpectrumShotItem(name);
         shotInfo.setScanID(scanID);
         shotInfo.setShotID(shotID);
-        shotInfo.setShot(shotSpectrum);
+        shotInfo.setShot(data);
         
         return shotInfo;
     }
