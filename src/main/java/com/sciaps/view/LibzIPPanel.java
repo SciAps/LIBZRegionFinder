@@ -7,7 +7,7 @@ package com.sciaps.view;
 
 import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.LIBZHttpClient;
-import com.sciaps.utils.CustomDialogUtils.CustomDialogCallback;
+import com.sciaps.utils.CustomDialog.CustomDialogCallback;
 import com.sciaps.utils.Util;
 import java.io.BufferedWriter;
 import java.io.File;

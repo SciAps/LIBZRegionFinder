@@ -17,7 +17,7 @@ import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.listener.JFreeChartMouseListener;
-import com.sciaps.utils.CustomDialogUtils;
+import com.sciaps.utils.CustomDialog;
 import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.populateXYSeriesData;
@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -401,9 +400,9 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         StringBuilder errMsg = new StringBuilder();
 
         ProgressStatusPanel progressbar = new ProgressStatusPanel();
-        final JDialog progressDialog = CustomDialogUtils.createDialog(null,
+        final CustomDialog progressDialog = new CustomDialog(null,
                 "Raster Test In Progress", progressbar,
-                CustomDialogUtils.NONE_OPTION);
+                CustomDialog.NONE_OPTION);
         progressDialog.setSize(400, 100);
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -577,6 +576,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
     @Override
     public void doHideShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
+        logger_.info("Hiding selected shot");
         try {
             int index = xySeriesCollection_.indexOf(item.getXYSeries());
             if (index >= 0) {

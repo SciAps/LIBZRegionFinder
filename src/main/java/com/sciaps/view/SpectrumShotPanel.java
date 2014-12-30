@@ -12,14 +12,13 @@ import com.sciaps.common.algorithms.LorentzianIntensityValue;
 import com.sciaps.common.algorithms.PeekIntensityIntergral;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
-import com.sciaps.utils.CustomDialogUtils;
+import com.sciaps.utils.CustomDialog;
 import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.validateOneOrGreater;
 import static com.sciaps.utils.Util.validateZeroOrGreater;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
@@ -233,8 +232,8 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
     private void btnCreateAvg_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAvg_ActionPerformed
 
         int[] selectedRows = tblShots_.getSelectedRows();
-        if (selectedRows.length == 0) {
-            showErrorDialog("No shot selected to create average.");
+        if (selectedRows.length < 2) {
+            showErrorDialog("Need minimum of 2 shots to create an average.");
             return;
         }
         doCreateAvg();
@@ -368,22 +367,26 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
                     avgPanel.setSampleRate(30);
                 }
 
-                JDialog dialog = CustomDialogUtils.createDialog(null,
+                CustomDialog dialog = new CustomDialog(null,
                         "Shot Average Setting", avgPanel,
-                        CustomDialogUtils.OK_OPTION);
+                        CustomDialog.OK_OPTION);
                 dialog.setSize(400, 180);
                 dialog.setVisible(true);
 
-                String newName = avgPanel.getAvgShotName();
-                int newSampleRate = avgPanel.getSampleRate();
+                if (dialog.getResponseValue() == CustomDialog.OK) {
+                    String newName = avgPanel.getAvgShotName();
+                    int newSampleRate = avgPanel.getSampleRate();
 
-                SpectrumShotItem newShotItem = new SpectrumShotItem(newName.replace(",", "_"));
-                newShotItem.setShot(createAverage(shotDatas, newSampleRate));
+                    SpectrumShotItem newShotItem = new SpectrumShotItem(newName.replace(",", "_"));
+                    newShotItem.setShot(createAverage(shotDatas, newSampleRate));
 
-                shotListTableModel_.addRow(0, newShotItem);
-                shotListTableModel_.setValueAt(true, 0, 0); //display it
+                    shotListTableModel_.addRow(0, newShotItem);
+                    shotListTableModel_.setValueAt(true, 0, 0); //display it
 
-                logger_.info("Create Avg from highlighted shots.... done");
+                    logger_.info("Create Avg from highlighted shots.... done");
+                } else {
+                    logger_.info("Create Avg aborted by user");
+                }
             }
         });
     }

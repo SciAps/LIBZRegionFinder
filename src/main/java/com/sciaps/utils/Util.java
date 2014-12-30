@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -210,9 +209,9 @@ public class Util {
         if (retrival == JFileChooser.APPROVE_OPTION) {
 
             ProgressStatusPanel progressbar = new ProgressStatusPanel();
-            final JDialog progressDialog = CustomDialogUtils.createDialog(null,
+            final CustomDialog progressDialog = new CustomDialog(null,
                     "Exporting CSV file", progressbar,
-                    CustomDialogUtils.NONE_OPTION);
+                    CustomDialog.NONE_OPTION);
             progressDialog.setSize(400, 100);
             SwingUtilities.invokeLater(new Runnable() {
 
@@ -250,9 +249,9 @@ public class Util {
         if (retrival == JFileChooser.APPROVE_OPTION) {
 
             ProgressStatusPanel progressbar = new ProgressStatusPanel();
-            final JDialog progressDialog = CustomDialogUtils.createDialog(null,
+            final CustomDialog progressDialog = new CustomDialog(null,
                     "Importing CSV file", progressbar,
-                    CustomDialogUtils.NONE_OPTION);
+                    CustomDialog.NONE_OPTION);
             progressDialog.setSize(400, 100);
             SwingUtilities.invokeLater(new Runnable() {
 

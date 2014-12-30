@@ -7,12 +7,11 @@ package com.sciaps.view;
 
 import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.LIBZHttpClient;
-import com.sciaps.utils.CustomDialogUtils;
+import com.sciaps.utils.CustomDialog;
 import com.sciaps.utils.Util;
 import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import org.jfree.ui.RefineryUtilities;
 
@@ -219,8 +218,8 @@ public final class FrmMain extends javax.swing.JFrame {
         LibzIPPanel httpConfigPanel;
         httpConfigPanel = new LibzIPPanel();
         httpConfigPanel.setParentFrame(this);
-        JDialog dialog = CustomDialogUtils.createDialog(this, "LIBZ IP Address",
-                httpConfigPanel, CustomDialogUtils.OK_CANCEL_OPTION);
+        CustomDialog dialog = new CustomDialog(this, "LIBZ IP Address",
+                httpConfigPanel, CustomDialog.OK_CANCEL_OPTION);
         dialog.setSize(300, 150);
         dialog.setVisible(true);
     }
