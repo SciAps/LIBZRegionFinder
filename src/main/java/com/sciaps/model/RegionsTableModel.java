@@ -79,8 +79,6 @@ public class RegionsTableModel extends AbstractTableModel {
                 } else {
                     removeMarker(rowIndex);
                 }
-
-                data_.get(rowIndex).setIsMarkerShown(val);
                 break;
             case 1:
                 data_.get(rowIndex).setName((String) aValue);
@@ -109,6 +107,7 @@ public class RegionsTableModel extends AbstractTableModel {
                         addMarker(rowIndex);
                     }
 
+                    fireTableDataChanged();
                 } catch (NumberFormatException ex) {
                     showErrorDialog("Invalid Min Value: " + (String) aValue);
                 }
@@ -126,6 +125,7 @@ public class RegionsTableModel extends AbstractTableModel {
                         addMarker(rowIndex);
                     }
 
+                    fireTableDataChanged();
                 } catch (NumberFormatException ex) {
                     showErrorDialog("Invalid Max Value: " + (String) aValue);
                 }
@@ -141,7 +141,6 @@ public class RegionsTableModel extends AbstractTableModel {
             default:
                 break;
         }
-        fireTableDataChanged();
     }
 
     @Override

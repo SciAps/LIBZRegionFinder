@@ -66,8 +66,6 @@ public class ShotListTableModel extends AbstractTableModel {
                 } else {
                     hideSeries(rowIndex);
                 }
-
-                data_.get(rowIndex).setSelected(val);
                 break;
             case 1:
                 data_.get(rowIndex).setName((String) aValue);
@@ -75,7 +73,6 @@ public class ShotListTableModel extends AbstractTableModel {
             default:
                 break;
         }
-        fireTableDataChanged();
     }
 
     @Override
@@ -120,9 +117,10 @@ public class ShotListTableModel extends AbstractTableModel {
     }
 
     public void removeRows(int[] rowIndex) {
-        if (rowIndex == null || rowIndex.length == 0)
+        if (rowIndex == null || rowIndex.length == 0) {
             return;
-        
+        }
+
         Arrays.sort(rowIndex);
         for (int i = rowIndex.length - 1; i >= 0; i--) {
             if (data_.get(rowIndex[i]).isSelected()) {
@@ -133,12 +131,6 @@ public class ShotListTableModel extends AbstractTableModel {
         }
 
         fireTableDataChanged();
-    }
-
-    public void removeAllRows() {
-        for (int index = data_.size() - 1; index >= 0; index--) {
-            removeRow(index);
-        }
     }
 
     public SpectrumShotItem getRow(int rowIndex) {
@@ -164,13 +156,11 @@ public class ShotListTableModel extends AbstractTableModel {
 
         fireTableDataChanged();
     }
-    
+
     public void showSeries(int rowIndex) {
+        data_.get(rowIndex).setSelected(true);
         if (callback_ != null) {
-            if (data_.get(rowIndex).isSelected() == false) {
-                callback_.doShowShotXYSeries(data_.get(rowIndex));
-                data_.get(rowIndex).setSelected(true);          
-            }
+            callback_.doShowShotXYSeries(data_.get(rowIndex));
         }
     }
 
@@ -181,7 +171,7 @@ public class ShotListTableModel extends AbstractTableModel {
 
         fireTableDataChanged();
     }
-    
+
     public void deleteScan(int scanID) {
         for (int index = data_.size() - 1; index >= 0; index--) {
             if (data_.get(index).getScanID() == scanID) {

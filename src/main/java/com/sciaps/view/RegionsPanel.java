@@ -364,6 +364,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
                 return;
         }
 
+        int selectedRow = tblRegions_.getSelectedRow();
         tableModel_.doCalculate(cmboCalculate_.getSelectedIndex());
 
         JTableHeader th = tblRegions_.getTableHeader();
@@ -371,6 +372,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         TableColumn tc = tcm.getColumn(Constants.REGION_VAL_COL);
         tc.setHeaderValue(header);
         th.repaint();
+        
+        tblRegions_.setRowSelectionInterval(selectedRow, selectedRow);
     }//GEN-LAST:event_cmboCalculate_ActionPerformed
 
     private void doAddRemoveMarker(boolean val) {
