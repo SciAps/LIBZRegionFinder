@@ -43,9 +43,10 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel implements Cust
 
         jLabel1 = new javax.swing.JLabel();
         txtName_ = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        lblNameExistWarning_ = new javax.swing.JLabel();
         txtSampleRate_ = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -71,13 +72,14 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel implements Cust
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 4);
         add(txtName_, gridBagConstraints);
 
-        jLabel2.setText("Enter Sample Rate Per Nanometer:");
+        lblNameExistWarning_.setForeground(new java.awt.Color(255, 0, 0));
+        lblNameExistWarning_.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        add(jLabel2, gridBagConstraints);
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        add(lblNameExistWarning_, gridBagConstraints);
 
         txtSampleRate_.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtSampleRate_.setText("30");
@@ -111,6 +113,14 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel implements Cust
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 6, 0);
         add(jLabel3, gridBagConstraints);
+
+        jLabel4.setText("Enter Sample Rate Per Nanometer:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        add(jLabel4, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSampleRate_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSampleRate_KeyReleased
@@ -123,6 +133,7 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel implements Cust
             txtName_.setBackground(Color.red);
         } else {
             txtName_.setBackground(Color.white);
+            lblNameExistWarning_.setText("");
         }
     }//GEN-LAST:event_txtName_KeyReleased
 
@@ -165,6 +176,16 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel implements Cust
         return sampleRate_;
     }
 
+    public void doNameAlreadyExist(boolean val) {
+        if (val) {
+            txtName_.setBackground(Color.red);
+            lblNameExistWarning_.setText("ERROR: Name already exist.");
+        } else {
+            txtName_.setBackground(Color.white);
+            lblNameExistWarning_.setText("");
+        }
+    }
+    
     private void showErrorDialog(String msg) {
         logger_.error(msg);
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -172,8 +193,9 @@ public class AverageShotsSettingPanel extends javax.swing.JPanel implements Cust
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel lblNameExistWarning_;
     private javax.swing.JTextField txtName_;
     private javax.swing.JTextField txtSampleRate_;
     // End of variables declaration//GEN-END:variables

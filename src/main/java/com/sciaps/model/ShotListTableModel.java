@@ -107,6 +107,11 @@ public class ShotListTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    public void addRows(ArrayList<SpectrumShotItem> shotItems) {
+        data_.addAll(shotItems);
+        fireTableDataChanged();
+    }
+
     public void removeRow(int rowIndex) {
         if (data_.get(rowIndex).isSelected()) {
             hideSeries(rowIndex);
@@ -178,5 +183,18 @@ public class ShotListTableModel extends AbstractTableModel {
                 removeRow(index);
             }
         }
+    }
+
+    public boolean isNameAlreadyExist(String name) {
+        boolean exist = false;
+
+        for (SpectrumShotItem shot : data_) {
+            if (name.compareToIgnoreCase(shot.getName()) == 0) {
+                exist = true;
+                break;
+            }
+        }
+
+        return exist;
     }
 }

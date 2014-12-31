@@ -421,20 +421,20 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 scanCount_++;
 
                 int shotCount = 1;
+                final ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
                 for (LIBZPixelSpectrum shot : shots) {
 
                     final SpectrumShotItem item = new SpectrumShotItem(scanCount_, shotCount);
                     item.setShot(shot);
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            shotCheckListPanel_.addItem(item);
-                        }
-                    });
-
+                    shotItems.add(item);
                     shotCount++;
                 }
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        shotCheckListPanel_.addItems(shotItems);
+                    }
+                });
 
                 Spectrum avgSpectrum = createAverage(shots, sampleRate);
                 String name = "Scan " + scanCount_ + ": Avg";
@@ -445,9 +445,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        shotCheckListPanel_.addItem(0, avgShotItem);
-                        avgShotItem.setSelected(true);
-                        xySeriesCollection_.addSeries(avgShotItem.getXYSeries());
+                        if (shotCheckListPanel_.addItem(0, avgShotItem)) {
+                            avgShotItem.setSelected(true);
+                            xySeriesCollection_.addSeries(avgShotItem.getXYSeries());
+                        }
                     }
                 });
 

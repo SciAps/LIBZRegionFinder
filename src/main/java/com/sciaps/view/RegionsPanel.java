@@ -279,7 +279,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         jPanel1.add(btnInsertNew_, gridBagConstraints);
 
-        cmboCalculate_.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "~ Select Intensity Calculation Type ~", "Use Peek Intensity", "Use Lorentzian Intensity" }));
+        cmboCalculate_.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "~ Select Intensity Calculation Type ~", "Use Peak Intensity", "Use Lorentzian Intensity" }));
         cmboCalculate_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmboCalculate_ActionPerformed(evt);

@@ -357,6 +357,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
                     shotDatas.add(shotItem.getShot());
                 }
+                name = name.deleteCharAt(name.length() - 1);
 
                 AverageShotsSettingPanel avgPanel = new AverageShotsSettingPanel();
                 avgPanel.setAvgShotName(name.toString());
@@ -370,11 +371,19 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
                 CustomDialog dialog = new CustomDialog(null,
                         "Shot Average Setting", avgPanel,
                         CustomDialog.OK_OPTION);
-                dialog.setSize(400, 180);
+                dialog.setSize(400, 200);
                 dialog.setVisible(true);
 
-                if (dialog.getResponseValue() == CustomDialog.OK) {
-                    String newName = avgPanel.getAvgShotName();
+                int retval = dialog.getResponseValue();
+                String newName = avgPanel.getAvgShotName();
+                while (retval == CustomDialog.OK && shotListTableModel_.isNameAlreadyExist(newName)) {
+                    avgPanel.doNameAlreadyExist(true);
+                    dialog.setVisible(true);
+                    retval = dialog.getResponseValue();
+                    newName = avgPanel.getAvgShotName();
+                }
+
+                if (retval == CustomDialog.OK) {
                     int newSampleRate = avgPanel.getSampleRate();
 
                     SpectrumShotItem newShotItem = new SpectrumShotItem(newName.replace(",", "_"));
@@ -399,12 +408,43 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         return sampleRate;
     }
 
-    public void addItem(int index, SpectrumShotItem item) {
-        shotListTableModel_.addRow(index, item);
+    public boolean addItem(int index, SpectrumShotItem item) {
+        if (shotListTableModel_.isNameAlreadyExist(item.getName())) {
+            showErrorDialog("Shot can't be added due to duplicated name:\n" + item.getName());
+            return false;
+        } else {
+            shotListTableModel_.addRow(index, item);
+        }
+        
+        return true;
     }
 
-    public void addItem(SpectrumShotItem item) {
-        shotListTableModel_.addRow(item);
+    public boolean addItem(SpectrumShotItem item) {
+        if (shotListTableModel_.isNameAlreadyExist(item.getName())) {
+            showErrorDialog("Shot can't be added due to duplicated name:\n" + item.getName());
+            return false;
+        } else {
+            shotListTableModel_.addRow(item);
+        }
+        
+        return true;
+    }
+    
+    public void addItems(ArrayList<SpectrumShotItem> shotItems) {
+        StringBuilder errMsg = new StringBuilder();
+        for (SpectrumShotItem item : shotItems) {
+            if (shotListTableModel_.isNameAlreadyExist(item.getName())) {
+                errMsg.append(item.getName()).append(",");
+            } else {
+                shotListTableModel_.addRow(item);
+            }
+        }
+
+        if (errMsg.length() != 0) {
+            errMsg.insert(0, "The following shot(s) can't be added due to duplicated name:\n");
+            errMsg.append("\n");
+            showErrorDialog(errMsg.toString());
+        }
     }
 
     public double getIntensityOfLine(int type, double waveLength, double regionWidth) {
@@ -466,16 +506,15 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
             @Override
             public void run() {
-                ArrayList<SpectrumShotItem> shotItems = Util.readCSVFile();
-                for (final SpectrumShotItem item : shotItems) {
+                final ArrayList<SpectrumShotItem> shotItems = Util.readCSVFile();
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            addItem(item);
-                        }
-                    });
-                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        addItems(shotItems);
+                    }
+                });
+
             }
         });
 
