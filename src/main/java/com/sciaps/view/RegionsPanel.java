@@ -98,7 +98,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         tblRegions_.getColumnModel().getColumn(4).setMinWidth(50);
         tblRegions_.getColumnModel().getColumn(4).setMaxWidth(50);
         tblRegions_.getColumnModel().getColumn(4).setResizable(false);
-
+        
         tblRegions_.getTableHeader().setReorderingAllowed(false);
 
         txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
@@ -363,17 +363,19 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             default:
                 return;
         }
-
+        
         int selectedRow = tblRegions_.getSelectedRow();
         tableModel_.doCalculate(cmboCalculate_.getSelectedIndex());
-
+       
         JTableHeader th = tblRegions_.getTableHeader();
         TableColumnModel tcm = th.getColumnModel();
         TableColumn tc = tcm.getColumn(Constants.REGION_VAL_COL);
         tc.setHeaderValue(header);
         th.repaint();
         
-        tblRegions_.setRowSelectionInterval(selectedRow, selectedRow);
+        if (selectedRow >= 0) {
+            tblRegions_.setRowSelectionInterval(selectedRow, selectedRow);
+        }
     }//GEN-LAST:event_cmboCalculate_ActionPerformed
 
     private void doAddRemoveMarker(boolean val) {
