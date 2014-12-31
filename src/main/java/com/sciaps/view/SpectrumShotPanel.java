@@ -418,7 +418,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             SpectrumShotItem shotItem = shotListTableModel_.getRow(modelIndex);
 
             switch (type) {
-                case Constants.PEEK_INTENSITY_FUNC:
+                case Constants.PEAK_INTENSITY_FUNC:
                     PeekIntensityIntergral peekIntenVal = new PeekIntensityIntergral();
                     retval = peekIntenVal.getIntensityOfLine(shotItem.getShot().getIntensityFunction(), waveLength, regionWidth);
                     break;

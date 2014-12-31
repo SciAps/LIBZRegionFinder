@@ -19,7 +19,7 @@ public class Constants {
     public static final int REGION_MIN_COL = 3;
     public static final int REGION_MAX_COL = 4;
     public static final int REGION_VAL_COL = 5;
-    public static final int PEEK_INTENSITY_FUNC = 1;
+    public static final int PEAK_INTENSITY_FUNC = 1;
     public static final int LORENTZIAN_INTENSITY_FUNC = 2;
 
     public static LIBZHttpClient mHttpClient;
