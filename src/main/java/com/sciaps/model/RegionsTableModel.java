@@ -241,8 +241,8 @@ public class RegionsTableModel extends AbstractTableModel {
             double regionWidth;
 
             for (RegionMarkerItem markerItem : data_) {
-                waveLength = (markerItem.getMax() - markerItem.getMin()) / 2;
                 regionWidth = markerItem.getMax() - markerItem.getMin();
+                waveLength =  markerItem.getMin() + regionWidth/2;             
                 retval = callback_.getIntensityOfLine(type, waveLength, regionWidth);
 
                 // The -1 value identicate no shot is selected to do the calculation. 
