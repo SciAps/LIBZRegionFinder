@@ -5,7 +5,7 @@
  */
 package com.sciaps.view;
 
-import com.sciaps.common.ThreadUtils;
+import com.devsmart.ThreadUtils;
 import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;

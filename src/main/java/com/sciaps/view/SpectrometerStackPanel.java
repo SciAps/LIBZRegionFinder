@@ -5,12 +5,12 @@
  */
 package com.sciaps.view;
 
+import com.devsmart.ThreadUtils;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.Constants;
 import com.sciaps.common.MinMaxObj;
 import com.sciaps.common.RegionMarkerItem;
 import com.sciaps.view.SpectrumShotPanel.SpectrumShotPanelCallback;
-import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.data.Region;
 import com.sciaps.common.spectrum.LIBZPixelSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
@@ -421,13 +421,16 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 scanCount_++;
 
                 int shotCount = 1;
+                final ArrayList<Spectrum> listOfSpectrums = new ArrayList<Spectrum>();
                 final ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
                 for (LIBZPixelSpectrum shot : shots) {
 
                     final SpectrumShotItem item = new SpectrumShotItem(scanCount_, shotCount);
-                    item.setShot(shot);
+                    item.setShot(shot.createSpectrum());
                     shotItems.add(item);
                     shotCount++;
+                    
+                    listOfSpectrums.add(item.getShot());
                 }
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
@@ -436,7 +439,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     }
                 });
 
-                Spectrum avgSpectrum = createAverage(shots, sampleRate);
+                Spectrum avgSpectrum = createAverage(listOfSpectrums, sampleRate);
                 String name = "Scan " + scanCount_ + ": Avg";
                 final SpectrumShotItem avgShotItem = new SpectrumShotItem(name);
                 avgShotItem.setShot(avgSpectrum);
@@ -635,13 +638,30 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         return shotCheckListPanel_.getIntensityOfLine(type, wavelength, regionwidth);
     }
 
-    public void exportCSV() {
-        shotCheckListPanel_.exportCSV();
+    public void exportCSVAll() {
+        shotCheckListPanel_.exportCSVAll();
+    }
+    
+    public void exportCSVSelected() {
+        shotCheckListPanel_.exportCSVSelected();
     }
 
     public void importCSV() {
         shotCheckListPanel_.importCSV();
         setShotListPanelVisible(true);
+    }
+    
+    public void importJsonGzip() {
+        shotCheckListPanel_.importJsonGzip();
+        setShotListPanelVisible(true);
+    }
+    
+    public void exportJsonGzipAll() {
+        shotCheckListPanel_.exportJsonGzipAll();
+    }
+    
+    public void exportJsonGzipSelected() {
+        shotCheckListPanel_.exportJsonGzipSelected();
     }
 
     private void showErrorDialog(String msg) {

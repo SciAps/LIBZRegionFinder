@@ -5,14 +5,15 @@
  */
 package com.sciaps.view;
 
+import com.devsmart.ThreadUtils;
 import com.sciaps.common.Constants;
 import com.sciaps.common.SpectrumShotItem;
-import com.sciaps.common.ThreadUtils;
 import com.sciaps.common.algorithms.LorentzianIntensityValue;
 import com.sciaps.common.algorithms.PeekIntensityIntergral;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
 import com.sciaps.utils.CustomDialog;
+import com.sciaps.utils.ImportExportSpectrum;
 import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.validateOneOrGreater;
@@ -415,7 +416,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         } else {
             shotListTableModel_.addRow(index, item);
         }
-        
+
         return true;
     }
 
@@ -426,10 +427,10 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         } else {
             shotListTableModel_.addRow(item);
         }
-        
+
         return true;
     }
-    
+
     public void addItems(ArrayList<SpectrumShotItem> shotItems) {
         StringBuilder errMsg = new StringBuilder();
         for (SpectrumShotItem item : shotItems) {
@@ -500,13 +501,76 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             }
         });
     }
-
+    
     public void importCSV() {
         ThreadUtils.CPUThreads.execute(new Runnable() {
 
             @Override
             public void run() {
-                final ArrayList<SpectrumShotItem> shotItems = Util.readCSVFile();
+                ImportExportSpectrum importExporter = new ImportExportSpectrum();
+                final ArrayList<SpectrumShotItem> shotItems = importExporter.importCSVFile();
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        addItems(shotItems);
+                    }
+                });
+
+            }
+        });
+    }
+    
+    public void exportCSVAll() {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (shotListTableModel_.getRowCount() > 0) {
+                    ArrayList<SpectrumShotItem> items = new ArrayList<SpectrumShotItem>();
+                    for (int index = 0; index < shotListTableModel_.getRowCount(); index++) {
+                        items.add(shotListTableModel_.getRow(index));
+                    }
+                    ImportExportSpectrum importExporter = new ImportExportSpectrum();
+                    importExporter.exportCSVFile(items);
+                } else {
+                    showErrorDialog("No data to save.");
+                }
+            }
+        });
+    }
+
+    public void exportCSVSelected() {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (tblShots_.getSelectedRows().length > 0) {
+                    ArrayList<SpectrumShotItem> items = new ArrayList<SpectrumShotItem>();
+                    int[] selectedRows = tblShots_.getSelectedRows();
+                    for (int selectedRow : selectedRows) {
+                        int modelIndex = tblShots_.convertRowIndexToModel(selectedRow);
+                        items.add(shotListTableModel_.getRow(modelIndex));
+                    }
+                    ImportExportSpectrum importExporter = new ImportExportSpectrum();
+                    importExporter.exportCSVFile(items);
+                } else {
+                    showErrorDialog("No data to save.");
+                }
+            }
+        });
+    }
+
+    public void importJsonGzip() {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                
+                ImportExportSpectrum importExporter = new ImportExportSpectrum();
+                final ArrayList<SpectrumShotItem> shotItems = importExporter.importJzonGzipFile();
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
@@ -518,6 +582,48 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             }
         });
 
+    }
+
+    public void exportJsonGzipAll() {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (shotListTableModel_.getRowCount() > 0) {
+                    ArrayList<SpectrumShotItem> items = new ArrayList<SpectrumShotItem>();
+                    for (int index = 0; index < shotListTableModel_.getRowCount(); index++) {
+                        items.add(shotListTableModel_.getRow(index));
+                    }
+                    ImportExportSpectrum importExporter = new ImportExportSpectrum();
+                    importExporter.exportJzonGzipFile(items);
+                } else {
+                    showErrorDialog("No data to save.");
+                }
+            }
+        });
+    }
+
+    public void exportJsonGzipSelected() {
+        ThreadUtils.CPUThreads.execute(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (tblShots_.getSelectedRows().length > 0) {
+                    ArrayList<SpectrumShotItem> items = new ArrayList<SpectrumShotItem>();
+                    int[] selectedRows = tblShots_.getSelectedRows();
+                    for (int selectedRow : selectedRows) {
+                        int modelIndex = tblShots_.convertRowIndexToModel(selectedRow);
+                        items.add(shotListTableModel_.getRow(modelIndex));
+                    }
+                    ImportExportSpectrum importExporter = new ImportExportSpectrum();
+                    importExporter.exportJzonGzipFile(items);
+                } else {
+                    showErrorDialog("No data to save.");
+                }
+            }
+        });
     }
 
     private void showErrorDialog(String msg) {

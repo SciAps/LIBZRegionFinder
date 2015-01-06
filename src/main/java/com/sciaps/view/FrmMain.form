@@ -15,37 +15,101 @@
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="mnuFileExportCSV_">
+            <Menu class="javax.swing.JMenu" name="mnuFileExport_">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Export CSV"/>
+                <Property name="text" type="java.lang.String" value="Export"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileExportCSV_ActionPerformed"/>
-              </Events>
+              <SubComponents>
+                <Menu class="javax.swing.JMenu" name="mnuExportCSV_">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="CSV"/>
+                  </Properties>
+                  <SubComponents>
+                    <MenuItem class="javax.swing.JMenuItem" name="mnuFileExportCSVAll_">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="All Shots"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileExportCSVAll_ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="mnuExportCSVSelected_">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Selected Shot(s)"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuExportCSVSelected_ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                  </SubComponents>
+                </Menu>
+                <Menu class="javax.swing.JMenu" name="mnuExportJsonGZip_">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Json GZip"/>
+                  </Properties>
+                  <SubComponents>
+                    <MenuItem class="javax.swing.JMenuItem" name="mnuExportJsonGZipAll_">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="All Shots"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuExportJsonGZipAll_ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                    <MenuItem class="javax.swing.JMenuItem" name="mnuExportJsonGZipSelected_">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Selected Shot(s)"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuExportJsonGZipSelected_ActionPerformed"/>
+                      </Events>
+                    </MenuItem>
+                  </SubComponents>
+                </Menu>
+              </SubComponents>
+            </Menu>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="mnuFileImportCSV_">
+            <Menu class="javax.swing.JMenu" name="mnuFileImport_">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Import CSV"/>
+                <Property name="text" type="java.lang.String" value="Import"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileImportCSV_ActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="mnuFileLoadRegions_">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Load Region Text"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileLoadRegions_ActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="mnuFileLoadRegionsFile_">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Load Region File"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileLoadRegionsFile_ActionPerformed"/>
-              </Events>
+              <SubComponents>
+                <MenuItem class="javax.swing.JMenuItem" name="mnuFileImportCSV_">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="CSV"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileImportCSV_ActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="mnuFileImportJsonGZip_">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Json GZip"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileImportJsonGZip_ActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="mnuFileImportRegionText_">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Region Text"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileImportRegionText_ActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="mnuFileImportRegionFile_">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Region File"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuFileImportRegionFile_ActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mnuFileExit">
               <Properties>

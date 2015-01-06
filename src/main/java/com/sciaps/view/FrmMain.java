@@ -54,10 +54,20 @@ public final class FrmMain extends javax.swing.JFrame {
         displayPanel_ = new javax.swing.JPanel();
         mnuMainBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
-        mnuFileExportCSV_ = new javax.swing.JMenuItem();
+        mnuFileExport_ = new javax.swing.JMenu();
+        mnuExportCSV_ = new javax.swing.JMenu();
+        mnuFileExportCSVAll_ = new javax.swing.JMenuItem();
+        mnuExportCSVSelected_ = new javax.swing.JMenuItem();
+        mnuExportJsonGZip_ = new javax.swing.JMenu();
+        mnuExportJsonGZipAll_ = new javax.swing.JMenuItem();
+        mnuExportJsonGZipSelected_ = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        mnuFileImport_ = new javax.swing.JMenu();
         mnuFileImportCSV_ = new javax.swing.JMenuItem();
-        mnuFileLoadRegions_ = new javax.swing.JMenuItem();
-        mnuFileLoadRegionsFile_ = new javax.swing.JMenuItem();
+        mnuFileImportJsonGZip_ = new javax.swing.JMenuItem();
+        mnuFileImportRegionText_ = new javax.swing.JMenuItem();
+        mnuFileImportRegionFile_ = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         mnuFileExit = new javax.swing.JMenuItem();
         mnuConfig = new javax.swing.JMenu();
         mnuConfigSetLibzIP = new javax.swing.JMenuItem();
@@ -72,37 +82,87 @@ public final class FrmMain extends javax.swing.JFrame {
 
         mnuFile.setText("File");
 
-        mnuFileExportCSV_.setText("Export CSV");
-        mnuFileExportCSV_.addActionListener(new java.awt.event.ActionListener() {
+        mnuFileExport_.setText("Export");
+
+        mnuExportCSV_.setText("CSV");
+
+        mnuFileExportCSVAll_.setText("All Shots");
+        mnuFileExportCSVAll_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFileExportCSV_ActionPerformed(evt);
+                mnuFileExportCSVAll_ActionPerformed(evt);
             }
         });
-        mnuFile.add(mnuFileExportCSV_);
+        mnuExportCSV_.add(mnuFileExportCSVAll_);
 
-        mnuFileImportCSV_.setText("Import CSV");
+        mnuExportCSVSelected_.setText("Selected Shot(s)");
+        mnuExportCSVSelected_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuExportCSVSelected_ActionPerformed(evt);
+            }
+        });
+        mnuExportCSV_.add(mnuExportCSVSelected_);
+
+        mnuFileExport_.add(mnuExportCSV_);
+
+        mnuExportJsonGZip_.setText("Json GZip");
+
+        mnuExportJsonGZipAll_.setText("All Shots");
+        mnuExportJsonGZipAll_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuExportJsonGZipAll_ActionPerformed(evt);
+            }
+        });
+        mnuExportJsonGZip_.add(mnuExportJsonGZipAll_);
+
+        mnuExportJsonGZipSelected_.setText("Selected Shot(s)");
+        mnuExportJsonGZipSelected_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuExportJsonGZipSelected_ActionPerformed(evt);
+            }
+        });
+        mnuExportJsonGZip_.add(mnuExportJsonGZipSelected_);
+
+        mnuFileExport_.add(mnuExportJsonGZip_);
+
+        mnuFile.add(mnuFileExport_);
+        mnuFile.add(jSeparator2);
+
+        mnuFileImport_.setText("Import");
+
+        mnuFileImportCSV_.setText("CSV");
         mnuFileImportCSV_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuFileImportCSV_ActionPerformed(evt);
             }
         });
-        mnuFile.add(mnuFileImportCSV_);
+        mnuFileImport_.add(mnuFileImportCSV_);
 
-        mnuFileLoadRegions_.setText("Load Region Text");
-        mnuFileLoadRegions_.addActionListener(new java.awt.event.ActionListener() {
+        mnuFileImportJsonGZip_.setText("Json GZip");
+        mnuFileImportJsonGZip_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFileLoadRegions_ActionPerformed(evt);
+                mnuFileImportJsonGZip_ActionPerformed(evt);
             }
         });
-        mnuFile.add(mnuFileLoadRegions_);
+        mnuFileImport_.add(mnuFileImportJsonGZip_);
 
-        mnuFileLoadRegionsFile_.setText("Load Region File");
-        mnuFileLoadRegionsFile_.addActionListener(new java.awt.event.ActionListener() {
+        mnuFileImportRegionText_.setText("Region Text");
+        mnuFileImportRegionText_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFileLoadRegionsFile_ActionPerformed(evt);
+                mnuFileImportRegionText_ActionPerformed(evt);
             }
         });
-        mnuFile.add(mnuFileLoadRegionsFile_);
+        mnuFileImport_.add(mnuFileImportRegionText_);
+
+        mnuFileImportRegionFile_.setText("Region File");
+        mnuFileImportRegionFile_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileImportRegionFile_ActionPerformed(evt);
+            }
+        });
+        mnuFileImport_.add(mnuFileImportRegionFile_);
+
+        mnuFile.add(mnuFileImport_);
+        mnuFile.add(jSeparator1);
 
         mnuFileExit.setText("Exit");
         mnuFileExit.addActionListener(new java.awt.event.ActionListener() {
@@ -140,21 +200,37 @@ public final class FrmMain extends javax.swing.JFrame {
         doShowIPAddressDisplay();
     }//GEN-LAST:event_mnuConfigSetLibzIPActionPerformed
 
-    private void mnuFileExportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExportCSV_ActionPerformed
-        spectrometerStackPanel_.exportCSV();
-    }//GEN-LAST:event_mnuFileExportCSV_ActionPerformed
+    private void mnuFileExportCSVAll_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileExportCSVAll_ActionPerformed
+        spectrometerStackPanel_.exportCSVAll();
+    }//GEN-LAST:event_mnuFileExportCSVAll_ActionPerformed
 
-    private void mnuFileLoadRegions_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegions_ActionPerformed
+    private void mnuFileImportRegionText_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileImportRegionText_ActionPerformed
         spectrometerStackPanel_.getRegionTextFromUser();
-    }//GEN-LAST:event_mnuFileLoadRegions_ActionPerformed
+    }//GEN-LAST:event_mnuFileImportRegionText_ActionPerformed
 
-    private void mnuFileLoadRegionsFile_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileLoadRegionsFile_ActionPerformed
+    private void mnuFileImportRegionFile_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileImportRegionFile_ActionPerformed
         spectrometerStackPanel_.getRegionTextFile();
-    }//GEN-LAST:event_mnuFileLoadRegionsFile_ActionPerformed
+    }//GEN-LAST:event_mnuFileImportRegionFile_ActionPerformed
 
     private void mnuFileImportCSV_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileImportCSV_ActionPerformed
         spectrometerStackPanel_.importCSV();
     }//GEN-LAST:event_mnuFileImportCSV_ActionPerformed
+
+    private void mnuExportJsonGZipAll_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportJsonGZipAll_ActionPerformed
+        spectrometerStackPanel_.exportJsonGzipAll();
+    }//GEN-LAST:event_mnuExportJsonGZipAll_ActionPerformed
+
+    private void mnuFileImportJsonGZip_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileImportJsonGZip_ActionPerformed
+        spectrometerStackPanel_.importJsonGzip();
+    }//GEN-LAST:event_mnuFileImportJsonGZip_ActionPerformed
+
+    private void mnuExportJsonGZipSelected_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportJsonGZipSelected_ActionPerformed
+        spectrometerStackPanel_.exportJsonGzipSelected();
+    }//GEN-LAST:event_mnuExportJsonGZipSelected_ActionPerformed
+
+    private void mnuExportCSVSelected_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportCSVSelected_ActionPerformed
+        spectrometerStackPanel_.exportCSVSelected();
+    }//GEN-LAST:event_mnuExportCSVSelected_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -245,14 +321,24 @@ public final class FrmMain extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel displayPanel_;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenu mnuConfig;
     private javax.swing.JMenuItem mnuConfigSetLibzIP;
+    private javax.swing.JMenuItem mnuExportCSVSelected_;
+    private javax.swing.JMenu mnuExportCSV_;
+    private javax.swing.JMenuItem mnuExportJsonGZipAll_;
+    private javax.swing.JMenuItem mnuExportJsonGZipSelected_;
+    private javax.swing.JMenu mnuExportJsonGZip_;
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuFileExit;
-    private javax.swing.JMenuItem mnuFileExportCSV_;
+    private javax.swing.JMenuItem mnuFileExportCSVAll_;
+    private javax.swing.JMenu mnuFileExport_;
     private javax.swing.JMenuItem mnuFileImportCSV_;
-    private javax.swing.JMenuItem mnuFileLoadRegionsFile_;
-    private javax.swing.JMenuItem mnuFileLoadRegions_;
+    private javax.swing.JMenuItem mnuFileImportJsonGZip_;
+    private javax.swing.JMenuItem mnuFileImportRegionFile_;
+    private javax.swing.JMenuItem mnuFileImportRegionText_;
+    private javax.swing.JMenu mnuFileImport_;
     private javax.swing.JMenuBar mnuMainBar;
     // End of variables declaration//GEN-END:variables
 }
