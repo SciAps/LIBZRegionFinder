@@ -34,7 +34,6 @@ public class ImportExportSpectrumCSV {
 
     }
 
-    //Original public void exportSpectrumFile(File saveFile, LIBZPixelSpectrum spectrum) throws IOException {
     public void exportSpectrumFile(File saveFile, PiecewiseSpectrum spectrum) throws IOException {
         if (spectrum == null || saveFile == null) {
             logger_.warn("", "will not save spectrum csv file");
@@ -62,8 +61,8 @@ public class ImportExportSpectrumCSV {
         } finally {
             bout.close();
         }
-
-        logger_.info("", "saved spectrum csv file to " + saveFile.getAbsolutePath());
+        
+        logger_.info("saved spectrum csv file to " + saveFile.getAbsolutePath());
     }
 
     public RawDataSpectrum importSpectrumFile(File spectrumFile) throws IOException {

@@ -76,9 +76,10 @@ public class ImportExportSpectrum {
 
     public void exportJzonGzipFile(final ArrayList<SpectrumShotItem> shotItems) {
         showErrorDialog("This function is not yet implemented");
-        if (true)
+        if (true) {
             return;
-        
+        }
+
         StringBuilder errorMsg = new StringBuilder();
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -192,28 +193,30 @@ public class ImportExportSpectrum {
                 }
             });
 
-            try {
-                String dir = chooser.getSelectedFile().toString();
-                ImportExportSpectrumCSV csvImportExport = new ImportExportSpectrumCSV();
+            String dir = chooser.getSelectedFile().toString();
+            ImportExportSpectrumCSV csvImportExport = new ImportExportSpectrumCSV();
 
-                for (SpectrumShotItem item : shotItems) {
+            for (SpectrumShotItem item : shotItems) {
 
-                    if (item.getName().endsWith(".csv")) {
-                        errorMsg.append(item.getName()).append(",");
-                    } else {
-                        String fileName = dir + File.separator + item.getName().replace(" ", "_") + ".csv";
-                        File file = new File(fileName);
+                if (item.getName().endsWith(".csv")) {
+                    errorMsg.append(item.getName()).append(",");
+                } else {
+                    String name = item.getName().replace(": ", "-");
+                    name = name.replace(" ", "_");
+                    String fileName = dir + File.separator + name + ".csv";
+                    File file = new File(fileName);
+                    try {
                         csvImportExport.exportSpectrumFile(file, (PiecewiseSpectrum) item.getShot());
+                    } catch (Exception ex) {
+                        errorMsg.append(item.getName()).append(",");
                     }
                 }
-            } catch (Exception ex) {
-                logger_.error(ex.getMessage());
             }
 
             progressDialog.dispose();
 
             if (errorMsg.length() != 0) {
-                errorMsg.insert(0, "The following files are not saved due to already a CSV file:\n");
+                errorMsg.insert(0, "The following files are not saved due to already a CSV file or unconvertible:\n");
                 showErrorDialog(errorMsg.toString());
             }
         }
