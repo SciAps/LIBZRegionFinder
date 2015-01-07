@@ -390,6 +390,8 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             int modelIndex = tblRegions_.convertRowIndexToModel(selectedRows[i]);
             tableModel_.setValueAt(val, modelIndex, REGION_MARKER_COL);
         }
+        
+        tblRegions_.repaint();
     }
 
     @Override
