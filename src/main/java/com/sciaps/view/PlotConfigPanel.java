@@ -12,6 +12,7 @@ import javax.swing.JColorChooser;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.Range;
 
 /**
@@ -62,6 +63,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
 
         chkDomainGridline_ = new javax.swing.JCheckBox();
         chkRangeGridline_ = new javax.swing.JCheckBox();
+        chkLineShape_ = new javax.swing.JCheckBox();
         btnDown_1 = new javax.swing.JButton();
         btnLeft_ = new javax.swing.JButton();
         btnRight_ = new javax.swing.JButton();
@@ -71,6 +73,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
 
         chkDomainGridline_.setSelected(true);
         chkDomainGridline_.setText("Domain Gridline");
+        chkDomainGridline_.setToolTipText("Hide/Show domain gridline");
         chkDomainGridline_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkDomainGridline_ActionPerformed(evt);
@@ -80,6 +83,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
 
         chkRangeGridline_.setSelected(true);
         chkRangeGridline_.setText("Range Gridline");
+        chkRangeGridline_.setToolTipText("Hide/Show range gridline");
         chkRangeGridline_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkRangeGridline_ActionPerformed(evt);
@@ -87,8 +91,17 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         });
         add(chkRangeGridline_);
 
+        chkLineShape_.setText("Line Shape");
+        chkLineShape_.setToolTipText("Show/Hide series point shape");
+        chkLineShape_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkLineShape_ActionPerformed(evt);
+            }
+        });
+        add(chkLineShape_);
+
         btnDown_1.setText("BG Color");
-        btnDown_1.setToolTipText("Shift down");
+        btnDown_1.setToolTipText("Set background color");
         btnDown_1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnDown_1.setMaximumSize(new java.awt.Dimension(35, 35));
         btnDown_1.setMinimumSize(new java.awt.Dimension(35, 35));
@@ -265,6 +278,14 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         plot_.setBackgroundPaint(backgroundColor);
     }//GEN-LAST:event_btnDown_1ActionPerformed
 
+    private void chkLineShape_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLineShape_ActionPerformed
+        XYSplineRenderer render = (XYSplineRenderer) plot_.getRenderer();
+        boolean value = chkLineShape_.isSelected();
+        for (int i = 0; i < plot_.getSeriesCount(); i++) {
+            render.setSeriesShapesVisible(i, value);
+        }
+    }//GEN-LAST:event_chkLineShape_ActionPerformed
+
     private void doMousePressedAction(final int action) {
 
         ThreadUtils.IOThreads.execute(new Runnable() {
@@ -372,6 +393,10 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         return null;
     }
 
+    public boolean getLineShapeVisibility() {
+        return chkLineShape_.isSelected();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAutoRange_;
     private javax.swing.JButton btnDown_;
@@ -380,6 +405,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnRight_;
     private javax.swing.JButton btnUp_;
     private javax.swing.JCheckBox chkDomainGridline_;
+    private javax.swing.JCheckBox chkLineShape_;
     private javax.swing.JCheckBox chkRangeGridline_;
     // End of variables declaration//GEN-END:variables
 }

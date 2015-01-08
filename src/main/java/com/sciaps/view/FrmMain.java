@@ -54,6 +54,12 @@ public final class FrmMain extends javax.swing.JFrame {
         displayPanel_ = new javax.swing.JPanel();
         mnuMainBar = new javax.swing.JMenuBar();
         mnuFile = new javax.swing.JMenu();
+        mnuFileImport_ = new javax.swing.JMenu();
+        mnuFileImportCSV_ = new javax.swing.JMenuItem();
+        mnuFileImportJsonGZip_ = new javax.swing.JMenuItem();
+        mnuFileImportRegionText_ = new javax.swing.JMenuItem();
+        mnuFileImportRegionFile_ = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
         mnuFileExport_ = new javax.swing.JMenu();
         mnuExportCSV_ = new javax.swing.JMenu();
         mnuFileExportCSVAll_ = new javax.swing.JMenuItem();
@@ -61,12 +67,6 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuExportJsonGZip_ = new javax.swing.JMenu();
         mnuExportJsonGZipAll_ = new javax.swing.JMenuItem();
         mnuExportJsonGZipSelected_ = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        mnuFileImport_ = new javax.swing.JMenu();
-        mnuFileImportCSV_ = new javax.swing.JMenuItem();
-        mnuFileImportJsonGZip_ = new javax.swing.JMenuItem();
-        mnuFileImportRegionText_ = new javax.swing.JMenuItem();
-        mnuFileImportRegionFile_ = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         mnuFileExit = new javax.swing.JMenuItem();
         mnuConfig = new javax.swing.JMenu();
@@ -81,6 +81,43 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuMainBar.setToolTipText("");
 
         mnuFile.setText("File");
+
+        mnuFileImport_.setText("Import");
+
+        mnuFileImportCSV_.setText("CSV");
+        mnuFileImportCSV_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileImportCSV_ActionPerformed(evt);
+            }
+        });
+        mnuFileImport_.add(mnuFileImportCSV_);
+
+        mnuFileImportJsonGZip_.setText("Json GZip");
+        mnuFileImportJsonGZip_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileImportJsonGZip_ActionPerformed(evt);
+            }
+        });
+        mnuFileImport_.add(mnuFileImportJsonGZip_);
+
+        mnuFileImportRegionText_.setText("Region Text");
+        mnuFileImportRegionText_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileImportRegionText_ActionPerformed(evt);
+            }
+        });
+        mnuFileImport_.add(mnuFileImportRegionText_);
+
+        mnuFileImportRegionFile_.setText("Region File");
+        mnuFileImportRegionFile_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuFileImportRegionFile_ActionPerformed(evt);
+            }
+        });
+        mnuFileImport_.add(mnuFileImportRegionFile_);
+
+        mnuFile.add(mnuFileImport_);
+        mnuFile.add(jSeparator2);
 
         mnuFileExport_.setText("Export");
 
@@ -125,43 +162,6 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuFileExport_.add(mnuExportJsonGZip_);
 
         mnuFile.add(mnuFileExport_);
-        mnuFile.add(jSeparator2);
-
-        mnuFileImport_.setText("Import");
-
-        mnuFileImportCSV_.setText("CSV");
-        mnuFileImportCSV_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFileImportCSV_ActionPerformed(evt);
-            }
-        });
-        mnuFileImport_.add(mnuFileImportCSV_);
-
-        mnuFileImportJsonGZip_.setText("Json GZip");
-        mnuFileImportJsonGZip_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFileImportJsonGZip_ActionPerformed(evt);
-            }
-        });
-        mnuFileImport_.add(mnuFileImportJsonGZip_);
-
-        mnuFileImportRegionText_.setText("Region Text");
-        mnuFileImportRegionText_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFileImportRegionText_ActionPerformed(evt);
-            }
-        });
-        mnuFileImport_.add(mnuFileImportRegionText_);
-
-        mnuFileImportRegionFile_.setText("Region File");
-        mnuFileImportRegionFile_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuFileImportRegionFile_ActionPerformed(evt);
-            }
-        });
-        mnuFileImport_.add(mnuFileImportRegionFile_);
-
-        mnuFile.add(mnuFileImport_);
         mnuFile.add(jSeparator1);
 
         mnuFileExit.setText("Exit");

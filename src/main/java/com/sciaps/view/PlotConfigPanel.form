@@ -20,6 +20,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Domain Gridline"/>
+        <Property name="toolTipText" type="java.lang.String" value="Hide/Show domain gridline"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDomainGridline_ActionPerformed"/>
@@ -29,15 +30,25 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Range Gridline"/>
+        <Property name="toolTipText" type="java.lang.String" value="Hide/Show range gridline"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkRangeGridline_ActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JCheckBox" name="chkLineShape_">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Line Shape"/>
+        <Property name="toolTipText" type="java.lang.String" value="Show/Hide series point shape"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkLineShape_ActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JButton" name="btnDown_1">
       <Properties>
         <Property name="text" type="java.lang.String" value="BG Color"/>
-        <Property name="toolTipText" type="java.lang.String" value="Shift down"/>
+        <Property name="toolTipText" type="java.lang.String" value="Set background color"/>
         <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
           <Insets value="[0, 0, 0, 0]"/>
         </Property>

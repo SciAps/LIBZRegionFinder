@@ -60,7 +60,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private final RegionsPanel regionPanels_;
     private final SpectrumShotPanel shotCheckListPanel_;
     private final SpecialRasterPanel specialRasterPanel_;
-    private final PlotConfigPanel plotRangeSetterPanel_;
+    private final PlotConfigPanel plotSettingPanel_;
     private int scanCount_ = 0;
 
     /**
@@ -99,8 +99,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         plot_.setDomainPannable(true);
         plot_.setRangePannable(true);
 
-        plotRangeSetterPanel_ = new PlotConfigPanel(plot_);
-        chartRangeControlPanel_.add(plotRangeSetterPanel_);
+        plotSettingPanel_ = new PlotConfigPanel(plot_);
+        chartRangeControlPanel_.add(plotSettingPanel_);
 
         shotCheckListPanel_ = new SpectrumShotPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
@@ -429,7 +429,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     item.setShot(shot.createSpectrum());
                     shotItems.add(item);
                     shotCount++;
-                    
+
                     listOfSpectrums.add(item.getShot());
                 }
                 SwingUtilities.invokeLater(new Runnable() {
@@ -450,7 +450,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     public void run() {
                         if (shotCheckListPanel_.addItem(0, avgShotItem)) {
                             avgShotItem.setSelected(true);
-                            xySeriesCollection_.addSeries(avgShotItem.getXYSeries());
+                            doShowShotXYSeries(avgShotItem);
                         }
                     }
                 });
@@ -570,6 +570,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
             int index = xySeriesCollection_.indexOf(item.getXYSeries());
             if (index < 0) {
                 xySeriesCollection_.addSeries(item.getXYSeries());
+                index = xySeriesCollection_.indexOf(item.getXYSeries());
+                ((XYSplineRenderer) plot_.getRenderer()).setSeriesShapesVisible(index, plotSettingPanel_.getLineShapeVisibility());
             } else {
                 plot_.getRenderer().setSeriesVisible(index, true);
             }
@@ -641,7 +643,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public void exportCSVAll() {
         shotCheckListPanel_.exportCSVAll();
     }
-    
+
     public void exportCSVSelected() {
         shotCheckListPanel_.exportCSVSelected();
     }
@@ -650,16 +652,16 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         shotCheckListPanel_.importCSV();
         setShotListPanelVisible(true);
     }
-    
+
     public void importJsonGzip() {
         shotCheckListPanel_.importJsonGzip();
         setShotListPanelVisible(true);
     }
-    
+
     public void exportJsonGzipAll() {
         shotCheckListPanel_.exportJsonGzipAll();
     }
-    
+
     public void exportJsonGzipSelected() {
         shotCheckListPanel_.exportJsonGzipSelected();
     }
