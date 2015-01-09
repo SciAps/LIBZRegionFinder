@@ -11,7 +11,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,43,0,0,2,72"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,43,0,0,3,35"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
@@ -22,6 +22,9 @@
         <Property name="text" type="java.lang.String" value="Domain Gridline"/>
         <Property name="toolTipText" type="java.lang.String" value="Hide/Show domain gridline"/>
       </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Show/Hide domain gridline"/>
+      </AccessibilityProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkDomainGridline_ActionPerformed"/>
       </Events>
@@ -32,20 +35,33 @@
         <Property name="text" type="java.lang.String" value="Range Gridline"/>
         <Property name="toolTipText" type="java.lang.String" value="Hide/Show range gridline"/>
       </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Show/Hide range gridline"/>
+      </AccessibilityProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkRangeGridline_ActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="chkLineShape_">
+    <Component class="javax.swing.JCheckBox" name="chkMarkerAutoZoom_">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Line Shape"/>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Marker Auto Zoom"/>
+        <Property name="toolTipText" type="java.lang.String" value="Enable/Disable auto zoom on marker"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkShowDataPoint_">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Data Point"/>
         <Property name="toolTipText" type="java.lang.String" value="Show/Hide series point shape"/>
       </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Show/Hide series data point"/>
+      </AccessibilityProperties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkLineShape_ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chkShowDataPoint_ActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btnDown_1">
+    <Component class="javax.swing.JButton" name="btnSetBgColor_">
       <Properties>
         <Property name="text" type="java.lang.String" value="BG Color"/>
         <Property name="toolTipText" type="java.lang.String" value="Set background color"/>
@@ -63,7 +79,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDown_1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSetBgColor_ActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnLeft_">

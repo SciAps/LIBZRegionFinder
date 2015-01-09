@@ -63,8 +63,9 @@ public class PlotConfigPanel extends javax.swing.JPanel {
 
         chkDomainGridline_ = new javax.swing.JCheckBox();
         chkRangeGridline_ = new javax.swing.JCheckBox();
-        chkLineShape_ = new javax.swing.JCheckBox();
-        btnDown_1 = new javax.swing.JButton();
+        chkMarkerAutoZoom_ = new javax.swing.JCheckBox();
+        chkShowDataPoint_ = new javax.swing.JCheckBox();
+        btnSetBgColor_ = new javax.swing.JButton();
         btnLeft_ = new javax.swing.JButton();
         btnRight_ = new javax.swing.JButton();
         btnAutoRange_ = new javax.swing.JButton();
@@ -80,6 +81,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
             }
         });
         add(chkDomainGridline_);
+        chkDomainGridline_.getAccessibleContext().setAccessibleDescription("Show/Hide domain gridline");
 
         chkRangeGridline_.setSelected(true);
         chkRangeGridline_.setText("Range Gridline");
@@ -90,28 +92,35 @@ public class PlotConfigPanel extends javax.swing.JPanel {
             }
         });
         add(chkRangeGridline_);
+        chkRangeGridline_.getAccessibleContext().setAccessibleDescription("Show/Hide range gridline");
 
-        chkLineShape_.setText("Line Shape");
-        chkLineShape_.setToolTipText("Show/Hide series point shape");
-        chkLineShape_.addActionListener(new java.awt.event.ActionListener() {
+        chkMarkerAutoZoom_.setSelected(true);
+        chkMarkerAutoZoom_.setText("Marker Auto Zoom");
+        chkMarkerAutoZoom_.setToolTipText("Enable/Disable auto zoom on marker");
+        add(chkMarkerAutoZoom_);
+
+        chkShowDataPoint_.setText("Data Point");
+        chkShowDataPoint_.setToolTipText("Show/Hide series point shape");
+        chkShowDataPoint_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkLineShape_ActionPerformed(evt);
+                chkShowDataPoint_ActionPerformed(evt);
             }
         });
-        add(chkLineShape_);
+        add(chkShowDataPoint_);
+        chkShowDataPoint_.getAccessibleContext().setAccessibleDescription("Show/Hide series data point");
 
-        btnDown_1.setText("BG Color");
-        btnDown_1.setToolTipText("Set background color");
-        btnDown_1.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnDown_1.setMaximumSize(new java.awt.Dimension(35, 35));
-        btnDown_1.setMinimumSize(new java.awt.Dimension(35, 35));
-        btnDown_1.setPreferredSize(new java.awt.Dimension(60, 20));
-        btnDown_1.addActionListener(new java.awt.event.ActionListener() {
+        btnSetBgColor_.setText("BG Color");
+        btnSetBgColor_.setToolTipText("Set background color");
+        btnSetBgColor_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnSetBgColor_.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnSetBgColor_.setMinimumSize(new java.awt.Dimension(35, 35));
+        btnSetBgColor_.setPreferredSize(new java.awt.Dimension(60, 20));
+        btnSetBgColor_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDown_1ActionPerformed(evt);
+                btnSetBgColor_ActionPerformed(evt);
             }
         });
-        add(btnDown_1);
+        add(btnSetBgColor_);
 
         btnLeft_.setToolTipText("Shift left");
         btnLeft_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -272,19 +281,19 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         plot_.setRangeGridlinesVisible(chkRangeGridline_.isSelected());
     }//GEN-LAST:event_chkRangeGridline_ActionPerformed
 
-    private void btnDown_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDown_1ActionPerformed
+    private void btnSetBgColor_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetBgColor_ActionPerformed
         Color backgroundColor = JColorChooser.showDialog(null,
                 "Choose chart background color", Color.white);
         plot_.setBackgroundPaint(backgroundColor);
-    }//GEN-LAST:event_btnDown_1ActionPerformed
+    }//GEN-LAST:event_btnSetBgColor_ActionPerformed
 
-    private void chkLineShape_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkLineShape_ActionPerformed
+    private void chkShowDataPoint_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkShowDataPoint_ActionPerformed
         XYSplineRenderer render = (XYSplineRenderer) plot_.getRenderer();
-        boolean value = chkLineShape_.isSelected();
+        boolean value = chkShowDataPoint_.isSelected();
         for (int i = 0; i < plot_.getSeriesCount(); i++) {
             render.setSeriesShapesVisible(i, value);
         }
-    }//GEN-LAST:event_chkLineShape_ActionPerformed
+    }//GEN-LAST:event_chkShowDataPoint_ActionPerformed
 
     private void doMousePressedAction(final int action) {
 
@@ -394,18 +403,23 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     }
 
     public boolean getLineShapeVisibility() {
-        return chkLineShape_.isSelected();
+        return chkShowDataPoint_.isSelected();
+    }
+
+    public boolean getMarkerAutoZoom() {
+        return chkMarkerAutoZoom_.isSelected();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAutoRange_;
     private javax.swing.JButton btnDown_;
-    private javax.swing.JButton btnDown_1;
     private javax.swing.JButton btnLeft_;
     private javax.swing.JButton btnRight_;
+    private javax.swing.JButton btnSetBgColor_;
     private javax.swing.JButton btnUp_;
     private javax.swing.JCheckBox chkDomainGridline_;
-    private javax.swing.JCheckBox chkLineShape_;
+    private javax.swing.JCheckBox chkMarkerAutoZoom_;
     private javax.swing.JCheckBox chkRangeGridline_;
+    private javax.swing.JCheckBox chkShowDataPoint_;
     // End of variables declaration//GEN-END:variables
 }

@@ -605,10 +605,11 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     @Override
     public void addRegionMarker(IntervalMarker marker) {
         plot_.addDomainMarker(marker);
-        plot_.getDomainAxis().setLowerBound(marker.getStartValue() - 1);
-        plot_.getDomainAxis().setUpperBound(marker.getEndValue() + 1);
 
-        if (xySeriesCollection_.getSeriesCount() > 0) {
+        if (xySeriesCollection_.getSeriesCount() > 0 && plotSettingPanel_.getMarkerAutoZoom()) {
+
+            plot_.getDomainAxis().setLowerBound(marker.getStartValue() - 3);
+            plot_.getDomainAxis().setUpperBound(marker.getEndValue() + 3);
 
             List<XYSeries> series = new ArrayList<XYSeries>();
 
@@ -624,8 +625,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     Util.getMinMax(minMaxObj, serie, marker.getStartValue(), marker.getEndValue());
                 }
 
-                plot_.getRangeAxis().setLowerBound(minMaxObj.min_ - 3);
-                plot_.getRangeAxis().setUpperBound(minMaxObj.max_ + 3);
+                plot_.getRangeAxis().setLowerBound(minMaxObj.min_ - 50);
+                plot_.getRangeAxis().setUpperBound(minMaxObj.max_ + 50);
             }
         }
     }
