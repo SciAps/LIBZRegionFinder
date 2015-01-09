@@ -113,9 +113,7 @@ public class ShotListTableModel extends AbstractTableModel {
     }
 
     public void removeRow(int rowIndex) {
-        if (data_.get(rowIndex).isSelected()) {
-            hideSeries(rowIndex);
-        }
+        deleteSeries(rowIndex);
 
         data_.remove(rowIndex);
         fireTableDataChanged();
@@ -128,9 +126,7 @@ public class ShotListTableModel extends AbstractTableModel {
 
         Arrays.sort(rowIndex);
         for (int i = rowIndex.length - 1; i >= 0; i--) {
-            if (data_.get(rowIndex[i]).isSelected()) {
-                hideSeries(rowIndex[i]);
-            }
+            deleteSeries(rowIndex[i]);
 
             data_.remove(rowIndex[i]);
         }
@@ -145,6 +141,12 @@ public class ShotListTableModel extends AbstractTableModel {
     public XYSeries getXYSeries(int rowIndex) {
 
         return data_.get(rowIndex).getXYSeries();
+    }
+
+    public void deleteSeries(int rowIndex) {
+        if (callback_ != null) {
+            callback_.doDeleteShotXYSeries(data_.get(rowIndex));
+        }
     }
 
     public void hideSeries(int rowIndex) {
