@@ -9,7 +9,7 @@ import com.devsmart.ThreadUtils;
 import com.sciaps.common.Constants;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.algorithms.LorentzianIntensityValue;
-import com.sciaps.common.algorithms.PeekIntensityIntergral;
+import com.sciaps.common.algorithms.SimpleIntensityValue;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
 import com.sciaps.utils.CustomDialog;
@@ -460,12 +460,12 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
             switch (type) {
                 case Constants.PEAK_INTENSITY_FUNC:
-                    PeekIntensityIntergral peekIntenVal = new PeekIntensityIntergral();
-                    retval = peekIntenVal.getIntensityOfLine(shotItem.getShot().getIntensityFunction(), waveLength, regionWidth);
+                    SimpleIntensityValue peekIntenVal = new SimpleIntensityValue();
+                    retval = peekIntenVal.getIntensityOfLine(shotItem.getShot(), waveLength, regionWidth);
                     break;
                 case Constants.LORENTZIAN_INTENSITY_FUNC:
                     LorentzianIntensityValue lorentzianIntenVal = new LorentzianIntensityValue();
-                    retval = lorentzianIntenVal.getIntensityOfLine(shotItem.getShot().getIntensityFunction(), waveLength, regionWidth);
+                    retval = lorentzianIntenVal.getIntensityOfLine(shotItem.getShot(), waveLength, regionWidth);
                     break;
                 default:
 

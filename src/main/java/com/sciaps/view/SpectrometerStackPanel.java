@@ -8,8 +8,10 @@ package com.sciaps.view;
 import com.devsmart.ThreadUtils;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.Constants;
+import static com.sciaps.common.Constants.MAX_SPECTROMETER;
 import com.sciaps.common.MinMaxObj;
 import com.sciaps.common.RegionMarkerItem;
+import com.sciaps.common.algorithms.DarkPixSubtract;
 import com.sciaps.view.SpectrumShotPanel.SpectrumShotPanelCallback;
 import com.sciaps.common.data.Region;
 import com.sciaps.common.spectrum.LIBZPixelSpectrum;
@@ -425,6 +427,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 final ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
                 for (LIBZPixelSpectrum shot : shots) {
 
+                    for (int i = 0; i < MAX_SPECTROMETER; i++){
+                        DarkPixSubtract.doDarkPixSubtract(shot.pixels[i], 2066);
+                    }
+                    
                     final SpectrumShotItem item = new SpectrumShotItem(scanCount_, shotCount);
                     item.setShot(shot.createSpectrum());
                     shotItems.add(item);
