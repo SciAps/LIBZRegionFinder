@@ -18,9 +18,11 @@ import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.validateOneOrGreater;
 import static com.sciaps.utils.Util.validateZeroOrGreater;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +82,25 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         txtSampleRate_ = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblShots_ = new javax.swing.JTable();
+        tblShots_ = new JTable(){
+            //Implement table cell tool tips.
+            @Override
+            public String getToolTipText(MouseEvent e) {
+                String tip = null;
+                java.awt.Point p = e.getPoint();
+                int rowIndex = rowAtPoint(p);
+                int colIndex = columnAtPoint(p);
+
+                try {
+                    tip = getValueAt(rowIndex, colIndex).toString();
+
+                } catch (RuntimeException e1) {
+                    //catch null pointer exception if mouse is over an empty line
+                }
+
+                return tip;
+            }         
+        };
         btnShowShotl_ = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(160, 190));
@@ -501,7 +521,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             }
         });
     }
-    
+
     public void importCSV() {
         ThreadUtils.CPUThreads.execute(new Runnable() {
 
@@ -520,7 +540,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             }
         });
     }
-    
+
     public void exportCSVAll() {
         ThreadUtils.CPUThreads.execute(new Runnable() {
 
@@ -568,7 +588,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
             @Override
             public void run() {
-                
+
                 ImportExportSpectrum importExporter = new ImportExportSpectrum();
                 final ArrayList<SpectrumShotItem> shotItems = importExporter.importJzonGzipFile();
 

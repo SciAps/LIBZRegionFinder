@@ -64,7 +64,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private final SpecialRasterPanel specialRasterPanel_;
     private final PlotConfigPanel plotSettingPanel_;
     private int scanCount_ = 0;
-
+    
     /**
      * Creates new form SpecktrometerStackPanel
      */
@@ -106,7 +106,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         shotCheckListPanel_ = new SpectrumShotPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
-
+       
         // disable them by default
         shotListContainerPanel_.setVisible(false);
         rasterSettingPanel_.setVisible(false);
@@ -286,6 +286,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.15;
         add(shotListContainerPanel_, gridBagConstraints);
 
         jPanel5.setLayout(new java.awt.GridBagLayout());
