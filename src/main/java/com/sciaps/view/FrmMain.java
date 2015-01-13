@@ -71,6 +71,8 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuFileExit = new javax.swing.JMenuItem();
         mnuConfig = new javax.swing.JMenu();
         mnuConfigSetLibzIP = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        mnuConfigDarkPixelSubtraction_ = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Region Finder");
@@ -183,6 +185,16 @@ public final class FrmMain extends javax.swing.JFrame {
             }
         });
         mnuConfig.add(mnuConfigSetLibzIP);
+        mnuConfig.add(jSeparator3);
+
+        mnuConfigDarkPixelSubtraction_.setSelected(true);
+        mnuConfigDarkPixelSubtraction_.setText("Dark Pixel Subtraction");
+        mnuConfigDarkPixelSubtraction_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuConfigDarkPixelSubtraction_ActionPerformed(evt);
+            }
+        });
+        mnuConfig.add(mnuConfigDarkPixelSubtraction_);
 
         mnuMainBar.add(mnuConfig);
 
@@ -231,6 +243,10 @@ public final class FrmMain extends javax.swing.JFrame {
     private void mnuExportCSVSelected_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportCSVSelected_ActionPerformed
         spectrometerStackPanel_.exportCSVSelected();
     }//GEN-LAST:event_mnuExportCSVSelected_ActionPerformed
+
+    private void mnuConfigDarkPixelSubtraction_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuConfigDarkPixelSubtraction_ActionPerformed
+        spectrometerStackPanel_.setDarkPixelSubtractionOnOff(mnuConfigDarkPixelSubtraction_.isSelected());
+    }//GEN-LAST:event_mnuConfigDarkPixelSubtraction_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -323,7 +339,9 @@ public final class FrmMain extends javax.swing.JFrame {
     private javax.swing.JPanel displayPanel_;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JMenu mnuConfig;
+    private javax.swing.JCheckBoxMenuItem mnuConfigDarkPixelSubtraction_;
     private javax.swing.JMenuItem mnuConfigSetLibzIP;
     private javax.swing.JMenuItem mnuExportCSVSelected_;
     private javax.swing.JMenu mnuExportCSV_;

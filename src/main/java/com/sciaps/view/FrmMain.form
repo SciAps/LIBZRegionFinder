@@ -134,6 +134,17 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuConfigSetLibzIPActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mnuConfigDarkPixelSubtraction_">
+              <Properties>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Dark Pixel Subtraction"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuConfigDarkPixelSubtraction_ActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>

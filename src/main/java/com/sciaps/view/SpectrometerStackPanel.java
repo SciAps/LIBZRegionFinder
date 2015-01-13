@@ -64,6 +64,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private final SpecialRasterPanel specialRasterPanel_;
     private final PlotConfigPanel plotSettingPanel_;
     private int scanCount_ = 0;
+    private boolean darkPixelSubtractionOn_ = true;
     
     /**
      * Creates new form SpecktrometerStackPanel
@@ -428,8 +429,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 final ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
                 for (LIBZPixelSpectrum shot : shots) {
 
-                    for (int i = 0; i < MAX_SPECTROMETER; i++){
-                        DarkPixSubtract.doDarkPixSubtract(shot.pixels[i], 2066);
+                    if (darkPixelSubtractionOn_) {
+                        for (int i = 0; i < MAX_SPECTROMETER; i++){
+                            DarkPixSubtract.doDarkPixSubtract(shot.pixels[i], 2066);
+                        }
                     }
                     
                     final SpectrumShotItem item = new SpectrumShotItem(scanCount_, shotCount);
@@ -674,6 +677,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         shotCheckListPanel_.exportJsonGzipSelected();
     }
 
+    public void setDarkPixelSubtractionOnOff(boolean val) {
+        darkPixelSubtractionOn_ = val;
+    }
+    
     private void showErrorDialog(String msg) {
         logger_.error(msg);
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
