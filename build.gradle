@@ -5,13 +5,6 @@ targetCompatibility = '1.6'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 version = '1.0'
-jar {
-    manifest {
-        attributes 'Main-Class': 'com.sciaps.Main'
-    }
-    
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
 
 project.ext.set("mainClass", "com.sciaps.Main")
 if (!hasProperty('mainClass')) {
@@ -19,7 +12,7 @@ if (!hasProperty('mainClass')) {
 }
 
 //create a single Jar with all dependencies
-task fatJar(type: Jar) {
+jar {
     manifest {
         attributes 'Implementation-Title': 'LIBZRegionFinder',
                 'Implementation-Version': version,
@@ -27,7 +20,6 @@ task fatJar(type: Jar) {
     }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
 }
 
 allprojects {
@@ -50,4 +42,38 @@ dependencies {
     compile project('libraries/Common')
     compile project('libraries/SwingCommon')
     testCompile group: 'junit', name: 'junit', version: '4.10'
+}
+
+// setup for ProGuard
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.sf.proguard:proguard-gradle:5.1'
+    }
+}
+
+// Task to shrink the jar to smaller size
+task shrinkJarTask(dependsOn: 'jar', type: proguard.gradle.ProGuardTask) {
+    
+    injars ("${jar.archivePath}")
+    outjars ("${jar.destinationDir}/${project.name}-${project.version}.jar")
+    libraryjars  "${System.getProperty('java.home')}/lib/rt.jar"
+
+    keep 'public class * { \
+        public static void main(java.lang.String[]); \
+    }'
+    
+    keep 'class com.sciaps.** { *;}'
+    keep 'class org.apache.commons.logging.** { *; }'
+    
+    dontobfuscate
+    
+    dontwarn 'javax.**'
+    dontwarn 'org.junit.**'
+    dontwarn 'org.apache.commons.math.linear.**'
+    dontwarn 'org.apache.avalon.**'
+    dontwarn 'org.apache.log4j.**'
+    dontwarn 'org.apache.log.**'
 }
