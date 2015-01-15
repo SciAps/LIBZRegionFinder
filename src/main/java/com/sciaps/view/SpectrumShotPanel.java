@@ -25,7 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.slf4j.Logger;
@@ -49,6 +53,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
     private final Logger logger_ = LoggerFactory.getLogger(SpectrumShotPanel.class);
     private final ShotListTableModel shotListTableModel_;
     private final BaselineRemovalSettingsPanel baselineSettingPanel_;
+    private final TableRowSorter<ShotListTableModel> sorter_;
 
     /**
      * List Creates new form LibzListPanel
@@ -67,6 +72,25 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         tblShots_.getColumnModel().getColumn(0).setMinWidth(45);
         tblShots_.getColumnModel().getColumn(0).setMaxWidth(45);
         tblShots_.getColumnModel().getColumn(0).setResizable(false);
+
+        sorter_ = new TableRowSorter<ShotListTableModel>(shotListTableModel_);
+        tblShots_.setRowSorter(sorter_);
+        txtFilterText_.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterTable();
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterTable();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterTable();
+            }
+        });
     }
 
     /**
@@ -85,8 +109,6 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         btnDeleteScan_ = new javax.swing.JButton();
         btnDelete_ = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        txtSampleRate_ = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblShots_ = new JTable(){
             //Implement table cell tool tips.
@@ -109,6 +131,11 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         };
         btnShowShotl_ = new javax.swing.JButton();
         btnBackgroundRemoval_ = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        txtSampleRate_ = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtFilterText_ = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(160, 190));
         setMinimumSize(new java.awt.Dimension(160, 190));
@@ -124,7 +151,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(btnCreateAvg_, gridBagConstraints);
@@ -138,7 +165,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -149,7 +176,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         jLabel1.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(jLabel1, gridBagConstraints);
@@ -163,7 +190,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -178,7 +205,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -198,28 +225,6 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
         add(jLabel2, gridBagConstraints);
 
-        txtSampleRate_.setText("30");
-        txtSampleRate_.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtSampleRate_KeyReleased(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(txtSampleRate_, gridBagConstraints);
-
-        jLabel3.setBackground(new java.awt.Color(204, 204, 204));
-        jLabel3.setText("Sample Rate:");
-        jLabel3.setOpaque(true);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-        add(jLabel3, gridBagConstraints);
-
         tblShots_.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -235,7 +240,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -250,7 +255,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -265,11 +270,60 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(btnBackgroundRemoval_, gridBagConstraints);
+
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        txtSampleRate_.setText("30");
+        txtSampleRate_.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSampleRate_KeyReleased(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 0);
+        jPanel1.add(txtSampleRate_, gridBagConstraints);
+
+        jLabel3.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel3.setText("Sample Rate:");
+        jLabel3.setOpaque(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        jPanel1.add(jLabel3, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 0, 0);
+        jPanel1.add(txtFilterText_, gridBagConstraints);
+
+        jLabel4.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel4.setText("Filter:");
+        jLabel4.setOpaque(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        jPanel1.add(jLabel4, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(jPanel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateAvg_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAvg_ActionPerformed
@@ -515,6 +569,15 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             showErrorDialog(errMsg.toString());
         }
 
+    }
+
+    private void filterTable() {
+        try {
+            RowFilter<ShotListTableModel, Object> rowFilter = RowFilter.regexFilter("(?i)" + txtFilterText_.getText(), 1);
+            sorter_.setRowFilter(rowFilter);
+        } catch (java.util.regex.PatternSyntaxException ex) {
+            logger_.error(ex.getMessage());
+        }
     }
 
     public int getSampleRate() {
@@ -765,8 +828,11 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblShots_;
+    private javax.swing.JTextField txtFilterText_;
     private javax.swing.JTextField txtSampleRate_;
     // End of variables declaration//GEN-END:variables
 }
