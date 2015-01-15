@@ -524,8 +524,8 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
             if (shotListTableModel_.isNameAlreadyExist(name) == false) {
                 Spectrum spectrum = shotListTableModel_.getRow(selectedRow[rowIndex]).getShot();
-                BackgroundModel bgModel = new BackgroundModel();
-                PolynomialSplineFunction polynomialSplinFunc = bgModel.getModelBaseline(spectrum, stepSize, wlInterval);
+                BackgroundModel bgModel = new BackgroundModel(stepSize, wlInterval);
+                PolynomialSplineFunction polynomialSplinFunc = bgModel.getModelBaseline(spectrum);
                 double[] knots = polynomialSplinFunc.getKnots();
 
                 double[] pixels = spectrum.getPixelLocations();
