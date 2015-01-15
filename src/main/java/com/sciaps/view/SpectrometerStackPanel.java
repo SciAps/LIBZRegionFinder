@@ -151,7 +151,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         regionContainerPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         regionContainerPanel_.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(regionContainerPanel_, gridBagConstraints);
@@ -212,7 +212,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jLabel3.setText("Raster Setting");
         jPanel2.add(jLabel3, new java.awt.GridBagConstraints());
 
-        controlPanel_.add(jPanel2, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        controlPanel_.add(jPanel2, gridBagConstraints);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel3.setLayout(new java.awt.GridBagLayout());
@@ -235,7 +238,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jLabel4.setText("Region List");
         jPanel3.add(jLabel4, new java.awt.GridBagConstraints());
 
-        controlPanel_.add(jPanel3, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        controlPanel_.add(jPanel3, gridBagConstraints);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel4.setLayout(new java.awt.GridBagLayout());
@@ -262,7 +268,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jLabel5.setText("Raster Test");
         jPanel4.add(jLabel5, new java.awt.GridBagConstraints());
 
-        controlPanel_.add(jPanel4, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        controlPanel_.add(jPanel4, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -276,7 +285,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         rasterSettingPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         rasterSettingPanel_.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(rasterSettingPanel_, gridBagConstraints);

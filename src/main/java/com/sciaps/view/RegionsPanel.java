@@ -189,10 +189,12 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtFilterText_, gridBagConstraints);
 
+        jLabel2.setBackground(new java.awt.Color(204, 204, 204));
         jLabel2.setText("Filter");
+        jLabel2.setOpaque(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

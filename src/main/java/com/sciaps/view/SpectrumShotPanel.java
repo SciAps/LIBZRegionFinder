@@ -520,7 +520,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         for (int rowIndex = 0; rowIndex < selectedRow.length; rowIndex++) {
             String name = shotListTableModel_.getRow(selectedRow[rowIndex]).getName();
-            name = name + "BgRm";
+            name = name + "R" + stepSize + "_" + wlInterval;
 
             if (shotListTableModel_.isNameAlreadyExist(name) == false) {
                 Spectrum spectrum = shotListTableModel_.getRow(selectedRow[rowIndex]).getShot();
