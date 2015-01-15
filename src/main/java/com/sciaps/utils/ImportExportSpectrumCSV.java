@@ -64,6 +64,32 @@ public class ImportExportSpectrumCSV {
         
         logger_.info("saved spectrum csv file to " + saveFile.getAbsolutePath());
     }
+    
+    public void exportSpectrumFile(File saveFile, RawDataSpectrum spectrum) throws IOException {
+        if (spectrum == null || saveFile == null) {
+            logger_.warn("", "will not save spectrum csv file");
+            return;
+        }
+
+        BufferedWriter bout = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile)));
+        try {
+            bout.append("wavelength, intensity");
+            bout.newLine();
+            
+            double[][] data = spectrum.getRawData();
+            
+            for (int i = 0; i < data[0].length; i++) {
+                bout.append(Double.toString(data[0][i]));
+                bout.append(", ");
+                bout.append(Double.toString(data[1][i]));
+                bout.newLine();
+            }
+        } finally {
+            bout.close();
+        }
+        
+        logger_.info("saved spectrum csv file to " + saveFile.getAbsolutePath());
+    }
 
     public RawDataSpectrum importSpectrumFile(File spectrumFile) throws IOException {
 

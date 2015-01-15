@@ -205,8 +205,15 @@ public class ImportExportSpectrum {
                     name = name.replace(" ", "_");
                     String fileName = dir + File.separator + name + ".csv";
                     File file = new File(fileName);
+
                     try {
-                        csvImportExport.exportSpectrumFile(file, (PiecewiseSpectrum) item.getShot());
+                        if (item.getShot() instanceof PiecewiseSpectrum) {
+                            csvImportExport.exportSpectrumFile(file, (PiecewiseSpectrum) item.getShot());
+                        } else if (item.getShot() instanceof RawDataSpectrum) {
+                            csvImportExport.exportSpectrumFile(file, (RawDataSpectrum) item.getShot());
+                        } else {
+                            errorMsg.append(item.getName()).append(",");
+                        }
                     } catch (Exception ex) {
                         errorMsg.append(item.getName()).append(",");
                     }
