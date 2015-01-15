@@ -8,8 +8,10 @@ package com.sciaps.view;
 import com.devsmart.ThreadUtils;
 import com.sciaps.common.Constants;
 import com.sciaps.common.SpectrumShotItem;
+import com.sciaps.common.algorithms.BackgroundModel;
 import com.sciaps.common.algorithms.LorentzianIntensityValue;
 import com.sciaps.common.algorithms.SimpleIntensityValue;
+import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
 import com.sciaps.utils.CustomDialog;
@@ -24,6 +26,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import org.apache.commons.math3.analysis.UnivariateFunction;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +48,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
     private final Logger logger_ = LoggerFactory.getLogger(SpectrumShotPanel.class);
     private final ShotListTableModel shotListTableModel_;
+    private final BaselineRemovalSettingsPanel baselineSettingPanel_;
 
     /**
      * List Creates new form LibzListPanel
@@ -53,6 +58,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
     public SpectrumShotPanel(SpectrumShotPanelCallback callback) {
         initComponents();
 
+        baselineSettingPanel_ = new BaselineRemovalSettingsPanel();
         shotListTableModel_ = new ShotListTableModel(callback);
         tblShots_.setModel(shotListTableModel_);
         tblShots_.getTableHeader().setReorderingAllowed(false);
@@ -102,6 +108,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             }         
         };
         btnShowShotl_ = new javax.swing.JButton();
+        btnBackgroundRemoval_ = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(160, 190));
         setMinimumSize(new java.awt.Dimension(160, 190));
@@ -117,7 +124,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(btnCreateAvg_, gridBagConstraints);
@@ -131,7 +138,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridy = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -156,7 +163,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -171,7 +178,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 9;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
@@ -243,11 +250,26 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(btnShowShotl_, gridBagConstraints);
+
+        btnBackgroundRemoval_.setText("Background Removal");
+        btnBackgroundRemoval_.setToolTipText("Remove background noise for the selected shots");
+        btnBackgroundRemoval_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackgroundRemoval_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        add(btnBackgroundRemoval_, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateAvg_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateAvg_ActionPerformed
@@ -279,6 +301,10 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
     private void btnShowShotl_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowShotl_ActionPerformed
         doShowShots();
     }//GEN-LAST:event_btnShowShotl_ActionPerformed
+
+    private void btnBackgroundRemoval_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackgroundRemoval_ActionPerformed
+        doBackgroundRemoval();
+    }//GEN-LAST:event_btnBackgroundRemoval_ActionPerformed
 
     private int[] getSelectedRows() {
 
@@ -419,6 +445,76 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
                 }
             }
         });
+    }
+
+    private void doBackgroundRemoval() {
+
+        int[] selectedRow = getSelectedRows();
+        if (selectedRow == null || selectedRow.length == 0) {
+            return;
+        }
+
+        double stepSize = baselineSettingPanel_.getStepSize();
+        double wlInterval = baselineSettingPanel_.getWaveLengthInterval();
+
+        if (stepSize < 0 || wlInterval < 0) {
+            return;
+        }
+
+        ArrayList<SpectrumShotItem> tmpList = new ArrayList<SpectrumShotItem>();
+        StringBuilder errMsg = new StringBuilder();
+
+        for (int rowIndex = 0; rowIndex < selectedRow.length; rowIndex++) {
+            String name = shotListTableModel_.getRow(selectedRow[rowIndex]).getName();
+            name = name + "BgRm";
+
+            if (shotListTableModel_.isNameAlreadyExist(name) == false) {
+                Spectrum spectrum = shotListTableModel_.getRow(selectedRow[rowIndex]).getShot();
+                BackgroundModel bgModel = new BackgroundModel();
+                PolynomialSplineFunction polynomialSplinFunc = bgModel.getModelBaseline(spectrum, stepSize, wlInterval);
+                double[] knots = polynomialSplinFunc.getKnots();
+
+                double[] pixels = spectrum.getPixelLocations();
+                UnivariateFunction yfun = spectrum.getIntensityFunction();
+                double[] yVals = new double[pixels.length];
+                for (int i = 0; i < pixels.length; i++) {
+
+                    // if the left end of original wavelength is smaller than the left end of baseline wavelenght
+                    // subtraction using the first lowest point in the baseline
+                    if (pixels[i] < knots[0]) {
+                        yVals[i] = yfun.value(pixels[i]) - polynomialSplinFunc.value(knots[0]);
+                    } else if (pixels[i] >= knots[0] && pixels[i] <= knots[knots.length - 1]) {
+                        yVals[i] = yfun.value(pixels[i]) - polynomialSplinFunc.value(pixels[i]);
+                    } else {
+                        // if the right end of original wavelength is greater than the right end of baseline wavelenght
+                        // subtraction using the last lowest point in the baseline
+                        yVals[i] = yfun.value(pixels[i]) - polynomialSplinFunc.value(knots[knots.length - 1]);
+                    }
+                }
+
+                RawDataSpectrum rawSpect = new RawDataSpectrum(new double[][]{pixels, yVals});
+                SpectrumShotItem shot = new SpectrumShotItem(name);
+                shot.setShot(rawSpect);
+
+                tmpList.add(shot);
+            } else {
+                errMsg.append(name).append("\n");
+            }
+        }
+
+        for (SpectrumShotItem shot : tmpList) {
+            shotListTableModel_.addRow(0, shot);
+        }
+
+        if (tmpList.isEmpty() == false) {
+            shotListTableModel_.showSeries(0);
+        }
+
+        if (errMsg.length() > 0) {
+            errMsg.insert(0, "The following shot(s) already exist, skipped:\n");
+            showErrorDialog(errMsg.toString());
+        }
+
     }
 
     public int getSampleRate() {
@@ -646,11 +742,21 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         });
     }
 
+    public void showBaselineRemovalSettings() {
+        CustomDialog dialog = new CustomDialog(null,
+                "Baseline Removal Parameters",
+                baselineSettingPanel_, CustomDialog.OK_OPTION);
+
+        dialog.setSize(300, 175);
+        dialog.setVisible(true);
+    }
+
     private void showErrorDialog(String msg) {
         logger_.error(msg);
         JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBackgroundRemoval_;
     private javax.swing.JButton btnCreateAvg_;
     private javax.swing.JButton btnDeleteScan_;
     private javax.swing.JButton btnDelete_;

@@ -69,10 +69,12 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuExportJsonGZipSelected_ = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         mnuFileExit = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        mnuConfigDarkPixelSubtraction_ = new javax.swing.JCheckBoxMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
+        mnuSettingBaselineRmParams_ = new javax.swing.JMenuItem();
         mnuConfig = new javax.swing.JMenu();
         mnuConfigSetLibzIP = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        mnuConfigDarkPixelSubtraction_ = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Region Finder");
@@ -176,6 +178,28 @@ public final class FrmMain extends javax.swing.JFrame {
 
         mnuMainBar.add(mnuFile);
 
+        jMenu1.setText("Settings");
+
+        mnuConfigDarkPixelSubtraction_.setSelected(true);
+        mnuConfigDarkPixelSubtraction_.setText("Dark Pixel Subtraction On");
+        mnuConfigDarkPixelSubtraction_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuConfigDarkPixelSubtraction_ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuConfigDarkPixelSubtraction_);
+        jMenu1.add(jSeparator3);
+
+        mnuSettingBaselineRmParams_.setText("Baseline Removal Parameters");
+        mnuSettingBaselineRmParams_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuSettingBaselineRmParams_ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(mnuSettingBaselineRmParams_);
+
+        mnuMainBar.add(jMenu1);
+
         mnuConfig.setText("Config");
 
         mnuConfigSetLibzIP.setText("Set LIBZ IP");
@@ -185,16 +209,6 @@ public final class FrmMain extends javax.swing.JFrame {
             }
         });
         mnuConfig.add(mnuConfigSetLibzIP);
-        mnuConfig.add(jSeparator3);
-
-        mnuConfigDarkPixelSubtraction_.setSelected(true);
-        mnuConfigDarkPixelSubtraction_.setText("Dark Pixel Subtraction");
-        mnuConfigDarkPixelSubtraction_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuConfigDarkPixelSubtraction_ActionPerformed(evt);
-            }
-        });
-        mnuConfig.add(mnuConfigDarkPixelSubtraction_);
 
         mnuMainBar.add(mnuConfig);
 
@@ -247,6 +261,10 @@ public final class FrmMain extends javax.swing.JFrame {
     private void mnuConfigDarkPixelSubtraction_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuConfigDarkPixelSubtraction_ActionPerformed
         spectrometerStackPanel_.setDarkPixelSubtractionOnOff(mnuConfigDarkPixelSubtraction_.isSelected());
     }//GEN-LAST:event_mnuConfigDarkPixelSubtraction_ActionPerformed
+
+    private void mnuSettingBaselineRmParams_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuSettingBaselineRmParams_ActionPerformed
+        spectrometerStackPanel_.showBaselineRemovalSettings();
+    }//GEN-LAST:event_mnuSettingBaselineRmParams_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -337,6 +355,7 @@ public final class FrmMain extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel displayPanel_;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -358,5 +377,6 @@ public final class FrmMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem mnuFileImportRegionText_;
     private javax.swing.JMenu mnuFileImport_;
     private javax.swing.JMenuBar mnuMainBar;
+    private javax.swing.JMenuItem mnuSettingBaselineRmParams_;
     // End of variables declaration//GEN-END:variables
 }
