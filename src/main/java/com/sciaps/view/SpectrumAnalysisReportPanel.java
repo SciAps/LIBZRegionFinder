@@ -454,6 +454,9 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
             callback_.removeMarker(marker);
         }
         
+        for (IntervalMarker marker : allMarkers_) {
+            callback_.removeMarker(marker);
+        }
         callback_.doDeleteShotXYSeries(normalizedSpectrumItem_);
 
         markers_.clear();
