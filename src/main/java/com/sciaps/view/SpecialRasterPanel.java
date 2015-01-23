@@ -5,6 +5,7 @@
  */
 package com.sciaps.view;
 
+import com.sciaps.common.Constants;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.validateOneOrGreater;
@@ -687,7 +688,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
 
     private void showErrorDialog(String msg) {
         logger_.error(msg);
-        JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Constants.MAIN_FRAME, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
     
     private ImageIcon createImageIcon(String path) {

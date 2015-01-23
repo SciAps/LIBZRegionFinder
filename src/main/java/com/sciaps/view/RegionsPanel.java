@@ -419,7 +419,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
 
     private void showErrorDialog(String msg) {
         logger_.error(msg);
-        JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Constants.MAIN_FRAME, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
 
     class TableCellDoubleTypeRenderer implements TableCellRenderer {

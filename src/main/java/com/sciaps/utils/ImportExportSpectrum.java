@@ -5,6 +5,7 @@
  */
 package com.sciaps.utils;
 
+import com.sciaps.common.Constants;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.spectrum.LIBZPixelSpectrum;
 import com.sciaps.common.spectrum.PiecewiseSpectrum;
@@ -38,11 +39,11 @@ public class ImportExportSpectrum {
         chooser.setMultiSelectionEnabled(true);
         chooser.setFileFilter(new FileNameExtensionFilter("Json Gzip files", "gz"));
 
-        int retrival = chooser.showOpenDialog(null);
+        int retrival = chooser.showOpenDialog(Constants.MAIN_FRAME);
         if (retrival == JFileChooser.APPROVE_OPTION) {
 
             ProgressStatusPanel progressbar = new ProgressStatusPanel();
-            final CustomDialog progressDialog = new CustomDialog(null,
+            final CustomDialog progressDialog = new CustomDialog(Constants.MAIN_FRAME,
                     "Importing GZIP Spectrum File", progressbar,
                     CustomDialog.NONE_OPTION);
             progressDialog.setSize(400, 100);
@@ -61,7 +62,7 @@ public class ImportExportSpectrum {
                     //String newName = file.getName().replace(".json.gz", "");
                     LIBZPixelSpectrum shotData = jsonImportExport.importSpectrumFile(file);
                     SpectrumShotItem shot = new SpectrumShotItem(file.getName());
-                    shot.setShot(shotData.createSpectrum());
+                    shot.setShot(shotData.createSpectrum(), SpectrumShotItem.RAW);
                     shotItems.add(shot);
                 }
             } catch (Exception ex) {
@@ -84,11 +85,11 @@ public class ImportExportSpectrum {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        int retrival = chooser.showSaveDialog(null);
+        int retrival = chooser.showSaveDialog(Constants.MAIN_FRAME);
         if (retrival == JFileChooser.APPROVE_OPTION) {
 
             ProgressStatusPanel progressbar = new ProgressStatusPanel();
-            final CustomDialog progressDialog = new CustomDialog(null,
+            final CustomDialog progressDialog = new CustomDialog(Constants.MAIN_FRAME,
                     "Exporting GZIP Spectrum File", progressbar,
                     CustomDialog.NONE_OPTION);
             progressDialog.setSize(400, 100);
@@ -137,11 +138,11 @@ public class ImportExportSpectrum {
         chooser.setMultiSelectionEnabled(true);
         chooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
 
-        int retrival = chooser.showOpenDialog(null);
+        int retrival = chooser.showOpenDialog(Constants.MAIN_FRAME);
         if (retrival == JFileChooser.APPROVE_OPTION) {
 
             ProgressStatusPanel progressbar = new ProgressStatusPanel();
-            final CustomDialog progressDialog = new CustomDialog(null,
+            final CustomDialog progressDialog = new CustomDialog(Constants.MAIN_FRAME,
                     "Importing CSV Spectrum File", progressbar,
                     CustomDialog.NONE_OPTION);
             progressDialog.setSize(400, 100);
@@ -159,7 +160,7 @@ public class ImportExportSpectrum {
                 for (File file : chooser.getSelectedFiles()) {
                     RawDataSpectrum shotData = csvImportExport.importSpectrumFile(file);
                     SpectrumShotItem shot = new SpectrumShotItem(file.getName());
-                    shot.setShot(shotData);
+                    shot.setShot(shotData, SpectrumShotItem.RAW);
                     shotItems.add(shot);
                 }
             } catch (Exception ex) {
@@ -177,11 +178,11 @@ public class ImportExportSpectrum {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        int retrival = chooser.showSaveDialog(null);
+        int retrival = chooser.showSaveDialog(Constants.MAIN_FRAME);
         if (retrival == JFileChooser.APPROVE_OPTION) {
 
             ProgressStatusPanel progressbar = new ProgressStatusPanel();
-            final CustomDialog progressDialog = new CustomDialog(null,
+            final CustomDialog progressDialog = new CustomDialog(Constants.MAIN_FRAME,
                     "Exporting CSV Spectrum File", progressbar,
                     CustomDialog.NONE_OPTION);
             progressDialog.setSize(400, 100);
@@ -231,6 +232,6 @@ public class ImportExportSpectrum {
 
     private void showErrorDialog(String msg) {
         logger_.error(msg);
-        JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Constants.MAIN_FRAME, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
 }

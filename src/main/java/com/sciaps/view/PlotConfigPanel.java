@@ -112,9 +112,9 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         btnSetBgColor_.setText("BG Color");
         btnSetBgColor_.setToolTipText("Set background color");
         btnSetBgColor_.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnSetBgColor_.setMaximumSize(new java.awt.Dimension(35, 35));
-        btnSetBgColor_.setMinimumSize(new java.awt.Dimension(35, 35));
-        btnSetBgColor_.setPreferredSize(new java.awt.Dimension(60, 20));
+        btnSetBgColor_.setMaximumSize(new java.awt.Dimension(70, 20));
+        btnSetBgColor_.setMinimumSize(new java.awt.Dimension(70, 20));
+        btnSetBgColor_.setPreferredSize(new java.awt.Dimension(70, 20));
         btnSetBgColor_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSetBgColor_ActionPerformed(evt);

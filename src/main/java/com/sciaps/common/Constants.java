@@ -6,6 +6,7 @@
 package com.sciaps.common;
 
 import com.sciaps.common.webserver.LIBZHttpClient;
+import javax.swing.JFrame;
 
 /**
  *
@@ -21,6 +22,9 @@ public class Constants {
     public static final int REGION_VAL_COL = 5;
     public static final int PEAK_INTENSITY_FUNC = 1;
     public static final int LORENTZIAN_INTENSITY_FUNC = 2;
+    public static final double MARKER_THRESHOLD = 0.02;
+    public static final double LG_PEAK_MIN_VAL = 0.5;
+    public static JFrame MAIN_FRAME = null;
 
     public static LIBZHttpClient mHttpClient;
 

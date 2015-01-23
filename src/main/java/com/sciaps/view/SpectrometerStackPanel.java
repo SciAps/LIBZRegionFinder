@@ -63,9 +63,10 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private final SpectrumShotPanel shotCheckListPanel_;
     private final SpecialRasterPanel specialRasterPanel_;
     private final PlotConfigPanel plotSettingPanel_;
+    private final SpectrumAnalysisReportPanel spectrumAnalysisReportPanel_;
     private int scanCount_ = 0;
     private boolean darkPixelSubtractionOn_ = true;
-
+    
     /**
      * Creates new form SpecktrometerStackPanel
      */
@@ -108,10 +109,15 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         shotCheckListPanel_ = new SpectrumShotPanel(this);
         shotListContainerPanel_.add(shotCheckListPanel_);
 
+        spectrumAnalysisReportPanel_ = new SpectrumAnalysisReportPanel(this);
+        analysisPanel_.add(spectrumAnalysisReportPanel_);
+
         // disable them by default
         shotListContainerPanel_.setVisible(false);
         rasterSettingPanel_.setVisible(false);
         regionContainerPanel_.setVisible(false);
+        analysisPanel_.setVisible(false);
+        jPanel6.setVisible(false);
     }
 
     /**
@@ -139,11 +145,15 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel4 = new javax.swing.JPanel();
         btnScan_ = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        btnCloseAnalyzePanel_ = new javax.swing.JButton();
         rasterSettingPanel_ = new javax.swing.JPanel();
         shotListContainerPanel_ = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         charDisplayPanel_ = new javax.swing.JPanel();
         chartRangeControlPanel_ = new javax.swing.JPanel();
+        analysisPanel_ = new javax.swing.JPanel();
 
         setName(""); // NOI18N
         setLayout(new java.awt.GridBagLayout());
@@ -151,7 +161,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         regionContainerPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         regionContainerPanel_.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(regionContainerPanel_, gridBagConstraints);
@@ -213,7 +223,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel2.add(jLabel3, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
         controlPanel_.add(jPanel2, gridBagConstraints);
 
@@ -239,7 +249,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel3.add(jLabel4, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         controlPanel_.add(jPanel3, gridBagConstraints);
 
@@ -269,14 +279,41 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel4.add(jLabel5, new java.awt.GridBagConstraints());
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
         controlPanel_.add(jPanel4, gridBagConstraints);
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel6.setLayout(new java.awt.GridBagLayout());
+
+        jLabel6.setText("Analyze");
+        jPanel6.add(jLabel6, new java.awt.GridBagConstraints());
+
+        btnCloseAnalyzePanel_.setText("Close");
+        btnCloseAnalyzePanel_.setMaximumSize(new java.awt.Dimension(120, 30));
+        btnCloseAnalyzePanel_.setMinimumSize(new java.awt.Dimension(120, 30));
+        btnCloseAnalyzePanel_.setPreferredSize(new java.awt.Dimension(120, 30));
+        btnCloseAnalyzePanel_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseAnalyzePanel_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        jPanel6.add(btnCloseAnalyzePanel_, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        controlPanel_.add(jPanel6, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.weightx = 1.0;
@@ -285,7 +322,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         rasterSettingPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         rasterSettingPanel_.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(rasterSettingPanel_, gridBagConstraints);
@@ -320,12 +357,21 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         jPanel5.add(chartRangeControlPanel_, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(jPanel5, gridBagConstraints);
+
+        analysisPanel_.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        analysisPanel_.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.4;
+        add(analysisPanel_, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnScan_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScan_ActionPerformed
@@ -344,6 +390,36 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private void toggleRegion_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleRegion_ActionPerformed
         setRegionPanelVisible(toggleRegion_.isSelected());
     }//GEN-LAST:event_toggleRegion_ActionPerformed
+
+    private void btnCloseAnalyzePanel_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseAnalyzePanel_ActionPerformed
+        setAnalysisPanelVisible(false);
+    }//GEN-LAST:event_btnCloseAnalyzePanel_ActionPerformed
+
+    private void setAnalysisPanelVisible(boolean val) {
+        jPanel6.setVisible(val);
+        analysisPanel_.setVisible(val);
+
+        if (val == true) {
+            jPanel1.setVisible(false);
+            jPanel2.setVisible(false);
+            jPanel3.setVisible(false);
+            jPanel4.setVisible(false);
+
+            setShotListPanelVisible(false);
+            setRegionPanelVisible(false);
+            setRasterSettingPanelVisible(false);
+        } else {
+            
+            spectrumAnalysisReportPanel_.doCleanUp();
+            
+            jPanel1.setVisible(true);
+            jPanel2.setVisible(true);
+            jPanel3.setVisible(true);
+            jPanel4.setVisible(true);
+
+            setShotListPanelVisible(true);
+        }
+    }
 
     private void setRegionPanelVisible(boolean val) {
         regionContainerPanel_.setVisible(val);
@@ -413,7 +489,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         StringBuilder errMsg = new StringBuilder();
 
         ProgressStatusPanel progressbar = new ProgressStatusPanel();
-        final CustomDialog progressDialog = new CustomDialog(null,
+        final CustomDialog progressDialog = new CustomDialog(Constants.MAIN_FRAME,
                 "Raster Test In Progress", progressbar,
                 CustomDialog.NONE_OPTION);
         progressDialog.setSize(400, 100);
@@ -445,7 +521,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     }
 
                     final SpectrumShotItem item = new SpectrumShotItem(scanCount_, shotCount);
-                    item.setShot(shot.createSpectrum());
+                    item.setShot(shot.createSpectrum(), SpectrumShotItem.RAW);
                     shotItems.add(item);
                     shotCount++;
 
@@ -461,7 +537,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 Spectrum avgSpectrum = createAverage(listOfSpectrums, sampleRate);
                 String name = "Scan " + scanCount_ + ": Avg";
                 final SpectrumShotItem avgShotItem = new SpectrumShotItem(name);
-                avgShotItem.setShot(avgSpectrum);
+                avgShotItem.setShot(avgSpectrum, SpectrumShotItem.AVERAGED);
                 populateXYSeriesData(avgShotItem);
 
                 SwingUtilities.invokeLater(new Runnable() {
@@ -496,7 +572,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt", "TXT"));
-        int retval = fileChooser.showOpenDialog(null);
+        int retval = fileChooser.showOpenDialog(Constants.MAIN_FRAME);
 
         if (retval == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
@@ -527,7 +603,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
     public void getRegionTextFromUser() {
 
-        String retval = JOptionPane.showInputDialog(null,
+        String retval = JOptionPane.showInputDialog(Constants.MAIN_FRAME,
                 "Enter region string (ex. Fe371.76-372.16,Co257.88-258.12):",
                 "");
 
@@ -696,10 +772,12 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
 
     private void showErrorDialog(String msg) {
         logger_.error(msg);
-        JOptionPane.showMessageDialog(null, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Constants.MAIN_FRAME, msg, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel analysisPanel_;
+    private javax.swing.JButton btnCloseAnalyzePanel_;
     private javax.swing.JButton btnScan_;
     private javax.swing.JPanel charDisplayPanel_;
     private javax.swing.JPanel chartRangeControlPanel_;
@@ -709,11 +787,13 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel rasterSettingPanel_;
     private javax.swing.JPanel regionContainerPanel_;
     private javax.swing.JPanel shotListContainerPanel_;
@@ -721,5 +801,24 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private javax.swing.JToggleButton toggleRegion_;
     private javax.swing.JToggleButton toggleShotList_;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void doSpectrumAnalysisLayout(SpectrumShotItem spectrumShotItem) {
+        setAnalysisPanelVisible(true);
+
+        spectrumAnalysisReportPanel_.doAnalysis(spectrumShotItem);
+    }
+
+    @Override
+    public void addMarker(IntervalMarker marker) {
+        plot_.getDomainAxis().setAutoRange(true);
+        plot_.getRangeAxis().setAutoRange(true);
+        plot_.addDomainMarker(marker);
+    }
+
+    @Override
+    public void removeMarker(IntervalMarker marker) {
+        plot_.removeDomainMarker(marker);
+    }
 
 }

@@ -1,9 +1,6 @@
 [submodule "libraries/Common"]
 	path = libraries/Common
 	url = git@github.com:SciAps/Common.git
-[submodule "SwingCommon"]
-	path = SwingCommon
-	url = https://github.com/SciAps/SwingCommon.git
 [submodule "libraries/SwingCommon"]
 	path = libraries/SwingCommon
-	url = https://github.com/SciAps/SwingCommon.git
+	url = git@github.com:SciAps/SwingCommon.git

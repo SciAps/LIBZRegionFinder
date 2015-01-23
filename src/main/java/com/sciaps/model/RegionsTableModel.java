@@ -1,5 +1,6 @@
 package com.sciaps.model;
 
+import com.sciaps.common.Constants;
 import com.sciaps.common.RegionMarkerItem;
 import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
 import java.math.BigDecimal;
@@ -264,7 +265,7 @@ public class RegionsTableModel extends AbstractTableModel {
 
             @Override
             public void run() {
-                JOptionPane.showMessageDialog(null, msg);
+                JOptionPane.showMessageDialog(Constants.MAIN_FRAME, msg);
             }
         });
     }

@@ -5,6 +5,7 @@
  */
 package com.sciaps;
 
+import com.sciaps.common.Constants;
 import com.sciaps.view.FrmMain;
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -25,7 +26,8 @@ public class Main {
                 frmMain.setSize(new Dimension(1200, 800));
                 frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 RefineryUtilities.centerFrameOnScreen(frmMain);
-                frmMain.setVisible(true);
+                Constants.MAIN_FRAME = frmMain;
+                frmMain.setVisible(true);                
             }
         }
         );
