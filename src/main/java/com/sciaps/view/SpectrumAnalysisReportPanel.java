@@ -5,6 +5,7 @@
  */
 package com.sciaps.view;
 
+import Interface.RegionFinderIntf;
 import com.devsmart.swing.BackgroundTask;
 import com.sciaps.common.Constants;
 import static com.sciaps.common.Constants.MARKER_THRESHOLD;
@@ -13,11 +14,8 @@ import com.sciaps.common.SpectrumAnalyze;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.PeakMeritTableModel;
-import com.sciaps.utils.ImportLibsLines;
 import com.sciaps.utils.Util;
-import com.sciaps.view.SpectrumShotPanel.SpectrumShotPanelCallback;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
@@ -34,9 +32,9 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
     private PeakMeritTableModel peakMeritTableModel_;
     private PeakMeritTableModel rejectedPeakMeritTableModel_;
     private SpectrumAnalyze spectrumAnalyze_;
-    private SpectrumShotPanelCallback callback_;
-    private ArrayList<IntervalMarker> markers_;
-    private ArrayList<IntervalMarker> allMarkers_;
+    private RegionFinderIntf callback_;
+    private IntervalMarker[] markers_;
+    private IntervalMarker[] allMarkers_;
     private DefaultListModel listModel_;
     private SpectrumShotItem normalizedSpectrumItem_;
 
@@ -45,7 +43,7 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
      *
      * @param callback
      */
-    public SpectrumAnalysisReportPanel(SpectrumShotPanelCallback callback) {
+    public SpectrumAnalysisReportPanel(RegionFinderIntf callback) {
         doInitialization();
         callback_ = callback;
     }
@@ -64,14 +62,12 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
         listModel_ = new DefaultListModel();
         lstIdentifiedPeaks_.setModel(listModel_);
 
-        peakMeritTableModel_ = new PeakMeritTableModel(callback_);
+        peakMeritTableModel_ = new PeakMeritTableModel();
         tblPeakMeritSummary_.setModel(peakMeritTableModel_);
 
-        rejectedPeakMeritTableModel_ = new PeakMeritTableModel(callback_);
+        rejectedPeakMeritTableModel_ = new PeakMeritTableModel();
         tblRejectedPeakMerit_.setModel(rejectedPeakMeritTableModel_);
 
-        markers_ = new ArrayList<IntervalMarker>();
-        allMarkers_ = new ArrayList<IntervalMarker>();
         spectrumAnalyze_ = new SpectrumAnalyze();
     }
 
@@ -288,35 +284,38 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
     private void doShowMarkerFromIdentifiedList() {
         int selectedIndex = lstIdentifiedPeaks_.getSelectedIndex();
         try {
-            doRemoveExitingMarkers();
-            callback_.addMarker(allMarkers_.get(selectedIndex));
+            doRemoveExistingMarkers();
+            callback_.doAddMarker(allMarkers_[selectedIndex]);
         } catch (Exception e) {
-            
+            System.out.println("Exception: " + e.getMessage());
         }
     }
-    private void doRemoveExitingMarkers() {
+
+    private void doRemoveExistingMarkers() {
         // remove existing marker
-        for (IntervalMarker marker : allMarkers_) {
-            callback_.removeMarker(marker);
+        if (allMarkers_ != null) {
+            for (IntervalMarker marker : allMarkers_) {
+                callback_.doRemoveMarker(marker);
+            }
         }
-        
+
         // remove existing marker
-        for (IntervalMarker marker : markers_) {
-            callback_.removeMarker(marker);
+        if (markers_ != null) {
+            for (IntervalMarker marker : markers_) {
+                callback_.doRemoveMarker(marker);
+            }
         }
     }
-    
-    private void doShowMarker(PeakMeritTableModel tableModel, int modelIndex)  {
-        doRemoveExitingMarkers();
-        
+
+    private void doShowMarker(PeakMeritTableModel tableModel, int modelIndex) {
+        doRemoveExistingMarkers();
+
         // show the new marker
         PeakMeritObj obj = tableModel.getRow(modelIndex);
-        for (IntervalMarker marker : obj.getMarkers()) {
-            markers_.add(marker);
-            callback_.addMarker(marker);
-        }
+        markers_ = obj.getMarkers();
+        callback_.doAddMarker(markers_);
     }
-    
+
     public void doAnalysis(final SpectrumShotItem spectrumShotItem) {
 
         BackgroundTask.runBackgroundTask(new BackgroundTask() {
@@ -362,14 +361,14 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
 
                     normalizedSpectrumItem_ = new SpectrumShotItem("analysis");
                     normalizedSpectrumItem_.setShot(tmp, SpectrumShotItem.NORMALIZED);
-                    
+
                     final HashMap<String, PeakMeritObj> mapOfPeaks = new HashMap<String, PeakMeritObj>();
 
                     // Merge all the identified peak into one object
                     // this for loop will set the found value
                     for (int i = 0; i < peaksOnX_.length; i++) {
                         double y = tmp.getIntensityFunction().value(peaksOnX_[i]);
-                        
+
                         PeakMeritObj retMeritObj = spectrumAnalyze_.identifiedPeaks(peaksOnX_[i], y);
                         if (retMeritObj != null) {
                             PeakMeritObj meritObjInTheMap = mapOfPeaks.get(retMeritObj.elementName_);
@@ -398,24 +397,25 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                             // Remove all previous data
                             listModel_.removeAllElements();
                             lblSpectrumName_.setText(spectrumShotItem.getName());
-                            markers_.clear();
+                            markers_ = null;
                             peakMeritTableModel_.clearAllData();
                             rejectedPeakMeritTableModel_.clearAllData();
 
                             callback_.doShowShotXYSeries(normalizedSpectrumItem_);
-                            
+
+                            int offset = -1;
+                            IntervalMarker[] tmpMarkers = new IntervalMarker[peaksOnX_.length];
                             double min;
                             double max;
                             for (PeakMeritObj obj : mapOfPeaks.values()) {
                                 for (Object wl : obj.getWaveLength()) {
                                     String item = String.format("%.5g, %s", wl, obj.elementName_);
                                     listModel_.addElement(item);
-                                    
+
                                     min = (Double) wl - MARKER_THRESHOLD;
                                     max = (Double) wl + MARKER_THRESHOLD;
                                     IntervalMarker marker = Util.createMarker(min, max, obj.elementName_);
-                                    callback_.addMarker(marker);
-                                    allMarkers_.add(marker);
+                                    tmpMarkers[++offset] = marker;
                                 }
 
                                 if (obj.getWeightPercentage() >= 10) {
@@ -425,16 +425,8 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                                 }
                             }
 
-                            /*double min;
-                            double max;
-                            for (int i = 0; i < peaksOnX_.length; i++) {
-
-                                min = peaksOnX_[i] - MARKER_THRESHOLD;
-                                max = peaksOnX_[i] + MARKER_THRESHOLD;
-                                IntervalMarker marker = Util.createMarker(min, max);
-                                markers_.add(marker);
-                                callback_.addMarker(marker);
-                            }*/
+                            allMarkers_ = Arrays.copyOf(tmpMarkers, offset + 1);
+                            callback_.doAddMarker(allMarkers_);
                         }
                     });
                 }
@@ -450,17 +442,15 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
 
     public void doCleanUp() {
 
-        for (IntervalMarker marker : markers_) {
-            callback_.removeMarker(marker);
-        }
-        
-        for (IntervalMarker marker : allMarkers_) {
-            callback_.removeMarker(marker);
-        }
+        // remove all existing markers from the display
+        doRemoveExistingMarkers();
+
+        // remove the graph
         callback_.doDeleteShotXYSeries(normalizedSpectrumItem_);
 
-        markers_.clear();
-        allMarkers_.clear();
+        // set all pointers to null
+        markers_ = null;
+        allMarkers_ = null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

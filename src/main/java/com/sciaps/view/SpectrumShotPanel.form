@@ -140,6 +140,9 @@
               </Table>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblShots_MouseClicked"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JTable(){&#xd;&#xa;    //Implement table cell tool tips.&#xd;&#xa;    @Override&#xd;&#xa;    public String getToolTipText(MouseEvent e) {&#xd;&#xa;        String tip = null;&#xd;&#xa;        java.awt.Point p = e.getPoint();&#xd;&#xa;        int rowIndex = rowAtPoint(p);&#xd;&#xa;        int colIndex = columnAtPoint(p);&#xd;&#xa;        &#xd;&#xa;        try {&#xd;&#xa;            tip = getValueAt(rowIndex, colIndex).toString();&#xd;&#xa;        &#xd;&#xa;        } catch (RuntimeException e1) {&#xd;&#xa;            //catch null pointer exception if mouse is over an empty line&#xd;&#xa;        }&#xd;&#xa;&#xd;&#xa;        return tip;&#xd;&#xa;    }         &#xd;&#xa;};"/>
           </AuxValues>
@@ -236,7 +239,7 @@
     <Component class="javax.swing.JButton" name="btnBackgroundRemoval_1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Find Peak"/>
-        <Property name="toolTipText" type="java.lang.String" value="Remove background noise for the selected shots"/>
+        <Property name="toolTipText" type="java.lang.String" value="Find the peaks"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackgroundRemoval_1ActionPerformed"/>
@@ -250,7 +253,7 @@
     <Component class="javax.swing.JButton" name="btnBackgroundRemoval_2">
       <Properties>
         <Property name="text" type="java.lang.String" value="Normalize Spectrum"/>
-        <Property name="toolTipText" type="java.lang.String" value="Remove background noise for the selected shots"/>
+        <Property name="toolTipText" type="java.lang.String" value="Normalize a spectrum"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackgroundRemoval_2ActionPerformed"/>
@@ -264,7 +267,7 @@
     <Component class="javax.swing.JButton" name="btnAnalyze_">
       <Properties>
         <Property name="text" type="java.lang.String" value="Analyze"/>
-        <Property name="toolTipText" type="java.lang.String" value="Remove background noise for the selected shots"/>
+        <Property name="toolTipText" type="java.lang.String" value="Analyze a spectrum"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAnalyze_ActionPerformed"/>

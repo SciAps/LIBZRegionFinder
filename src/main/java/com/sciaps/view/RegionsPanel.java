@@ -5,6 +5,7 @@
  */
 package com.sciaps.view;
 
+import Interface.RegionFinderIntf;
 import com.sciaps.common.Constants;
 import static com.sciaps.common.Constants.REGION_MARKER_COL;
 import static com.sciaps.common.Constants.REGION_MAX_COL;
@@ -29,7 +30,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
-import org.jfree.chart.plot.IntervalMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,15 +38,6 @@ import org.slf4j.LoggerFactory;
  * @author jchen
  */
 public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallback {
-
-    public interface RegionsPanelCallback {
-
-        void addRegionMarker(IntervalMarker marker);
-
-        void removeRegionMarker(IntervalMarker marker);
-
-        double getIntensityOfLine(int type, double waveLength, double regionWidth);
-    }
 
     private final Logger logger_ = LoggerFactory.getLogger(RegionsPanel.class);
     private RegionsTableModel tableModel_;
@@ -63,7 +54,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
      *
      * @param callback
      */
-    public RegionsPanel(RegionsPanelCallback callback) {
+    public RegionsPanel(RegionFinderIntf callback) {
         initComponents();
 
         tableModel_ = new RegionsTableModel(callback);
@@ -392,7 +383,7 @@ public class RegionsPanel extends JPanel implements JFreeChartMouseListenerCallb
             int modelIndex = tblRegions_.convertRowIndexToModel(selectedRows[i]);
             tableModel_.setValueAt(val, modelIndex, REGION_MARKER_COL);
         }
-        
+
         tblRegions_.repaint();
     }
 

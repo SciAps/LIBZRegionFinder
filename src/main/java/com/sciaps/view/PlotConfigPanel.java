@@ -6,6 +6,7 @@
 package com.sciaps.view;
 
 import com.devsmart.ThreadUtils;
+import com.sciaps.common.Constants;
 import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
@@ -282,7 +283,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_chkRangeGridline_ActionPerformed
 
     private void btnSetBgColor_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSetBgColor_ActionPerformed
-        Color backgroundColor = JColorChooser.showDialog(null,
+        Color backgroundColor = JColorChooser.showDialog(Constants.MAIN_FRAME,
                 "Choose chart background color", Color.white);
         plot_.setBackgroundPaint(backgroundColor);
     }//GEN-LAST:event_btnSetBgColor_ActionPerformed

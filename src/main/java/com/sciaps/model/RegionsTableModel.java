@@ -1,8 +1,8 @@
 package com.sciaps.model;
 
+import Interface.RegionFinderIntf;
 import com.sciaps.common.Constants;
 import com.sciaps.common.RegionMarkerItem;
-import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +25,9 @@ public class RegionsTableModel extends AbstractTableModel {
 
     private final List<RegionMarkerItem> data_;
     String[] columnNames_ = {"Show", "Name", "Symbol", "Min", "Max", "Value"};
-    private RegionsPanelCallback callback_;
+    private final RegionFinderIntf callback_;
 
-    public RegionsTableModel(RegionsPanelCallback callback) {
+    public RegionsTableModel(RegionFinderIntf callback) {
         data_ = new ArrayList<RegionMarkerItem>();
         callback_ = callback;
     }
@@ -222,14 +222,14 @@ public class RegionsTableModel extends AbstractTableModel {
     public void removeMarker(int rowIndex) {
         if (callback_ != null) {
             data_.get(rowIndex).setIsMarkerShown(false);
-            callback_.removeRegionMarker(data_.get(rowIndex).getMarker());
+            callback_.doRemoveMarker(data_.get(rowIndex).getMarker());
         }
     }
 
     public void addMarker(int rowIndex) {
         if (callback_ != null) {
             if (data_.get(rowIndex).getIsMarkerShown() == false) {
-                callback_.addRegionMarker(data_.get(rowIndex).getMarker());
+                callback_.doAddMarker(data_.get(rowIndex).getMarker());
                 data_.get(rowIndex).setIsMarkerShown(true);
             }
         }
@@ -243,7 +243,7 @@ public class RegionsTableModel extends AbstractTableModel {
 
             for (RegionMarkerItem markerItem : data_) {
                 regionWidth = markerItem.getMax() - markerItem.getMin();
-                waveLength =  markerItem.getMin() + regionWidth/2;             
+                waveLength = markerItem.getMin() + regionWidth / 2;
                 retval = callback_.getIntensityOfLine(type, waveLength, regionWidth);
 
                 // The -1 value identicate no shot is selected to do the calculation. 

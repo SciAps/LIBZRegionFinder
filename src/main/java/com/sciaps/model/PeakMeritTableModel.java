@@ -1,7 +1,6 @@
 package com.sciaps.model;
 
 import com.sciaps.common.PeakMeritObj;
-import com.sciaps.view.SpectrumShotPanel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,11 +19,9 @@ public class PeakMeritTableModel extends AbstractTableModel {
 
     private final List<PeakMeritObj> data_;
     String[] columnNames_ = {"Element", "PksFound", "%Found", "LgPksFound", "Weight"};
-    private SpectrumShotPanel.SpectrumShotPanelCallback callback_;
 
-    public PeakMeritTableModel(SpectrumShotPanel.SpectrumShotPanelCallback callback) {
+    public PeakMeritTableModel() {
         data_ = new ArrayList<PeakMeritObj>();
-        callback_ = callback;
     }
 
     @Override
@@ -101,11 +98,11 @@ public class PeakMeritTableModel extends AbstractTableModel {
 
         fireTableDataChanged();
     }
-    
+
     public PeakMeritObj getRow(int rowIndex) {
         return data_.get(rowIndex);
     }
-    
+
     public void clearAllData() {
         data_.clear();
     }

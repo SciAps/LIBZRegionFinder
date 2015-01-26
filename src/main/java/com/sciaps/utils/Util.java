@@ -11,7 +11,6 @@ import com.sciaps.common.MinMaxObj;
 import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.view.ProgressStatusPanel;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -320,7 +319,7 @@ public class Util {
     public static IntervalMarker createMarker(double min, double max) {
         return createMarker(min, max, null);
     }
-    
+
     public static IntervalMarker createMarker(double min, double max, String element) {
         IntervalMarker marker = new IntervalMarker(
                 min, max);
@@ -329,12 +328,12 @@ public class Util {
         DecimalFormat df = new DecimalFormat("#0.000");
         String label = df.format(min);
 
-        if (element != null ) {
-            label = element +":" + label;
+        if (element != null) {
+            label = element + ":" + label;
         }
         marker.setLabel(label);
         marker.setLabelPaint(Color.blue);
-        marker.setLabelFont(new java.awt.Font("Tahoma", 1, 6));
+        marker.setLabelFont(new java.awt.Font("Tahoma", 1, 8));
         marker.setLabelOffset(new RectangleInsets(50, 10, 10, 20));
 
         return marker;

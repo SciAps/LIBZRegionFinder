@@ -1,7 +1,7 @@
 package com.sciaps.model;
 
+import Interface.RegionFinderIntf;
 import com.sciaps.common.SpectrumShotItem;
-import com.sciaps.view.SpectrumShotPanel.SpectrumShotPanelCallback;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,9 +21,9 @@ public class ShotListTableModel extends AbstractTableModel {
 
     private final List<SpectrumShotItem> data_;
     private final String[] columnNames_ = {"Show", "Shot"};
-    private final SpectrumShotPanelCallback callback_;
+    private final RegionFinderIntf callback_;
 
-    public ShotListTableModel(SpectrumShotPanelCallback callback) {
+    public ShotListTableModel(RegionFinderIntf callback) {
         data_ = new ArrayList<SpectrumShotItem>();
         callback_ = callback;
     }

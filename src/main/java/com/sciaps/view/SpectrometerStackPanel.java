@@ -5,14 +5,13 @@
  */
 package com.sciaps.view;
 
+import Interface.RegionFinderIntf;
 import com.devsmart.ThreadUtils;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.Constants;
 import static com.sciaps.common.Constants.MAX_SPECTROMETER;
-import com.sciaps.common.MinMaxObj;
 import com.sciaps.common.RegionMarkerItem;
 import com.sciaps.common.algorithms.DarkPixSubtract;
-import com.sciaps.view.SpectrumShotPanel.SpectrumShotPanelCallback;
 import com.sciaps.common.data.Region;
 import com.sciaps.common.spectrum.LIBZPixelSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
@@ -20,10 +19,8 @@ import com.sciaps.common.swing.view.JFreeChartWrapperPanel;
 import com.sciaps.common.webserver.ILaserController.RasterParams;
 import com.sciaps.listener.JFreeChartMouseListener;
 import com.sciaps.utils.CustomDialog;
-import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.populateXYSeriesData;
-import com.sciaps.view.RegionsPanel.RegionsPanelCallback;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,7 +38,6 @@ import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
-import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @author jchen
  */
 public class SpectrometerStackPanel extends javax.swing.JPanel
-        implements RegionsPanelCallback, SpectrumShotPanelCallback {
+        implements RegionFinderIntf {
 
     private final Logger logger_ = LoggerFactory.getLogger(SpectrometerStackPanel.class);
 
@@ -66,7 +62,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     private final SpectrumAnalysisReportPanel spectrumAnalysisReportPanel_;
     private int scanCount_ = 0;
     private boolean darkPixelSubtractionOn_ = true;
-    
+
     /**
      * Creates new form SpecktrometerStackPanel
      */
@@ -409,9 +405,9 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
             setRegionPanelVisible(false);
             setRasterSettingPanelVisible(false);
         } else {
-            
+
             spectrumAnalysisReportPanel_.doCleanUp();
-            
+
             jPanel1.setVisible(true);
             jPanel2.setVisible(true);
             jPanel3.setVisible(true);
@@ -653,89 +649,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         }
     }
 
-    @Override
-    public void doShowShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
-        logger_.info("Displaying selected shot");
-
-        if (item.getXYSeries().isEmpty()) {
-            populateXYSeriesData(item);
-        }
-
-        try {
-            int index = xySeriesCollection_.indexOf(item.getXYSeries());
-            if (index < 0) {
-                xySeriesCollection_.addSeries(item.getXYSeries());
-                index = xySeriesCollection_.indexOf(item.getXYSeries());
-                ((XYSplineRenderer) plot_.getRenderer()).setSeriesShapesVisible(index, plotSettingPanel_.getLineShapeVisibility());
-            } else {
-                plot_.getRenderer().setSeriesVisible(index, true);
-            }
-        } catch (Exception ex) {
-            logger_.error("Failed to show XYSeries: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public void doHideShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
-        logger_.info("Hiding selected shot");
-        try {
-            int index = xySeriesCollection_.indexOf(item.getXYSeries());
-            if (index >= 0) {
-                plot_.getRenderer().setSeriesVisible(index, false);
-            }
-        } catch (Exception ex) {
-            logger_.error("Failed to hide XYSeries: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public void doDeleteShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
-        try {
-            xySeriesCollection_.removeSeries(item.getXYSeries());
-        } catch (Exception ex) {
-            logger_.error("Failed to delete XYSeries: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public void addRegionMarker(IntervalMarker marker) {
-        plot_.addDomainMarker(marker);
-
-        if (xySeriesCollection_.getSeriesCount() > 0 && plotSettingPanel_.getMarkerAutoZoom()) {
-
-            plot_.getDomainAxis().setLowerBound(marker.getStartValue() - 3);
-            plot_.getDomainAxis().setUpperBound(marker.getEndValue() + 3);
-
-            List<XYSeries> series = new ArrayList<XYSeries>();
-
-            for (int i = 0; i < xySeriesCollection_.getSeriesCount(); i++) {
-                if (plot_.getRenderer().isSeriesVisible(i)) {
-                    series.add(xySeriesCollection_.getSeries(i));
-                }
-            }
-
-            if (series.size() > 0) {
-                MinMaxObj minMaxObj = new MinMaxObj(series.get(0).getMaxY(), series.get(0).getMinY());
-                for (XYSeries serie : series) {
-                    Util.getMinMax(minMaxObj, serie, marker.getStartValue(), marker.getEndValue());
-                }
-
-                plot_.getRangeAxis().setLowerBound(minMaxObj.min_ - 50);
-                plot_.getRangeAxis().setUpperBound(minMaxObj.max_ + 50);
-            }
-        }
-    }
-
-    @Override
-    public void removeRegionMarker(IntervalMarker marker) {
-        plot_.removeDomainMarker(marker);
-    }
-
-    @Override
-    public double getIntensityOfLine(int type, double wavelength, double regionwidth) {
-        return shotCheckListPanel_.getIntensityOfLine(type, wavelength, regionwidth);
-    }
-
     public void exportCSVAll() {
         shotCheckListPanel_.exportCSVAll();
     }
@@ -803,6 +716,79 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     // End of variables declaration//GEN-END:variables
 
     @Override
+    public void doShowShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
+        logger_.info("Displaying selected shot");
+
+        if (item.getXYSeries().isEmpty()) {
+            populateXYSeriesData(item);
+        }
+
+        try {
+            int index = xySeriesCollection_.indexOf(item.getXYSeries());
+            if (index < 0) {
+                xySeriesCollection_.addSeries(item.getXYSeries());
+                index = xySeriesCollection_.indexOf(item.getXYSeries());
+                ((XYSplineRenderer) plot_.getRenderer()).setSeriesShapesVisible(index, plotSettingPanel_.getLineShapeVisibility());
+            } else {
+                plot_.getRenderer().setSeriesVisible(index, true);
+            }
+        } catch (Exception ex) {
+            logger_.error("Failed to show XYSeries: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void doHideShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
+        logger_.info("Hiding selected shot");
+        try {
+            int index = xySeriesCollection_.indexOf(item.getXYSeries());
+            if (index >= 0) {
+                plot_.getRenderer().setSeriesVisible(index, false);
+            }
+        } catch (Exception ex) {
+            logger_.error("Failed to hide XYSeries: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void doDeleteShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
+        try {
+            xySeriesCollection_.removeSeries(item.getXYSeries());
+        } catch (Exception ex) {
+            logger_.error("Failed to delete XYSeries: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void doAddMarker(IntervalMarker marker) {
+        plot_.addDomainMarker(marker);
+        
+        if (xySeriesCollection_.getSeriesCount() > 0 && plotSettingPanel_.getMarkerAutoZoom()) {
+
+            plot_.getDomainAxis().setAutoRange(true);
+            plot_.getRangeAxis().setAutoRange(true);
+        
+            plot_.getDomainAxis().setLowerBound(marker.getStartValue() - 3);
+            plot_.getDomainAxis().setUpperBound(marker.getEndValue() + 3);
+        }
+    }
+
+    @Override
+    public void doAddMarker(IntervalMarker[] markers) {
+        for (IntervalMarker marker : markers) {
+            plot_.addDomainMarker(marker);
+        }
+
+        plot_.getDomainAxis().setAutoRange(true);
+        plot_.getRangeAxis().setAutoRange(true);
+    }
+
+    @Override
+    public void doRemoveMarker(IntervalMarker marker) {
+        plot_.removeDomainMarker(marker);
+    }
+
+    @Override
     public void doSpectrumAnalysisLayout(SpectrumShotItem spectrumShotItem) {
         setAnalysisPanelVisible(true);
 
@@ -810,15 +796,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     }
 
     @Override
-    public void addMarker(IntervalMarker marker) {
-        plot_.getDomainAxis().setAutoRange(true);
-        plot_.getRangeAxis().setAutoRange(true);
-        plot_.addDomainMarker(marker);
+    public double getIntensityOfLine(int type, double wavelength, double regionwidth) {
+        return shotCheckListPanel_.getIntensityOfLine(type, wavelength, regionwidth);
     }
-
-    @Override
-    public void removeMarker(IntervalMarker marker) {
-        plot_.removeDomainMarker(marker);
-    }
-
 }

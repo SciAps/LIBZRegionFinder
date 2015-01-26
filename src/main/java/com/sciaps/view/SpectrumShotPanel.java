@@ -5,6 +5,7 @@
  */
 package com.sciaps.view;
 
+import Interface.RegionFinderIntf;
 import com.devsmart.ThreadUtils;
 import com.devsmart.swing.BackgroundTask;
 import com.sciaps.common.Constants;
@@ -48,37 +49,21 @@ import org.slf4j.LoggerFactory;
  */
 public class SpectrumShotPanel extends javax.swing.JPanel {
 
-    public interface SpectrumShotPanelCallback {
-
-        void doShowShotXYSeries(SpectrumShotItem item);
-
-        void doHideShotXYSeries(SpectrumShotItem item);
-
-        void doDeleteShotXYSeries(SpectrumShotItem item);
-
-        void addMarker(IntervalMarker marker);
-
-        void removeMarker(IntervalMarker marker);
-
-        void doSpectrumAnalysisLayout(SpectrumShotItem spectrumShotItem);
-    }
-
     private final Logger logger_ = LoggerFactory.getLogger(SpectrumShotPanel.class);
     private final ShotListTableModel shotListTableModel_;
     private final BaselineRemovalSettingsPanel baselineSettingPanel_;
     private final TableRowSorter<ShotListTableModel> sorter_;
-    private ArrayList<IntervalMarker> peakMarkers_;
+    private IntervalMarker[] peakMarkers_;
 
-    private final SpectrumShotPanelCallback callback_;
+    private final RegionFinderIntf callback_;
 
     /**
      * List Creates new form LibzListPanel
      *
      * @param callback
      */
-    public SpectrumShotPanel(SpectrumShotPanelCallback callback) {
+    public SpectrumShotPanel(RegionFinderIntf callback) {
         initComponents();
-        peakMarkers_ = new ArrayList<IntervalMarker>();
 
         callback_ = callback;
         baselineSettingPanel_ = new BaselineRemovalSettingsPanel();
@@ -257,6 +242,11 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblShots_.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblShots_MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblShots_);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -347,7 +337,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         add(jPanel1, gridBagConstraints);
 
         btnBackgroundRemoval_1.setText("Find Peak");
-        btnBackgroundRemoval_1.setToolTipText("Remove background noise for the selected shots");
+        btnBackgroundRemoval_1.setToolTipText("Find the peaks");
         btnBackgroundRemoval_1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackgroundRemoval_1ActionPerformed(evt);
@@ -362,7 +352,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         add(btnBackgroundRemoval_1, gridBagConstraints);
 
         btnBackgroundRemoval_2.setText("Normalize Spectrum");
-        btnBackgroundRemoval_2.setToolTipText("Remove background noise for the selected shots");
+        btnBackgroundRemoval_2.setToolTipText("Normalize a spectrum");
         btnBackgroundRemoval_2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackgroundRemoval_2ActionPerformed(evt);
@@ -377,7 +367,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         add(btnBackgroundRemoval_2, gridBagConstraints);
 
         btnAnalyze_.setText("Analyze");
-        btnAnalyze_.setToolTipText("Remove background noise for the selected shots");
+        btnAnalyze_.setToolTipText("Analyze a spectrum");
         btnAnalyze_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAnalyze_ActionPerformed(evt);
@@ -448,8 +438,10 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
                 callback_.doDeleteShotXYSeries(tmpItem);
             }
 
+            // remove any marker if there any
+            doRemovePeakMarkers();
+            
             int modelIndex = tblShots_.convertRowIndexToModel(selectedIndex);
-            //shotListTableModel_.showSeries(modelIndex);
 
             SpectrumShotItem selectedItem = shotListTableModel_.getRow(modelIndex);
             callback_.doSpectrumAnalysisLayout(selectedItem);
@@ -459,6 +451,10 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         }
 
     }//GEN-LAST:event_btnAnalyze_ActionPerformed
+
+    private void tblShots_MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblShots_MouseClicked
+        doRemovePeakMarkers();
+    }//GEN-LAST:event_tblShots_MouseClicked
 
     private int[] getSelectedRows() {
 
@@ -840,8 +836,14 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
     private void doFindPeak() {
 
-        final int[] selectedRow = getSelectedRows();
-        if (selectedRow == null || selectedRow.length == 0) {
+        final int[] selectedRows = tblShots_.getSelectedRows();
+        if (selectedRows == null || selectedRows.length == 0) {
+            showErrorDialog("No spectrum is selected to find peak on.");
+            return;
+        }
+
+        if (selectedRows.length != 1) {
+            showErrorDialog("Select 1 spectrum to continue.");
             return;
         }
 
@@ -866,50 +868,59 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
             @Override
             public void onBackground() {
-                ArrayList<SpectrumShotItem> tmpList = new ArrayList<SpectrumShotItem>();
                 StringBuilder errMsg = new StringBuilder();
 
                 SpectrumPeakFinding peakFinding = new SpectrumPeakFinding(30);
 
-                for (int rowIndex = 0; rowIndex < selectedRow.length; rowIndex++) {
+                int modelIndex = tblShots_.convertRowIndexToModel(selectedRows[0]);
+                final SpectrumShotItem selectedItem = shotListTableModel_.getRow(modelIndex);
+                final double[] peaksOnX;
 
-                    SpectrumShotItem selectedItem = shotListTableModel_.getRow(selectedRow[rowIndex]);
-                    final double[] peaksOnX;
+                if (selectedItem.getSeriesDataType() == SpectrumShotItem.NORMALIZED) {
 
-                    if (selectedItem.getSeriesDataType() == SpectrumShotItem.NORMALIZED) {
+                    peaksOnX = peakFinding.getPeaks(selectedItem.getShot());
+                } else if (selectedItem.getSeriesDataType() == SpectrumShotItem.BG_REMOVED) {
 
-                        peaksOnX = peakFinding.getPeaks(selectedItem.getShot());
-                    } else if (selectedItem.getSeriesDataType() == SpectrumShotItem.BG_REMOVED) {
+                    RawDataSpectrum tmp = doSpectrumNormalization((RawDataSpectrum) selectedItem.getShot());
+                    peaksOnX = peakFinding.getPeaks(tmp);
+                } else {
 
-                        RawDataSpectrum tmp = doSpectrumNormalization((RawDataSpectrum) selectedItem.getShot());
-                        peaksOnX = peakFinding.getPeaks(tmp);
-                    } else {
+                    RawDataSpectrum tmp = doBackgroundRemoval(selectedItem.getShot());
+                    tmp = doSpectrumNormalization(tmp);
+                    peaksOnX = peakFinding.getPeaks(tmp);
+                }
 
-                        RawDataSpectrum tmp = doBackgroundRemoval(selectedItem.getShot());
-                        tmp = doSpectrumNormalization(tmp);
-                        peaksOnX = peakFinding.getPeaks(tmp);
+                if (peaksOnX.length > 0) {
+
+                    peakMarkers_ = new IntervalMarker[peaksOnX.length];
+                    double min;
+                    double max;
+                    for (int i = 0; i < peaksOnX.length; i++) {
+
+                        min = peaksOnX[i] - MARKER_THRESHOLD;
+                        max = peaksOnX[i] + MARKER_THRESHOLD;
+                        IntervalMarker marker = Util.createMarker(min, max);
+                        peakMarkers_[i] = marker;
                     }
 
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            if (peaksOnX.length > 0) {
-                                double min;
-                                double max;
-                                for (int i = 0; i < peaksOnX.length; i++) {
 
-                                    min = peaksOnX[i] - MARKER_THRESHOLD;
-                                    max = peaksOnX[i] + MARKER_THRESHOLD;
-                                    IntervalMarker marker = Util.createMarker(min, max);
-                                    callback_.addMarker(marker);
-                                    peakMarkers_.add(marker);
-                                }
-
+                            // unselected all other series
+                            tblShots_.selectAll();
+                            SpectrumShotItem tmpItem;
+                            for (int i : tblShots_.getSelectedRows()) {
+                                tmpItem = shotListTableModel_.getRow(i);
+                                tmpItem.setSelected(false);
+                                callback_.doDeleteShotXYSeries(tmpItem);
                             }
 
+                            shotListTableModel_.showSeries(selectedRows[0]);
+                            tblShots_.setRowSelectionInterval(selectedRows[0], selectedRows[0]);
+                            callback_.doAddMarker(peakMarkers_);
                         }
                     });
-
                 }
             }
 
@@ -917,7 +928,16 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             public void onAfter() {
                 mDialog.setVisible(false);
             }
+
         });
+    }
+
+    private void doRemovePeakMarkers() {
+        if (peakMarkers_ != null) {
+            for (IntervalMarker marker : peakMarkers_) {
+                callback_.doRemoveMarker(marker);
+            }
+        }
     }
 
     private void filterTable() {
