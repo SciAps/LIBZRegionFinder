@@ -18,7 +18,7 @@ import javax.swing.table.AbstractTableModel;
 public class PeakMeritTableModel extends AbstractTableModel {
 
     private final List<PeakMeritObj> data_;
-    String[] columnNames_ = {"Element", "PksFound", "%Found", "LgPksFound", "Weight"};
+    String[] columnNames_ = {"Element", "PksFound", "%Found", "LgPksFound", "Weight%"};
 
     public PeakMeritTableModel() {
         data_ = new ArrayList<PeakMeritObj>();
@@ -51,14 +51,14 @@ public class PeakMeritTableModel extends AbstractTableModel {
                 return str;
             case 2:
                 val = (data_.get(rowIndex).getTotalPeaksFound() * 100.0 / data_.get(rowIndex).getTotalPeaks());
-                str = String.format("%.2f%%", val);
-                return str;
+                str = String.format("%.2f", val);
+                return Double.valueOf(str);
             case 3:
                 str = String.format("%d of %d", data_.get(rowIndex).getTotalLgPeaksFound(), data_.get(rowIndex).getTotalLgPeaks());
                 return str;
             case 4:
-                str = String.format("%.2f%%", data_.get(rowIndex).getWeightPercentage());
-                return str;
+                str = String.format("%.2f", data_.get(rowIndex).getWeightPercentage());
+                return Double.valueOf(str);
             default:
                 return null;
         }
@@ -72,7 +72,20 @@ public class PeakMeritTableModel extends AbstractTableModel {
     @Override
     public Class getColumnClass(int column) {
 
-        return String.class;
+        switch (column) {
+            case 0:
+                return String.class;
+            case 1:
+                return String.class;
+            case 2:
+                return Double.class;
+            case 3:
+                return String.class;
+            case 4:
+                return Double.class;
+            default:
+                return String.class;
+        }
     }
 
     @Override

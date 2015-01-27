@@ -78,9 +78,11 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
 
         peakMeritTableModel_ = new PeakMeritTableModel();
         tblPeakMeritSummary_.setModel(peakMeritTableModel_);
+        tblPeakMeritSummary_.setAutoCreateRowSorter(true);
 
         rejectedPeakMeritTableModel_ = new PeakMeritTableModel();
         tblRejectedPeakMerit_.setModel(rejectedPeakMeritTableModel_);
+        tblRejectedPeakMerit_.setAutoCreateRowSorter(true);
 
         spectrumAnalyze_ = new SpectrumAnalyze();
     }
