@@ -754,6 +754,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public void doDeleteShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
         try {
             xySeriesCollection_.removeSeries(item.getXYSeries());
+            plot_.getDomainAxis().setAutoRange(true);
+            plot_.getRangeAxis().setAutoRange(true);
         } catch (Exception ex) {
             logger_.error("Failed to delete XYSeries: " + ex.getMessage());
         }
