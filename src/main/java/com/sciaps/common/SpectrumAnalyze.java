@@ -27,10 +27,14 @@ public class SpectrumAnalyze {
 
     private final Logger logger_ = LoggerFactory.getLogger(SpectrumAnalyze.class);
     private final double SAMPLE_RATE = 30;
-    private final double THRESHOLD = .12;
+    private double searchRange_ = .12;
 
     private ArrayList<LIBZLineObj> LIBZLines_;
-
+    
+    public void setSearchRange(double searchRange) {
+        searchRange_ = searchRange;
+    }
+    
     public void readLIBZLines() {
         try {
             ImportLibsLines reader = new ImportLibsLines();
@@ -78,7 +82,7 @@ public class SpectrumAnalyze {
     }
 
     public PeakMeritObj identifiedPeaks(double waveLength, double intensity) {
-        return identifiedPeaks(waveLength, intensity, THRESHOLD);
+        return identifiedPeaks(waveLength, intensity, searchRange_);
     }
 
     public PeakMeritObj identifiedPeaks(double waveLength, double intensity, double threshold) {
@@ -94,8 +98,8 @@ public class SpectrumAnalyze {
         if (LIBZLines_ != null && LIBZLines_.isEmpty() == false) {
 
             for (LIBZLineObj libzObj : LIBZLines_) {
-                min = libzObj.getWaveLength() - THRESHOLD;
-                max = libzObj.getWaveLength() + THRESHOLD;
+                min = libzObj.getWaveLength() - searchRange_;
+                max = libzObj.getWaveLength() + searchRange_;
 
                 if (min <= waveLength && waveLength <= max)  {
                     meritObj = new PeakMeritObj(libzObj.getElementName());

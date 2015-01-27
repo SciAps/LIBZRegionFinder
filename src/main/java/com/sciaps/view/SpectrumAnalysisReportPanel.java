@@ -14,6 +14,7 @@ import com.sciaps.common.SpectrumAnalyze;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.PeakMeritTableModel;
+import com.sciaps.utils.CustomDialog;
 import com.sciaps.utils.Util;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import javax.swing.JDialog;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.plot.IntervalMarker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -29,6 +32,7 @@ import org.jfree.chart.plot.IntervalMarker;
  */
 public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
 
+    private final Logger logger_ = LoggerFactory.getLogger(SpectrumAnalysisReportPanel.class);
     private PeakMeritTableModel peakMeritTableModel_;
     private PeakMeritTableModel rejectedPeakMeritTableModel_;
     private SpectrumAnalyze spectrumAnalyze_;
@@ -37,6 +41,11 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
     private IntervalMarker[] allMarkers_;
     private DefaultListModel listModel_;
     private SpectrumShotItem normalizedSpectrumItem_;
+    private double searchRange_;
+    private double peakFoundPercentage_;
+    private double lgPeakFoundPercentage_;
+    private double peakWeightPercentage_;
+    private SpectrumShotItem spectrumShotItem_;
 
     /**
      * Creates new form SpectrumAnalysisReportPanel
@@ -58,6 +67,11 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
 
     private void doInitialization() {
         initComponents();
+
+        searchRange_ = 0.12;
+        peakFoundPercentage_ = 35;
+        lgPeakFoundPercentage_ = 50;
+        peakWeightPercentage_ = 10;
 
         listModel_ = new DefaultListModel();
         lstIdentifiedPeaks_.setModel(listModel_);
@@ -94,6 +108,9 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
         tblRejectedPeakMerit_ = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        btnSettings_ = new javax.swing.JButton();
+        btnReAnalyze_ = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -251,6 +268,30 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         jPanel1.add(jLabel1, gridBagConstraints);
 
+        btnSettings_.setText("Settings");
+        btnSettings_.setMaximumSize(new java.awt.Dimension(113, 25));
+        btnSettings_.setMinimumSize(new java.awt.Dimension(113, 25));
+        btnSettings_.setPreferredSize(new java.awt.Dimension(113, 25));
+        btnSettings_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSettings_ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnSettings_);
+
+        btnReAnalyze_.setText("Re-Analyze");
+        btnReAnalyze_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReAnalyze_ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnReAnalyze_);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        jPanel1.add(jPanel2, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -280,6 +321,31 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
         int modelIndex = tblPeakMeritSummary_.convertRowIndexToModel(selectedRow);
         doShowMarker(peakMeritTableModel_, modelIndex);
     }//GEN-LAST:event_tblPeakMeritSummary_MouseClicked
+
+    private void btnSettings_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettings_ActionPerformed
+        SpectrumAnalysisSetting settingPanel = new SpectrumAnalysisSetting(
+                searchRange_, peakFoundPercentage_,lgPeakFoundPercentage_, peakWeightPercentage_);
+
+
+        CustomDialog dialog = new CustomDialog(Constants.MAIN_FRAME,
+                "Analysis Settings",
+                settingPanel, CustomDialog.OK_CANCEL_OPTION);
+
+        dialog.setSize(375, 275);
+        dialog.setVisible(true);
+
+        if (dialog.getResponseValue() == CustomDialog.OK) {
+            searchRange_ = settingPanel.getSearchRange();
+            peakFoundPercentage_ = settingPanel.getPeakFoundPercentage();
+            lgPeakFoundPercentage_ = settingPanel.getLgPeakPercentage();
+            peakWeightPercentage_ = settingPanel.getPeakWeightPercentage();
+        }
+    }//GEN-LAST:event_btnSettings_ActionPerformed
+
+    private void btnReAnalyze_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReAnalyze_ActionPerformed
+        doCleanUp();
+        doAnalysis(spectrumShotItem_);
+    }//GEN-LAST:event_btnReAnalyze_ActionPerformed
 
     private void doShowMarkerFromIdentifiedList() {
         int selectedIndex = lstIdentifiedPeaks_.getSelectedIndex();
@@ -317,6 +383,9 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
     }
 
     public void doAnalysis(final SpectrumShotItem spectrumShotItem) {
+        logger_.info("Starting Spectrum Analysis");
+        
+        spectrumShotItem_ = spectrumShotItem;
 
         BackgroundTask.runBackgroundTask(new BackgroundTask() {
 
@@ -342,6 +411,9 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
 
                 Spectrum tmp = null;
                 final double[] peaksOnX_;
+                
+                spectrumAnalyze_.setSearchRange(searchRange_);
+                        
                 if (spectrumShotItem.getSeriesDataType() == SpectrumShotItem.NORMALIZED) {
                     tmp = spectrumShotItem.getShot();
                     peaksOnX_ = spectrumAnalyze_.doPeakFinding(tmp);
@@ -407,6 +479,9 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                             IntervalMarker[] tmpMarkers = new IntervalMarker[peaksOnX_.length];
                             double min;
                             double max;
+                            double tmpPeakFoundPercentage;
+                            double tmpLgPeakFoundPercentage;
+                            double tmpPeakWeightPercentage;
                             for (PeakMeritObj obj : mapOfPeaks.values()) {
                                 for (Object wl : obj.getWaveLength()) {
                                     String item = String.format("%.5g, %s", wl, obj.elementName_);
@@ -417,8 +492,15 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                                     IntervalMarker marker = Util.createMarker(min, max, obj.elementName_);
                                     tmpMarkers[++offset] = marker;
                                 }
-
-                                if (obj.getWeightPercentage() >= 10) {
+                                
+                                tmpPeakFoundPercentage = obj.getTotalPeaksFound() / obj.getTotalLgPeaks() * 100;
+                                tmpLgPeakFoundPercentage = obj.getTotalLgPeaksFound() / obj.getTotalLgPeaks() * 100;
+                                tmpPeakWeightPercentage = obj.getWeightPercentage();
+                                
+                                // determine peak accept/reject
+                                if (tmpPeakFoundPercentage >= peakFoundPercentage_ && 
+                                        tmpLgPeakFoundPercentage >= lgPeakFoundPercentage_ && 
+                                        tmpPeakWeightPercentage >= peakWeightPercentage_) {
                                     peakMeritTableModel_.addRow(obj);
                                 } else {
                                     rejectedPeakMeritTableModel_.addRow(obj);
@@ -435,6 +517,7 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
             @Override
             public void onAfter() {
                 mDialog.setVisible(false);
+                logger_.info("Spectrum Analysis - done" );
             }
         });
 
@@ -454,12 +537,15 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnReAnalyze_;
+    private javax.swing.JButton btnSettings_;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
