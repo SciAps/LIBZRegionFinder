@@ -429,10 +429,9 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         int selectedIndex = tblShots_.getSelectedRow();
         if (selectedIndex >= 0) {
 
-            // unselected all other series
-            tblShots_.selectAll();
+            // remove other series
             SpectrumShotItem tmpItem;
-            for (int i : tblShots_.getSelectedRows()) {
+            for (int i = 0; i < tblShots_.getRowCount(); i++) {
                 tmpItem = shotListTableModel_.getRow(i);
                 tmpItem.setSelected(false);
                 callback_.doDeleteShotXYSeries(tmpItem);

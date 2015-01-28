@@ -719,6 +719,18 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public void doShowShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
         logger_.info("Displaying selected shot");
 
+        int cnt = 0;
+        for (int i = 0; i < xySeriesCollection_.getSeriesCount(); i++) {
+            if (plot_.getRenderer().isSeriesVisible(i)) {   
+                cnt++;
+            }
+        }
+        
+        if (cnt == 0) {
+            plot_.getDomainAxis().setAutoRange(true);
+            plot_.getRangeAxis().setAutoRange(true);
+        }
+        
         if (item.getXYSeries().isEmpty()) {
             populateXYSeriesData(item);
         }
@@ -729,6 +741,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 xySeriesCollection_.addSeries(item.getXYSeries());
                 index = xySeriesCollection_.indexOf(item.getXYSeries());
                 ((XYSplineRenderer) plot_.getRenderer()).setSeriesShapesVisible(index, plotSettingPanel_.getLineShapeVisibility());
+                plot_.getRenderer().setSeriesVisible(index, true);
             } else {
                 plot_.getRenderer().setSeriesVisible(index, true);
             }
@@ -754,8 +767,6 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
     public void doDeleteShotXYSeries(com.sciaps.common.SpectrumShotItem item) {
         try {
             xySeriesCollection_.removeSeries(item.getXYSeries());
-            plot_.getDomainAxis().setAutoRange(true);
-            plot_.getRangeAxis().setAutoRange(true);
         } catch (Exception ex) {
             logger_.error("Failed to delete XYSeries: " + ex.getMessage());
         }
