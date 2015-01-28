@@ -27,14 +27,10 @@ public class SpectrumAnalyze {
 
     private final Logger logger_ = LoggerFactory.getLogger(SpectrumAnalyze.class);
     private final double SAMPLE_RATE = 30;
-    private double searchRange_ = .12;
+    private final double searchRange_ = .12;
 
     private ArrayList<LIBZLineObj> LIBZLines_;
-    
-    public void setSearchRange(double searchRange) {
-        searchRange_ = searchRange;
-    }
-    
+
     public void readLIBZLines() {
         try {
             ImportLibsLines reader = new ImportLibsLines();
@@ -85,7 +81,7 @@ public class SpectrumAnalyze {
         return identifiedPeaks(waveLength, intensity, searchRange_);
     }
 
-    public PeakMeritObj identifiedPeaks(double waveLength, double intensity, double threshold) {
+    public PeakMeritObj identifiedPeaks(double waveLength, double intensity, double searchRange) {
 
         PeakMeritObj meritObj = null;
 
@@ -98,10 +94,10 @@ public class SpectrumAnalyze {
         if (LIBZLines_ != null && LIBZLines_.isEmpty() == false) {
 
             for (LIBZLineObj libzObj : LIBZLines_) {
-                min = libzObj.getWaveLength() - searchRange_;
-                max = libzObj.getWaveLength() + searchRange_;
+                min = libzObj.getWaveLength() - searchRange;
+                max = libzObj.getWaveLength() + searchRange;
 
-                if (min <= waveLength && waveLength <= max)  {
+                if (min <= waveLength && waveLength <= max) {
                     meritObj = new PeakMeritObj(libzObj.getElementName());
                     meritObj.incrementTotalPeaksFoundByOne();
                     if (libzObj.getIntensity() >= LG_PEAK_MIN_VAL) {
@@ -110,6 +106,7 @@ public class SpectrumAnalyze {
                     meritObj.addWavelength(libzObj.getWaveLength());
                     double weight = intensity / libzObj.getIntensity();
                     meritObj.setWeight(weight);
+                    meritObj.setMerit(intensity * libzObj.getIntensity() * 100);
                     break;
                 }
             }

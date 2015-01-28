@@ -18,7 +18,7 @@ import javax.swing.table.AbstractTableModel;
 public class PeakMeritTableModel extends AbstractTableModel {
 
     private final List<PeakMeritObj> data_;
-    String[] columnNames_ = {"Element", "PksFound", "%Found", "LgPksFound", "Weight%"};
+    String[] columnNames_ = {"Element", "Merit", "PksFound", "%Found", "LgPksFound", "Weight%"};
 
     public PeakMeritTableModel() {
         data_ = new ArrayList<PeakMeritObj>();
@@ -47,16 +47,18 @@ public class PeakMeritTableModel extends AbstractTableModel {
             case 0:
                 return data_.get(rowIndex).elementName_;
             case 1:
+                return (int) data_.get(rowIndex).getMerit();
+            case 2:
                 str = String.format("%d of %d", data_.get(rowIndex).getTotalPeaksFound(), data_.get(rowIndex).getTotalPeaks());
                 return str;
-            case 2:
+            case 3:
                 val = (data_.get(rowIndex).getTotalPeaksFound() * 100.0 / data_.get(rowIndex).getTotalPeaks());
                 str = String.format("%.2f", val);
                 return Double.valueOf(str);
-            case 3:
+            case 4:
                 str = String.format("%d of %d", data_.get(rowIndex).getTotalLgPeaksFound(), data_.get(rowIndex).getTotalLgPeaks());
                 return str;
-            case 4:
+            case 5:
                 str = String.format("%.2f", data_.get(rowIndex).getWeightPercentage());
                 return Double.valueOf(str);
             default:
@@ -76,12 +78,14 @@ public class PeakMeritTableModel extends AbstractTableModel {
             case 0:
                 return String.class;
             case 1:
-                return String.class;
+                return Integer.class;
             case 2:
-                return Double.class;
-            case 3:
                 return String.class;
+            case 3:
+                return Double.class;
             case 4:
+                return String.class;
+            case 5:
                 return Double.class;
             default:
                 return String.class;

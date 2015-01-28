@@ -330,7 +330,7 @@ public final class FrmMain extends javax.swing.JFrame {
         httpConfigPanel.setParentFrame(this);
         CustomDialog dialog = new CustomDialog(this, "LIBZ IP Address",
                 httpConfigPanel, CustomDialog.OK_CANCEL_OPTION);
-        dialog.setSize(300, 150);
+        dialog.setSize(350, 150);
         dialog.setVisible(true);
     }
 

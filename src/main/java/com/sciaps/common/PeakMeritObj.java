@@ -22,6 +22,7 @@ public class PeakMeritObj {
     private int totalLgPeaks_;
     private int totalLgPeaksFound_;
     private double weight_;
+    private double merit_;
     private final ArrayList<Double> waveLengths_ = new ArrayList<Double>();
     private IntervalMarker[] markers_;
 
@@ -114,5 +115,17 @@ public class PeakMeritObj {
         }
         
         return markers_;
+    }
+    
+    public void setMerit(double merit) {
+        merit_ = merit;
+    }
+    
+    public void addMerit(double merit) {
+        merit_ = merit_ + merit;
+    }
+    
+    public double getMerit() {
+        return merit_;
     }
 }

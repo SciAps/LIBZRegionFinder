@@ -149,7 +149,7 @@
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="2"/>
-            <Property name="text" type="java.lang.String" value="Rejected (weight &lt; 10%):"/>
+            <Property name="text" type="java.lang.String" value="Rejected:"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
           <Constraints>
@@ -213,7 +213,7 @@
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="2"/>
-            <Property name="text" type="java.lang.String" value="Summary (weight &gt;= 10%):"/>
+            <Property name="text" type="java.lang.String" value="Summary:"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
           <Constraints>
@@ -251,6 +251,7 @@
             <Component class="javax.swing.JButton" name="btnReAnalyze_">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Re-Analyze"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReAnalyze_ActionPerformed"/>
