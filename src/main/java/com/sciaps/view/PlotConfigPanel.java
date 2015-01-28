@@ -61,17 +61,27 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        btnGroupZoom_ = new javax.swing.ButtonGroup();
+        jPanel2 = new javax.swing.JPanel();
         chkDomainGridline_ = new javax.swing.JCheckBox();
         chkRangeGridline_ = new javax.swing.JCheckBox();
         chkMarkerAutoZoom_ = new javax.swing.JCheckBox();
         chkShowDataPoint_ = new javax.swing.JCheckBox();
         btnSetBgColor_ = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        radioZoomDomain_ = new javax.swing.JRadioButton();
+        radioZoomRange_ = new javax.swing.JRadioButton();
+        btnZoomIn_ = new javax.swing.JButton();
+        btnZoomOut_ = new javax.swing.JButton();
         btnLeft_ = new javax.swing.JButton();
         btnRight_ = new javax.swing.JButton();
         btnAutoRange_ = new javax.swing.JButton();
         btnUp_ = new javax.swing.JButton();
         btnDown_ = new javax.swing.JButton();
+
+        jPanel2.setLayout(new java.awt.GridBagLayout());
 
         chkDomainGridline_.setSelected(true);
         chkDomainGridline_.setText("Domain Gridline");
@@ -81,7 +91,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 chkDomainGridline_ActionPerformed(evt);
             }
         });
-        add(chkDomainGridline_);
+        jPanel2.add(chkDomainGridline_, new java.awt.GridBagConstraints());
         chkDomainGridline_.getAccessibleContext().setAccessibleDescription("Show/Hide domain gridline");
 
         chkRangeGridline_.setSelected(true);
@@ -92,13 +102,17 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 chkRangeGridline_ActionPerformed(evt);
             }
         });
-        add(chkRangeGridline_);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel2.add(chkRangeGridline_, gridBagConstraints);
         chkRangeGridline_.getAccessibleContext().setAccessibleDescription("Show/Hide range gridline");
 
         chkMarkerAutoZoom_.setSelected(true);
         chkMarkerAutoZoom_.setText("Marker Auto Zoom");
         chkMarkerAutoZoom_.setToolTipText("Enable/Disable auto zoom on marker");
-        add(chkMarkerAutoZoom_);
+        jPanel2.add(chkMarkerAutoZoom_, new java.awt.GridBagConstraints());
 
         chkShowDataPoint_.setText("Data Point");
         chkShowDataPoint_.setToolTipText("Show/Hide series point shape");
@@ -107,7 +121,11 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 chkShowDataPoint_ActionPerformed(evt);
             }
         });
-        add(chkShowDataPoint_);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel2.add(chkShowDataPoint_, gridBagConstraints);
         chkShowDataPoint_.getAccessibleContext().setAccessibleDescription("Show/Hide series data point");
 
         btnSetBgColor_.setText("BG Color");
@@ -121,7 +139,58 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 btnSetBgColor_ActionPerformed(evt);
             }
         });
-        add(btnSetBgColor_);
+        jPanel2.add(btnSetBgColor_, new java.awt.GridBagConstraints());
+
+        add(jPanel2);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        btnGroupZoom_.add(radioZoomDomain_);
+        radioZoomDomain_.setSelected(true);
+        radioZoomDomain_.setText("Domain");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel1.add(radioZoomDomain_, gridBagConstraints);
+
+        btnGroupZoom_.add(radioZoomRange_);
+        radioZoomRange_.setText("Range");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel1.add(radioZoomRange_, gridBagConstraints);
+
+        btnZoomIn_.setText("Zoom In");
+        btnZoomIn_.setToolTipText("Set background color");
+        btnZoomIn_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnZoomIn_.setMaximumSize(new java.awt.Dimension(85, 20));
+        btnZoomIn_.setMinimumSize(new java.awt.Dimension(85, 20));
+        btnZoomIn_.setPreferredSize(new java.awt.Dimension(85, 20));
+        btnZoomIn_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZoomIn_ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnZoomIn_, new java.awt.GridBagConstraints());
+
+        btnZoomOut_.setText("Zoom Out");
+        btnZoomOut_.setToolTipText("Set background color");
+        btnZoomOut_.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnZoomOut_.setMaximumSize(new java.awt.Dimension(85, 20));
+        btnZoomOut_.setMinimumSize(new java.awt.Dimension(85, 20));
+        btnZoomOut_.setPreferredSize(new java.awt.Dimension(85, 20));
+        btnZoomOut_.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZoomOut_ActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        jPanel1.add(btnZoomOut_, gridBagConstraints);
+
+        add(jPanel1);
 
         btnLeft_.setToolTipText("Shift left");
         btnLeft_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -296,6 +365,39 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_chkShowDataPoint_ActionPerformed
 
+    private void btnZoomIn_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomIn_ActionPerformed
+        
+        if (radioZoomDomain_.isSelected()) {
+            double lowerVal = plot_.getDomainAxis().getLowerBound();
+            double upperVal = plot_.getDomainAxis().getUpperBound();
+            double offset = (upperVal - lowerVal) * .05;
+            plot_.getDomainAxis().setLowerBound(lowerVal + offset);
+            plot_.getDomainAxis().setUpperBound(upperVal - offset);
+        } else {
+            double lowerVal = plot_.getRangeAxis().getLowerBound();
+            double upperVal = plot_.getRangeAxis().getUpperBound();
+            double offset = (upperVal - lowerVal) * .05;
+            plot_.getRangeAxis().setLowerBound(lowerVal + offset);
+            plot_.getRangeAxis().setUpperBound(upperVal - offset);
+        }
+    }//GEN-LAST:event_btnZoomIn_ActionPerformed
+
+    private void btnZoomOut_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomOut_ActionPerformed
+        if (radioZoomDomain_.isSelected()) {
+            double lowerVal = plot_.getDomainAxis().getLowerBound();
+            double upperVal = plot_.getDomainAxis().getUpperBound();
+            double offset = (upperVal - lowerVal) * .05;
+            plot_.getDomainAxis().setLowerBound(lowerVal - offset);
+            plot_.getDomainAxis().setUpperBound(upperVal + offset);
+        } else {
+            double lowerVal = plot_.getRangeAxis().getLowerBound();
+            double upperVal = plot_.getRangeAxis().getUpperBound();
+            double offset = (upperVal - lowerVal) * .05;
+            plot_.getRangeAxis().setLowerBound(lowerVal - offset);
+            plot_.getRangeAxis().setUpperBound(upperVal + offset);
+        }
+    }//GEN-LAST:event_btnZoomOut_ActionPerformed
+
     private void doMousePressedAction(final int action) {
 
         ThreadUtils.IOThreads.execute(new Runnable() {
@@ -340,7 +442,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     private Range createDomainRange(final int action) {
         double lowerBound = domainAxis_.getRange().getLowerBound();
         double upperBound = domainAxis_.getRange().getUpperBound();
-        double shiftValue = Math.ceil((upperBound - lowerBound) * .1);
+        double shiftValue = Math.ceil((upperBound - lowerBound) * .05);
 
         if (action == LEFT) {
             return (new Range(lowerBound - shiftValue, upperBound - shiftValue));
@@ -354,7 +456,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     private Range createRangeRange(final int action) {
         double lowerBound = rangeAxis_.getRange().getLowerBound();
         double upperBound = rangeAxis_.getRange().getUpperBound();
-        double shiftValue = Math.floor((upperBound - lowerBound) * .1);
+        double shiftValue = (upperBound - lowerBound) * .05;
 
         if (action == DOWN) {
             return (new Range(lowerBound - shiftValue, upperBound - shiftValue));
@@ -414,13 +516,20 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAutoRange_;
     private javax.swing.JButton btnDown_;
+    private javax.swing.ButtonGroup btnGroupZoom_;
     private javax.swing.JButton btnLeft_;
     private javax.swing.JButton btnRight_;
     private javax.swing.JButton btnSetBgColor_;
     private javax.swing.JButton btnUp_;
+    private javax.swing.JButton btnZoomIn_;
+    private javax.swing.JButton btnZoomOut_;
     private javax.swing.JCheckBox chkDomainGridline_;
     private javax.swing.JCheckBox chkMarkerAutoZoom_;
     private javax.swing.JCheckBox chkRangeGridline_;
     private javax.swing.JCheckBox chkShowDataPoint_;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JRadioButton radioZoomDomain_;
+    private javax.swing.JRadioButton radioZoomRange_;
     // End of variables declaration//GEN-END:variables
 }
