@@ -97,6 +97,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         btnPulsePeriodHelp_ = new javax.swing.JButton();
         btnStepSizeHelp_ = new javax.swing.JButton();
         btnStopPositionHelp_ = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(260, 380));
         setRequestFocusEnabled(false);
@@ -104,8 +106,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
 
         txtDataShots_.setText("5");
         txtDataShots_.setToolTipText("Shots per location");
-        txtDataShots_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtDataShots_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtDataShots_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtDataShots_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtDataShots_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtDataShots_KeyReleased(evt);
@@ -120,8 +122,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
 
         txtArgonPreflush_.setText("0");
         txtArgonPreflush_.setToolTipText("0 turns off argon");
-        txtArgonPreflush_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtArgonPreflush_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtArgonPreflush_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtArgonPreflush_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtArgonPreflush_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtArgonPreflush_KeyReleased(evt);
@@ -135,8 +137,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(txtArgonPreflush_, gridBagConstraints);
 
         txtIntegrationDelay_.setText("0");
-        txtIntegrationDelay_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtIntegrationDelay_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtIntegrationDelay_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtIntegrationDelay_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtIntegrationDelay_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtIntegrationDelay_KeyReleased(evt);
@@ -150,8 +152,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(txtIntegrationDelay_, gridBagConstraints);
 
         txtLocations_.setText("1");
-        txtLocations_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtLocations_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtLocations_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtLocations_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtLocations_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtLocations_KeyReleased(evt);
@@ -180,7 +182,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel4, gridBagConstraints);
 
-        jLabel5.setText("Integration Delay");
+        jLabel5.setText("Integ. Delay");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -197,15 +199,12 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(jLabel6, gridBagConstraints);
 
         chkGating_.setSelected(true);
-        chkGating_.setText("Gating");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 11;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(chkGating_, gridBagConstraints);
-
-        chkResetStage_.setText("Reset Stage");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 12;
@@ -214,8 +213,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(chkResetStage_, gridBagConstraints);
 
         txtPulsePeriod_.setText("100");
-        txtPulsePeriod_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtPulsePeriod_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtPulsePeriod_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtPulsePeriod_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtPulsePeriod_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtPulsePeriod_KeyReleased(evt);
@@ -237,8 +236,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(jLabel8, gridBagConstraints);
 
         txtStopPosition_.setText("80,80");
-        txtStopPosition_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtStopPosition_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtStopPosition_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtStopPosition_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtStopPosition_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtStopPosition_KeyReleased(evt);
@@ -252,8 +251,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(txtStopPosition_, gridBagConstraints);
 
         txtStartPosition_.setText("60,60,80");
-        txtStartPosition_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtStartPosition_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtStartPosition_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtStartPosition_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtStartPosition_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtStartPosition_KeyReleased(evt);
@@ -267,8 +266,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(txtStartPosition_, gridBagConstraints);
 
         txtIntegrationPeriod_.setText("0");
-        txtIntegrationPeriod_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtIntegrationPeriod_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtIntegrationPeriod_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtIntegrationPeriod_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtIntegrationPeriod_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtIntegrationPeriod_KeyReleased(evt);
@@ -281,15 +280,15 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(txtIntegrationPeriod_, gridBagConstraints);
 
-        jLabel9.setText("Stop Position X,Y");
+        jLabel9.setText("Gating");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel9, gridBagConstraints);
 
-        jLabel10.setText("Start Position X,Y,Z");
+        jLabel10.setText("Start Pos. X,Y,Z");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 8;
@@ -297,7 +296,7 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
         add(jLabel10, gridBagConstraints);
 
-        jLabel11.setText("Integration Period");
+        jLabel11.setText("Integ. Period");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
@@ -314,8 +313,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         add(jLabel12, gridBagConstraints);
 
         txtStepSize_.setText("20");
-        txtStepSize_.setMinimumSize(new java.awt.Dimension(100, 25));
-        txtStepSize_.setPreferredSize(new java.awt.Dimension(100, 25));
+        txtStepSize_.setMinimumSize(new java.awt.Dimension(95, 25));
+        txtStepSize_.setPreferredSize(new java.awt.Dimension(95, 25));
         txtStepSize_.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtStepSize_KeyReleased(evt);
@@ -484,6 +483,22 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 9;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_END;
         add(btnStopPositionHelp_, gridBagConstraints);
+
+        jLabel13.setText("Reset Stage");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 12;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        add(jLabel13, gridBagConstraints);
+
+        jLabel14.setText("Stop Pos. X,Y");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        add(jLabel14, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtLocations_KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLocations_KeyReleased
@@ -716,6 +731,8 @@ public class SpecialRasterPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

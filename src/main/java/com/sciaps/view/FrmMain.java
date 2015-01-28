@@ -64,9 +64,6 @@ public final class FrmMain extends javax.swing.JFrame {
         mnuExportCSV_ = new javax.swing.JMenu();
         mnuFileExportCSVAll_ = new javax.swing.JMenuItem();
         mnuExportCSVSelected_ = new javax.swing.JMenuItem();
-        mnuExportJsonGZip_ = new javax.swing.JMenu();
-        mnuExportJsonGZipAll_ = new javax.swing.JMenuItem();
-        mnuExportJsonGZipSelected_ = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         mnuFileExit = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -145,26 +142,6 @@ public final class FrmMain extends javax.swing.JFrame {
 
         mnuFileExport_.add(mnuExportCSV_);
 
-        mnuExportJsonGZip_.setText("Json GZip");
-
-        mnuExportJsonGZipAll_.setText("All Shots");
-        mnuExportJsonGZipAll_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuExportJsonGZipAll_ActionPerformed(evt);
-            }
-        });
-        mnuExportJsonGZip_.add(mnuExportJsonGZipAll_);
-
-        mnuExportJsonGZipSelected_.setText("Selected Shot(s)");
-        mnuExportJsonGZipSelected_.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuExportJsonGZipSelected_ActionPerformed(evt);
-            }
-        });
-        mnuExportJsonGZip_.add(mnuExportJsonGZipSelected_);
-
-        mnuFileExport_.add(mnuExportJsonGZip_);
-
         mnuFile.add(mnuFileExport_);
         mnuFile.add(jSeparator1);
 
@@ -242,17 +219,9 @@ public final class FrmMain extends javax.swing.JFrame {
         spectrometerStackPanel_.importCSV();
     }//GEN-LAST:event_mnuFileImportCSV_ActionPerformed
 
-    private void mnuExportJsonGZipAll_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportJsonGZipAll_ActionPerformed
-        spectrometerStackPanel_.exportJsonGzipAll();
-    }//GEN-LAST:event_mnuExportJsonGZipAll_ActionPerformed
-
     private void mnuFileImportJsonGZip_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFileImportJsonGZip_ActionPerformed
         spectrometerStackPanel_.importJsonGzip();
     }//GEN-LAST:event_mnuFileImportJsonGZip_ActionPerformed
-
-    private void mnuExportJsonGZipSelected_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportJsonGZipSelected_ActionPerformed
-        spectrometerStackPanel_.exportJsonGzipSelected();
-    }//GEN-LAST:event_mnuExportJsonGZipSelected_ActionPerformed
 
     private void mnuExportCSVSelected_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuExportCSVSelected_ActionPerformed
         spectrometerStackPanel_.exportCSVSelected();
@@ -364,9 +333,6 @@ public final class FrmMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem mnuConfigSetLibzIP;
     private javax.swing.JMenuItem mnuExportCSVSelected_;
     private javax.swing.JMenu mnuExportCSV_;
-    private javax.swing.JMenuItem mnuExportJsonGZipAll_;
-    private javax.swing.JMenuItem mnuExportJsonGZipSelected_;
-    private javax.swing.JMenu mnuExportJsonGZip_;
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuFileExit;
     private javax.swing.JMenuItem mnuFileExportCSVAll_;

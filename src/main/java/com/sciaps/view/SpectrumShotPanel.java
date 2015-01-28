@@ -1000,11 +1000,25 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
         int numOfSelected = tblShots_.getSelectedRowCount();
 
         if (numOfSelected == 1) {
+            
+            // unselect other
+            SpectrumShotItem tmpItem;
+            for (int i = 0; i < tblShots_.getRowCount(); i++) {
+                tmpItem = shotListTableModel_.getRow(i);
+                tmpItem.setSelected(false);
+                callback_.doDeleteShotXYSeries(tmpItem);
+            }
+                        
             int selectedIndex = tblShots_.getSelectedRow();
             int modelIndex = tblShots_.convertRowIndexToModel(selectedIndex);
 
             SpectrumShotItem shotItem = shotListTableModel_.getRow(modelIndex);
-
+            
+            // show the selected shot
+            shotItem.setSelected(true);
+            callback_.doShowShotXYSeries(shotItem);
+            tblShots_.repaint();
+            
             switch (type) {
                 case Constants.PEAK_INTENSITY_FUNC:
                     SimpleIntensityValue peekIntenVal = new SimpleIntensityValue();

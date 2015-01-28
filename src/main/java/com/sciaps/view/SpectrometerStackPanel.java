@@ -344,6 +344,8 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
         gridBagConstraints.weighty = 1.0;
         jPanel5.add(charDisplayPanel_, gridBagConstraints);
 
+        chartRangeControlPanel_.setMinimumSize(new java.awt.Dimension(300, 75));
+        chartRangeControlPanel_.setPreferredSize(new java.awt.Dimension(300, 75));
         chartRangeControlPanel_.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

@@ -64,6 +64,8 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         btnGroupZoom_ = new javax.swing.ButtonGroup();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jPanel3 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         chkDomainGridline_ = new javax.swing.JCheckBox();
         chkRangeGridline_ = new javax.swing.JCheckBox();
@@ -80,6 +82,8 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         btnAutoRange_ = new javax.swing.JButton();
         btnUp_ = new javax.swing.JButton();
         btnDown_ = new javax.swing.JButton();
+
+        setLayout(new java.awt.BorderLayout());
 
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
@@ -141,7 +145,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         });
         jPanel2.add(btnSetBgColor_, new java.awt.GridBagConstraints());
 
-        add(jPanel2);
+        jPanel3.add(jPanel2);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.setLayout(new java.awt.GridBagLayout());
@@ -190,7 +194,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         jPanel1.add(btnZoomOut_, gridBagConstraints);
 
-        add(jPanel1);
+        jPanel3.add(jPanel1);
 
         btnLeft_.setToolTipText("Shift left");
         btnLeft_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -210,7 +214,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 btnLeft_ActionPerformed(evt);
             }
         });
-        add(btnLeft_);
+        jPanel3.add(btnLeft_);
 
         btnRight_.setToolTipText("Shift right");
         btnRight_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -230,7 +234,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 btnRight_ActionPerformed(evt);
             }
         });
-        add(btnRight_);
+        jPanel3.add(btnRight_);
 
         btnAutoRange_.setToolTipText("Center");
         btnAutoRange_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -242,7 +246,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 btnAutoRange_ActionPerformed(evt);
             }
         });
-        add(btnAutoRange_);
+        jPanel3.add(btnAutoRange_);
 
         btnUp_.setToolTipText("Shift up");
         btnUp_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -262,7 +266,7 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 btnUp_ActionPerformed(evt);
             }
         });
-        add(btnUp_);
+        jPanel3.add(btnUp_);
 
         btnDown_.setToolTipText("Shift down");
         btnDown_.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -282,7 +286,11 @@ public class PlotConfigPanel extends javax.swing.JPanel {
                 btnDown_ActionPerformed(evt);
             }
         });
-        add(btnDown_);
+        jPanel3.add(btnDown_);
+
+        jScrollPane1.setViewportView(jPanel3);
+
+        add(jScrollPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLeft_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLeft_ActionPerformed
@@ -529,6 +537,8 @@ public class PlotConfigPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox chkShowDataPoint_;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JRadioButton radioZoomDomain_;
     private javax.swing.JRadioButton radioZoomRange_;
     // End of variables declaration//GEN-END:variables
