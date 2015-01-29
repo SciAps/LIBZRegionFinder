@@ -18,7 +18,7 @@ import javax.swing.table.AbstractTableModel;
 public class PeakMeritTableModel extends AbstractTableModel {
 
     private final List<PeakMeritObj> data_;
-    String[] columnNames_ = {"Element", "Merit", "PksFound", "%Found", "LgPksFound", "Weight%"};
+    String[] columnNames_ = {"Elem", "Merit", "PksFound", "%Found", "LgPksFound", "Wt.%"};
 
     public PeakMeritTableModel() {
         data_ = new ArrayList<PeakMeritObj>();

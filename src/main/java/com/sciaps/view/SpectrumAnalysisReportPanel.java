@@ -84,7 +84,21 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
         tblRejectedPeakMerit_.setModel(rejectedPeakMeritTableModel_);
         tblRejectedPeakMerit_.setAutoCreateRowSorter(true);
 
+        setupTableColumnWidth();
+        
         spectrumAnalyze_ = new SpectrumAnalyze();
+    }
+    
+    private void setupTableColumnWidth() {
+        tblRejectedPeakMerit_.getColumnModel().getColumn(0).setMinWidth(50);
+        tblRejectedPeakMerit_.getColumnModel().getColumn(0).setMaxWidth(50);
+        tblRejectedPeakMerit_.getColumnModel().getColumn(1).setMinWidth(50);
+        tblRejectedPeakMerit_.getColumnModel().getColumn(1).setMaxWidth(50);
+        
+        tblPeakMeritSummary_.getColumnModel().getColumn(0).setMinWidth(50);
+        tblPeakMeritSummary_.getColumnModel().getColumn(0).setMaxWidth(50);
+        tblPeakMeritSummary_.getColumnModel().getColumn(1).setMinWidth(50);
+        tblPeakMeritSummary_.getColumnModel().getColumn(1).setMaxWidth(50);
     }
 
     /**

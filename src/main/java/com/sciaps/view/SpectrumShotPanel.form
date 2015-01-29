@@ -31,6 +31,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Create Shot Avg"/>
         <Property name="toolTipText" type="java.lang.String" value="Create An Avg of All Highlighted"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateAvg_ActionPerformed"/>
@@ -45,6 +48,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Hide Shot(s)"/>
         <Property name="toolTipText" type="java.lang.String" value="Hide Shot Series"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnHideShot_ActionPerformed"/>
@@ -73,6 +79,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete Scan"/>
         <Property name="toolTipText" type="java.lang.String" value="Delete All Shots In A Scan"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteScan_ActionPerformed"/>
@@ -87,6 +96,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete Shot(s)"/>
         <Property name="toolTipText" type="java.lang.String" value="Delete Shot(s)"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDelete_ActionPerformed"/>
@@ -153,6 +165,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Show Shot(s)"/>
         <Property name="toolTipText" type="java.lang.String" value="Show Shot Series"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnShowShotl_ActionPerformed"/>
@@ -167,6 +182,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Background Removal"/>
         <Property name="toolTipText" type="java.lang.String" value="Remove background noise for the selected shots"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackgroundRemoval_ActionPerformed"/>
@@ -240,6 +258,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Find Peak"/>
         <Property name="toolTipText" type="java.lang.String" value="Find the peaks"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackgroundRemoval_1ActionPerformed"/>
@@ -254,6 +275,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Normalize Spectrum"/>
         <Property name="toolTipText" type="java.lang.String" value="Normalize a spectrum"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackgroundRemoval_2ActionPerformed"/>
@@ -268,6 +292,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Analyze"/>
         <Property name="toolTipText" type="java.lang.String" value="Analyze a spectrum"/>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[2, 2, 2, 2]"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAnalyze_ActionPerformed"/>

@@ -150,6 +150,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnCreateAvg_.setText("Create Shot Avg");
         btnCreateAvg_.setToolTipText("Create An Avg of All Highlighted");
+        btnCreateAvg_.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnCreateAvg_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateAvg_ActionPerformed(evt);
@@ -164,6 +165,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnHideShot_.setText("Hide Shot(s)");
         btnHideShot_.setToolTipText("Hide Shot Series");
+        btnHideShot_.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnHideShot_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHideShot_ActionPerformed(evt);
@@ -189,6 +191,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnDeleteScan_.setText("Delete Scan");
         btnDeleteScan_.setToolTipText("Delete All Shots In A Scan");
+        btnDeleteScan_.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnDeleteScan_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteScan_ActionPerformed(evt);
@@ -204,6 +207,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnDelete_.setText("Delete Shot(s)");
         btnDelete_.setToolTipText("Delete Shot(s)");
+        btnDelete_.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnDelete_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDelete_ActionPerformed(evt);
@@ -259,6 +263,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnShowShotl_.setText("Show Shot(s)");
         btnShowShotl_.setToolTipText("Show Shot Series");
+        btnShowShotl_.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnShowShotl_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnShowShotl_ActionPerformed(evt);
@@ -274,6 +279,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnBackgroundRemoval_.setText("Background Removal");
         btnBackgroundRemoval_.setToolTipText("Remove background noise for the selected shots");
+        btnBackgroundRemoval_.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnBackgroundRemoval_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackgroundRemoval_ActionPerformed(evt);
@@ -338,6 +344,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnBackgroundRemoval_1.setText("Find Peak");
         btnBackgroundRemoval_1.setToolTipText("Find the peaks");
+        btnBackgroundRemoval_1.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnBackgroundRemoval_1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackgroundRemoval_1ActionPerformed(evt);
@@ -353,6 +360,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnBackgroundRemoval_2.setText("Normalize Spectrum");
         btnBackgroundRemoval_2.setToolTipText("Normalize a spectrum");
+        btnBackgroundRemoval_2.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnBackgroundRemoval_2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackgroundRemoval_2ActionPerformed(evt);
@@ -368,6 +376,7 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
         btnAnalyze_.setText("Analyze");
         btnAnalyze_.setToolTipText("Analyze a spectrum");
+        btnAnalyze_.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnAnalyze_.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAnalyze_ActionPerformed(evt);
