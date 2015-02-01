@@ -11,32 +11,26 @@ import com.devsmart.swing.BackgroundTask;
 import com.sciaps.common.Constants;
 import static com.sciaps.common.Constants.MARKER_THRESHOLD;
 import com.sciaps.common.SpectrumShotItem;
-import com.sciaps.common.algorithms.BackgroundModel;
-import com.sciaps.common.algorithms.LorentzianIntensityValue;
-import com.sciaps.common.algorithms.SimpleIntensityValue;
-import com.sciaps.common.algorithms.SpectrumBackgroundRemoval;
-import com.sciaps.common.algorithms.SpectrumNormalization;
-import com.sciaps.common.algorithms.SpectrumPeakFinding;
+import com.sciaps.common.algorithms.*;
+import com.sciaps.common.spectrum.LIBZPixelSpectrum;
 import com.sciaps.common.spectrum.RawDataSpectrum;
 import com.sciaps.common.spectrum.Spectrum;
 import com.sciaps.model.ShotListTableModel;
 import com.sciaps.utils.CustomDialog;
 import com.sciaps.utils.ImportExportSpectrum;
+import com.sciaps.utils.ImportExportSpectrumJsonGzip;
 import com.sciaps.utils.Util;
 import static com.sciaps.utils.Util.createAverage;
 import static com.sciaps.utils.Util.validateOneOrGreater;
 import static com.sciaps.utils.Util.validateZeroOrGreater;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
-import javax.swing.JTable;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableRowSorter;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 import org.jfree.chart.plot.IntervalMarker;
@@ -538,126 +532,127 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
     private void doCreateAvg() {
 
-        BackgroundTask.runBackgroundTask(new BackgroundTask() {
+        logger_.info("Creating avg from highlighted shots...");
 
-            private JDialog mDialog;
-            private JProgressBar mProgress;
+        StringBuilder name = new StringBuilder();
 
-            @Override
-            public void onBefore() {
-                mProgress = new JProgressBar();
-                mProgress.setIndeterminate(true);
+        boolean gotScanID = false;
+        int[] selectedList = tblShots_.getSelectedRows();
+        final List<Spectrum> shotDatas = new ArrayList<Spectrum>();
 
-                mDialog = new JDialog(Constants.MAIN_FRAME);
-                mDialog.setLocationRelativeTo(Constants.MAIN_FRAME);
-                mDialog.setAlwaysOnTop(true);
-                mDialog.setResizable(false);
-                mDialog.setContentPane(mProgress);
-                mDialog.setSize(400, 100);
-                mDialog.setVisible(true);
+        for (int i = 0; i < selectedList.length; i++) {
+            int modelIndex = tblShots_.convertRowIndexToModel(selectedList[i]);
+            SpectrumShotItem shotItem = (SpectrumShotItem) shotListTableModel_.getRow(modelIndex);
+            if (gotScanID == false) {
+                name.append("Scan ").append(shotItem.getScanID()).append(" Avg: ");
+                gotScanID = true;
             }
+            name.append(shotItem.getShotID());
+            name.append("_");
 
-            @Override
-            public void onBackground() {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        logger_.info("Creating avg from highlighted shots...");
+            shotDatas.add(shotItem.getShot());
+        }
+        name = name.deleteCharAt(name.length() - 1);
 
-                        StringBuilder name = new StringBuilder();
+        AverageShotsSettingPanel avgPanel = new AverageShotsSettingPanel();
+        avgPanel.setAvgShotName(name.toString());
+        int sampleRate = validateOneOrGreater(txtSampleRate_);
+        if (sampleRate >= 1) {
+            avgPanel.setSampleRate(sampleRate);
+        } else {
+            avgPanel.setSampleRate(30);
+        }
 
-                        boolean gotScanID = false;
-                        int[] selectedList = tblShots_.getSelectedRows();
-                        List<Spectrum> shotDatas = new ArrayList<Spectrum>();
+        CustomDialog dialog = new CustomDialog(Constants.MAIN_FRAME,
+                "Shot Average Setting", avgPanel,
+                CustomDialog.OK_OPTION);
+        dialog.setSize(400, 200);
+        dialog.setModal(true);
+        dialog.setVisible(true);
 
-                        for (int i = 0; i < selectedList.length; i++) {
-                            int modelIndex = tblShots_.convertRowIndexToModel(selectedList[i]);
-                            SpectrumShotItem shotItem = (SpectrumShotItem) shotListTableModel_.getRow(modelIndex);
-                            if (gotScanID == false) {
-                                name.append("Scan ").append(shotItem.getScanID()).append(" Avg: ");
-                                gotScanID = true;
-                            }
-                            name.append(shotItem.getShotID());
-                            name.append("_");
+        int retval = dialog.getResponseValue();
+        String newName = avgPanel.getAvgShotName();
+        while (retval == CustomDialog.OK && shotListTableModel_.isNameAlreadyExist(newName)) {
+            avgPanel.doNameAlreadyExist(true);
+            dialog.setVisible(true);
+            retval = dialog.getResponseValue();
+            newName = avgPanel.getAvgShotName();
+        }
 
-                            shotDatas.add(shotItem.getShot());
-                        }
-                        name = name.deleteCharAt(name.length() - 1);
+        final String shotName = newName.replace(",", "_");
 
-                        AverageShotsSettingPanel avgPanel = new AverageShotsSettingPanel();
-                        avgPanel.setAvgShotName(name.toString());
-                        int sampleRate = validateOneOrGreater(txtSampleRate_);
-                        if (sampleRate >= 1) {
-                            avgPanel.setSampleRate(sampleRate);
-                        } else {
-                            avgPanel.setSampleRate(30);
-                        }
+        if (retval == CustomDialog.OK) {
 
-                        CustomDialog dialog = new CustomDialog(Constants.MAIN_FRAME,
-                                "Shot Average Setting", avgPanel,
-                                CustomDialog.OK_OPTION);
-                        dialog.setSize(400, 200);
-                        dialog.setVisible(true);
+            final int newSampleRate = avgPanel.getSampleRate();
 
-                        int retval = dialog.getResponseValue();
-                        String newName = avgPanel.getAvgShotName();
-                        while (retval == CustomDialog.OK && shotListTableModel_.isNameAlreadyExist(newName)) {
-                            avgPanel.doNameAlreadyExist(true);
-                            dialog.setVisible(true);
-                            retval = dialog.getResponseValue();
-                            newName = avgPanel.getAvgShotName();
-                        }
+            BackgroundTask.runBackgroundTask(new BackgroundTask() {
 
-                        if (retval == CustomDialog.OK) {
-                            int newSampleRate = avgPanel.getSampleRate();
+                private JDialog mDialog;
+                private JProgressBar mProgress;
 
-                            final SpectrumShotItem newShotItem = new SpectrumShotItem(newName.replace(",", "_"));
-                            newShotItem.setShot(createAverage(shotDatas, newSampleRate), SpectrumShotItem.AVERAGED);
+                Spectrum avgSpectrum;
 
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    shotListTableModel_.addRow(0, newShotItem);
-                                    shotListTableModel_.setValueAt(true, 0, 0); //display it
+                @Override
+                public void onBefore() {
+                    mProgress = new JProgressBar();
+                    mProgress.setIndeterminate(true);
 
-                                }
-                            });
+                    mDialog = new JDialog(Constants.MAIN_FRAME);
+                    mDialog.setLocationRelativeTo(Constants.MAIN_FRAME);
+                    mDialog.setAlwaysOnTop(true);
+                    mDialog.setResizable(false);
+                    mDialog.setContentPane(mProgress);
+                    mDialog.setSize(400, 100);
+                    mDialog.setVisible(true);
+                }
 
-                            logger_.info("Create Avg from highlighted shots.... done");
-                        } else {
-                            logger_.info("Create Avg aborted by user");
-                        }
-                    }
+                @Override
+                public void onBackground() {
+                    avgSpectrum = createAverage(shotDatas, newSampleRate);
+                }
 
-                });
-            }
+                @Override
 
-            @Override
+                public void onAfter() {
+                    logger_.info("Create Avg from highlighted shots.... done");
+                    mDialog.setVisible(false);
+                    final SpectrumShotItem newShotItem = new SpectrumShotItem(shotName);
+                    newShotItem.setShot(avgSpectrum);
+                    shotListTableModel_.addRow(0, newShotItem);
+                    shotListTableModel_.setValueAt(true, 0, 0); //display it
 
-            public void onAfter() {
-                mDialog.setVisible(false);
-            }
-        });
+                }
+            }, ThreadUtils.CPUThreads);
+
+        } else {
+            logger_.info("Create Avg aborted by user");
+        }
+
+
     }
 
     private void doBackgroundRemoval() {
-
-        final int[] selectedRow = getSelectedRows();
-        if (selectedRow == null || selectedRow.length == 0) {
+        if(tblShots_.getSelectedRowCount() == 0){
             return;
         }
 
-        final double stepSize = baselineSettingPanel_.getStepSize();
-        final double wlInterval = baselineSettingPanel_.getWaveLengthInterval();
-
-        if (stepSize < 0 || wlInterval < 0) {
-            return;
+        final ArrayList<SpectrumShotItem> items = new ArrayList<SpectrumShotItem>(tblShots_.getSelectedRowCount());
+        for(int viewRow : tblShots_.getSelectedRows()){
+            int modelRow = tblShots_.convertRowIndexToModel(viewRow);
+            items.add(shotListTableModel_.getRow(modelRow));
         }
+
+        double stepSize = baselineSettingPanel_.getStepSize();
+        double wlInterval = baselineSettingPanel_.getWaveLengthInterval();
+        //final BackgroundModel bgModel = new BackgroundModel(stepSize, wlInterval);
+        final QuantialBackgroundModel bgModel = new QuantialBackgroundModel(stepSize, wlInterval);
+
 
         BackgroundTask.runBackgroundTask(new BackgroundTask() {
 
             private JDialog mDialog;
             private JProgressBar mProgress;
+            SpectrumBackgroundRemoval bgRemoval = new SpectrumBackgroundRemoval();
 
             @Override
             public void onBefore() {
@@ -676,82 +671,51 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             @Override
             public void onBackground() {
 
-                final ArrayList<SpectrumShotItem> tmpList = new ArrayList<SpectrumShotItem>();
-                final StringBuilder errMsg = new StringBuilder();
+                for(SpectrumShotItem item : items) {
+                    Spectrum inputSpectrum = item.getShot();
+                    PolynomialSplineFunction polynomialSplineFunc = bgModel.getModelBaseline(inputSpectrum);
+                    final Spectrum outputSpectrum = bgRemoval.doBackgroundRemoval(inputSpectrum, polynomialSplineFunc);
 
-                for (int rowIndex = 0; rowIndex < selectedRow.length; rowIndex++) {
-                    String name = shotListTableModel_.getRow(selectedRow[rowIndex]).getName();
-                    name = name + "R" + stepSize + "_" + wlInterval;
-
-                    if (shotListTableModel_.isNameAlreadyExist(name) == false) {
-                        Spectrum spectrum = shotListTableModel_.getRow(selectedRow[rowIndex]).getShot();
-
-                        RawDataSpectrum rawSpect = doBackgroundRemoval(spectrum);
-
-                        if (rawSpect != null) {
-                            SpectrumShotItem shot = new SpectrumShotItem(name);
-                            shot.setShot(rawSpect, SpectrumShotItem.BG_REMOVED);
-
-                            tmpList.add(shot);
-                        } else {
-                            errMsg.append(name).append("\n");
+                    String name = String.format("bgrm. %s", item.getName());
+                    final SpectrumShotItem shotItem = new SpectrumShotItem(name);
+                    shotItem.setShot(outputSpectrum);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            shotListTableModel_.addRow(0, shotItem);
                         }
-                    } else {
-                        errMsg.append(name).append("\n");
-                    }
+                    });
                 }
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (SpectrumShotItem shot : tmpList) {
-                            shotListTableModel_.addRow(0, shot);
-                        }
-
-                        if (tmpList.isEmpty() == false) {
-                            shotListTableModel_.showSeries(0);
-                        }
-
-                        if (errMsg.length() > 0) {
-                            errMsg.insert(0, "The following shot(s) already exist, skipped:\n");
-                            showErrorDialog(errMsg.toString());
-                        }
-
-                    }
-                });
 
             }
 
             @Override
             public void onAfter() {
                 mDialog.setVisible(false);
+                mDialog.dispose();
             }
-        });
-
-    }
-
-    private RawDataSpectrum doBackgroundRemoval(final Spectrum spectrum) {
-        double stepSize = baselineSettingPanel_.getStepSize();
-        double wlInterval = baselineSettingPanel_.getWaveLengthInterval();
-
-        if (stepSize < 0 || wlInterval < 0) {
-            return null;
-        }
-
-        BackgroundModel bgModel = new BackgroundModel(stepSize, wlInterval);
-        PolynomialSplineFunction polynomialSplineFunc = bgModel.getModelBaseline(spectrum);
-
-        SpectrumBackgroundRemoval bgRemoval = new SpectrumBackgroundRemoval();
-
-        return bgRemoval.doBackgroundRemoval(spectrum, polynomialSplineFunc);
+        }, ThreadUtils.CPUThreads);
     }
 
     private void doSpectrumNormalization() {
 
+        if(tblShots_.getSelectedRowCount() == 0){
+            return;
+        }
+
+        final ArrayList<SpectrumShotItem> items = new ArrayList<SpectrumShotItem>(tblShots_.getSelectedRowCount());
+        for(int viewRow : tblShots_.getSelectedRows()){
+            int modelRow = tblShots_.convertRowIndexToModel(viewRow);
+            items.add(shotListTableModel_.getRow(modelRow));
+        }
+
+
         BackgroundTask.runBackgroundTask(new BackgroundTask() {
 
             private JDialog mDialog;
             private JProgressBar mProgress;
+            SpectrumNormalization spectrumNormalization = new SpectrumNormalization();
 
             @Override
             public void onBefore() {
@@ -770,70 +734,28 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
             @Override
             public void onBackground() {
 
-                int[] selectedRow = getSelectedRows();
-                if (selectedRow == null || selectedRow.length == 0) {
-                    return;
+                for(SpectrumShotItem item : items) {
+                    RawDataSpectrum normalizedSpectrum = spectrumNormalization.normalize(item.getShot());
+                    String name = String.format("norm. %s", item.getName());
+                    final SpectrumShotItem shotItem = new SpectrumShotItem(name);
+                    shotItem.setShot(normalizedSpectrum);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            shotListTableModel_.addRow(0, shotItem);
+                        }
+                    });
                 }
 
-                final ArrayList<SpectrumShotItem> tmpList = new ArrayList<SpectrumShotItem>();
-                final StringBuilder errMsg = new StringBuilder();
-
-                SpectrumNormalization spectrumNormalization = new SpectrumNormalization();
-                for (int rowIndex = 0; rowIndex < selectedRow.length; rowIndex++) {
-                    SpectrumShotItem selectedItem = shotListTableModel_.getRow(selectedRow[rowIndex]);
-
-                    String name = selectedItem.getName();
-                    name = name + "N";
-
-                    if (selectedItem.getSeriesDataType() != SpectrumShotItem.NORMALIZED) {
-
-                        Spectrum normalizedSpectrum = null;
-                        if (selectedItem.getSeriesDataType() == SpectrumShotItem.BG_REMOVED) {
-                            normalizedSpectrum = spectrumNormalization.normalize((RawDataSpectrum) selectedItem.getShot());
-                        } else {
-                            RawDataSpectrum tempSpectrum = doBackgroundRemoval(selectedItem.getShot());
-                            normalizedSpectrum = doSpectrumNormalization(tempSpectrum);
-                        }
-
-                        if (normalizedSpectrum != null) {
-                            SpectrumShotItem shotItem = new SpectrumShotItem(name);
-                            shotItem.setShot(normalizedSpectrum, SpectrumShotItem.NORMALIZED);
-                            tmpList.add(shotItem);
-                        } else {
-                            errMsg.append(name).append("\n");
-                        }
-
-                    } else {
-                        errMsg.append(name).append("\n");
-                    }
-                }
-
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (SpectrumShotItem shot : tmpList) {
-                            shotListTableModel_.addRow(0, shot);
-                        }
-
-                        if (tmpList.isEmpty() == false) {
-                            shotListTableModel_.showSeries(0);
-                        }
-
-                        if (errMsg.length() > 0) {
-                            errMsg.insert(0, "The following shot(s) already exist, skipped:\n");
-                            showErrorDialog(errMsg.toString());
-                        }
-
-                    }
-                });
 
             }
 
             @Override
             public void onAfter() {
                 mDialog.setVisible(false);
+                mDialog.dispose();
             }
-        });
+        }, ThreadUtils.CPUThreads);
     }
 
     private RawDataSpectrum doSpectrumNormalization(final RawDataSpectrum spectrum) {
@@ -882,21 +804,8 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
 
                 int modelIndex = tblShots_.convertRowIndexToModel(selectedRows[0]);
                 final SpectrumShotItem selectedItem = shotListTableModel_.getRow(modelIndex);
-                final double[] peaksOnX;
 
-                if (selectedItem.getSeriesDataType() == SpectrumShotItem.NORMALIZED) {
-
-                    peaksOnX = peakFinding.getPeaks(selectedItem.getShot());
-                } else if (selectedItem.getSeriesDataType() == SpectrumShotItem.BG_REMOVED) {
-
-                    RawDataSpectrum tmp = doSpectrumNormalization((RawDataSpectrum) selectedItem.getShot());
-                    peaksOnX = peakFinding.getPeaks(tmp);
-                } else {
-
-                    RawDataSpectrum tmp = doBackgroundRemoval(selectedItem.getShot());
-                    tmp = doSpectrumNormalization(tmp);
-                    peaksOnX = peakFinding.getPeaks(tmp);
-                }
+                final double[] peaksOnX; peaksOnX = peakFinding.getPeaks(selectedItem.getShot());
 
                 if (peaksOnX.length > 0) {
 
@@ -1134,23 +1043,54 @@ public class SpectrumShotPanel extends javax.swing.JPanel {
     }
 
     public void importJsonGzip() {
-        ThreadUtils.CPUThreads.execute(new Runnable() {
+        final JFileChooser chooser = new JFileChooser();
+        chooser.setMultiSelectionEnabled(true);
+        chooser.setFileFilter(new FileNameExtensionFilter("Json Gzip files", "gz"));
 
-            @Override
-            public void run() {
+        int retrival = chooser.showOpenDialog(Constants.MAIN_FRAME);
+        if (retrival == JFileChooser.APPROVE_OPTION) {
 
-                ImportExportSpectrum importExporter = new ImportExportSpectrum();
-                final ArrayList<SpectrumShotItem> shotItems = importExporter.importJzonGzipFile();
+            BackgroundTask.runBackgroundTask(new BackgroundTask() {
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        addItems(shotItems);
+                ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
+                CustomDialog progressDialog;
+
+                @Override
+                public void onBefore() {
+                    ProgressStatusPanel progressbar = new ProgressStatusPanel();
+                    progressDialog = new CustomDialog(Constants.MAIN_FRAME,
+                            "Importing GZIP Spectrum File", progressbar,
+                            CustomDialog.NONE_OPTION);
+                    progressDialog.setSize(400, 100);
+                    progressDialog.setVisible(true);
+                }
+
+                @Override
+                public void onBackground() {
+                    try {
+
+                        ImportExportSpectrumJsonGzip jsonImportExport = new ImportExportSpectrumJsonGzip();
+                        for (File file : chooser.getSelectedFiles()) {
+                            //String newName = file.getName().replace(".json.gz", "");
+                            LIBZPixelSpectrum shotData = jsonImportExport.importSpectrumFile(file);
+                            SpectrumShotItem shot = new SpectrumShotItem(file.getName());
+                            shot.setShot(shotData.createSpectrum());
+                            shotItems.add(shot);
+                        }
+                    } catch (Exception ex) {
+                        logger_.error("Exception: " + ex.getMessage());
                     }
-                });
+                }
 
-            }
-        });
+                @Override
+                public void onAfter() {
+                    progressDialog.setVisible(false);
+                    progressDialog.dispose();
+                    addItems(shotItems);
+                }
+            });
+
+        }
 
     }
 

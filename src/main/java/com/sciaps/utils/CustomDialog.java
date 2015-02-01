@@ -37,7 +37,8 @@ public class CustomDialog extends JDialog {
     }
 
     public CustomDialog(JFrame frame, String title, final JPanel customPanel, int optionType) {
-        super(frame, title, true);
+        //super(frame, title, true);
+        super(frame, title, false);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
 

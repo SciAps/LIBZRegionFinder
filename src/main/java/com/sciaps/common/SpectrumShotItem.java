@@ -14,19 +14,13 @@ import org.jfree.data.xy.XYSeries;
  * @author jchen
  */
 public class SpectrumShotItem {
-    public static final int UNKNOWN = 0;
-    public static final int RAW = 1;
-    public static final int AVERAGED = 2;
-    public static final int BG_REMOVED = 3;
-    public static final int NORMALIZED = 4;
-    
+
     private int scanID_;
     private int shotID_;
     private String name_;
     private Spectrum shot_;
     private boolean isSelected_ = false;
     private final XYSeries xySeries_;
-    private int seriesDataType_;
 
     /**
      *
@@ -37,7 +31,6 @@ public class SpectrumShotItem {
         shotID_ = 0;
         name_ = name;
         xySeries_ = new XYSeries(name_);
-        seriesDataType_ = UNKNOWN;
     }
 
     public SpectrumShotItem(int scanID, int shotID) {
@@ -45,7 +38,6 @@ public class SpectrumShotItem {
         shotID_ = shotID;
         name_ = "Scan " + scanID_ + ": " + shotID_;
         xySeries_ = new XYSeries(name_);
-        seriesDataType_ = UNKNOWN;
     }
 
     public boolean isSelected() {
@@ -113,15 +105,9 @@ public class SpectrumShotItem {
         return shot_;
     }
 
-    public void setShot(Spectrum shot, int dataType) {
+    public void setShot(Spectrum shot) {
         shot_ = shot;
     }
     
-    public void setSeriesDataType(int type) {
-        seriesDataType_ = type;
-    }
-    
-    public int getSeriesDataType() {
-       return seriesDataType_;
-    }
+
 }

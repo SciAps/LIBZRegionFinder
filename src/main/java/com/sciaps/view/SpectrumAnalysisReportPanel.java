@@ -431,6 +431,7 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                 Spectrum tmp = null;
                 final double[] peaksOnX_;
 
+                /* TODO: putback
                 if (spectrumShotItem.getSeriesDataType() == SpectrumShotItem.NORMALIZED) {
                     tmp = spectrumShotItem.getShot();
                     peaksOnX_ = spectrumAnalyze_.doPeakFinding(tmp);
@@ -445,11 +446,12 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                     peaksOnX_ = spectrumAnalyze_.doPeakFinding(tmp);
                 }
 
+
                 // Create a marker for each peaks and show them
                 if (peaksOnX_.length > 0) {
 
                     normalizedSpectrumItem_ = new SpectrumShotItem("analysis");
-                    normalizedSpectrumItem_.setShot(tmp, SpectrumShotItem.NORMALIZED);
+                    normalizedSpectrumItem_.setShot(tmp);
 
                     final HashMap<String, PeakMeritObj> mapOfPeaks = new HashMap<String, PeakMeritObj>();
 
@@ -530,6 +532,7 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                         }
                     });
                 }
+                */
             }
 
             @Override

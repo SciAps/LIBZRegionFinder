@@ -5,6 +5,7 @@
  */
 package com.sciaps.utils;
 
+import com.devsmart.swing.BackgroundTask;
 import com.sciaps.common.Constants;
 import com.sciaps.common.SpectrumShotItem;
 import com.sciaps.common.spectrum.LIBZPixelSpectrum;
@@ -30,49 +31,6 @@ public class ImportExportSpectrum {
 
     public ImportExportSpectrum() {
 
-    }
-
-    public ArrayList<SpectrumShotItem> importJzonGzipFile() {
-        ArrayList<SpectrumShotItem> shotItems = new ArrayList<SpectrumShotItem>();
-
-        JFileChooser chooser = new JFileChooser();
-        chooser.setMultiSelectionEnabled(true);
-        chooser.setFileFilter(new FileNameExtensionFilter("Json Gzip files", "gz"));
-
-        int retrival = chooser.showOpenDialog(Constants.MAIN_FRAME);
-        if (retrival == JFileChooser.APPROVE_OPTION) {
-
-            ProgressStatusPanel progressbar = new ProgressStatusPanel();
-            final CustomDialog progressDialog = new CustomDialog(Constants.MAIN_FRAME,
-                    "Importing GZIP Spectrum File", progressbar,
-                    CustomDialog.NONE_OPTION);
-            progressDialog.setSize(400, 100);
-            SwingUtilities.invokeLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    progressDialog.setVisible(true);
-                }
-            });
-
-            try {
-
-                ImportExportSpectrumJsonGzip jsonImportExport = new ImportExportSpectrumJsonGzip();
-                for (File file : chooser.getSelectedFiles()) {
-                    //String newName = file.getName().replace(".json.gz", "");
-                    LIBZPixelSpectrum shotData = jsonImportExport.importSpectrumFile(file);
-                    SpectrumShotItem shot = new SpectrumShotItem(file.getName());
-                    shot.setShot(shotData.createSpectrum(), SpectrumShotItem.RAW);
-                    shotItems.add(shot);
-                }
-            } catch (Exception ex) {
-                logger_.error("Exception: " + ex.getMessage());
-            }
-
-            progressDialog.dispose();
-        }
-
-        return shotItems;
     }
 
     public void exportJzonGzipFile(final ArrayList<SpectrumShotItem> shotItems) {
@@ -160,7 +118,7 @@ public class ImportExportSpectrum {
                 for (File file : chooser.getSelectedFiles()) {
                     RawDataSpectrum shotData = csvImportExport.importSpectrumFile(file);
                     SpectrumShotItem shot = new SpectrumShotItem(file.getName());
-                    shot.setShot(shotData, SpectrumShotItem.RAW);
+                    shot.setShot(shotData);
                     shotItems.add(shot);
                 }
             } catch (Exception ex) {

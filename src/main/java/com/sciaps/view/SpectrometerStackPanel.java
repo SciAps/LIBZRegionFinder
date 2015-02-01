@@ -519,7 +519,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                     }
 
                     final SpectrumShotItem item = new SpectrumShotItem(scanCount_, shotCount);
-                    item.setShot(shot.createSpectrum(), SpectrumShotItem.RAW);
+                    item.setShot(shot.createSpectrum());
                     shotItems.add(item);
                     shotCount++;
 
@@ -535,7 +535,7 @@ public class SpectrometerStackPanel extends javax.swing.JPanel
                 Spectrum avgSpectrum = createAverage(listOfSpectrums, sampleRate);
                 String name = "Scan " + scanCount_ + ": Avg";
                 final SpectrumShotItem avgShotItem = new SpectrumShotItem(name);
-                avgShotItem.setShot(avgSpectrum, SpectrumShotItem.AVERAGED);
+                avgShotItem.setShot(avgSpectrum);
                 populateXYSeriesData(avgShotItem);
 
                 SwingUtilities.invokeLater(new Runnable() {

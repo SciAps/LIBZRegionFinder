@@ -311,7 +311,7 @@ public class Util {
         SpectrumShotItem shotInfo = new SpectrumShotItem(name);
         shotInfo.setScanID(scanID);
         shotInfo.setShotID(shotID);
-        shotInfo.setShot(data, SpectrumShotItem.RAW);
+        shotInfo.setShot(data);
 
         return shotInfo;
     }
