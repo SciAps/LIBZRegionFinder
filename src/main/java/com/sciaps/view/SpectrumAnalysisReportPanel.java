@@ -85,16 +85,16 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
         tblRejectedPeakMerit_.setAutoCreateRowSorter(true);
 
         setupTableColumnWidth();
-        
+
         spectrumAnalyze_ = new SpectrumAnalyze();
     }
-    
+
     private void setupTableColumnWidth() {
         tblRejectedPeakMerit_.getColumnModel().getColumn(0).setMinWidth(50);
         tblRejectedPeakMerit_.getColumnModel().getColumn(0).setMaxWidth(50);
         tblRejectedPeakMerit_.getColumnModel().getColumn(1).setMinWidth(50);
         tblRejectedPeakMerit_.getColumnModel().getColumn(1).setMaxWidth(50);
-        
+
         tblPeakMeritSummary_.getColumnModel().getColumn(0).setMinWidth(50);
         tblPeakMeritSummary_.getColumnModel().getColumn(0).setMaxWidth(50);
         tblPeakMeritSummary_.getColumnModel().getColumn(1).setMinWidth(50);
@@ -511,8 +511,14 @@ public class SpectrumAnalysisReportPanel extends javax.swing.JPanel {
                                     tmpMarkers[++offset] = marker;
                                 }
 
-                                tmpPeakFoundPercentage = obj.getTotalPeaksFound() / obj.getTotalLgPeaks() * 100;
-                                tmpLgPeakFoundPercentage = obj.getTotalLgPeaksFound() / obj.getTotalLgPeaks() * 100;
+                                if (obj.getTotalLgPeaks() > 0) {
+                                    tmpPeakFoundPercentage = 100f * obj.getTotalPeaksFound() / obj.getTotalPeaks();
+                                    tmpLgPeakFoundPercentage = 100f * obj.getTotalLgPeaksFound() / obj.getTotalLgPeaks();
+
+                                } else {
+                                    tmpPeakFoundPercentage = 0;
+                                    tmpLgPeakFoundPercentage = 0;
+                                }
                                 tmpPeakWeightPercentage = obj.getWeightPercentage();
 
                                 // determine peak accept/reject
